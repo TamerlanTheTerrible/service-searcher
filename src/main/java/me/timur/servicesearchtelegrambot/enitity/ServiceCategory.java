@@ -1,7 +1,9 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.model.Lang;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
 import me.timur.servicesearchtelegrambot.util.LangToJsonConverter;
 
 import javax.persistence.*;
@@ -10,12 +12,12 @@ import javax.persistence.*;
  * Created by Temurbek Ismoilov on 25/04/22.
  */
 
-@Data
+@Data @RequiredArgsConstructor
 @Entity
 @Table(name = "service_category")
 public class ServiceCategory extends BaseEntity{
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Convert(converter = LangToJsonConverter.class)
@@ -23,5 +25,10 @@ public class ServiceCategory extends BaseEntity{
     private Lang lang;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+    private boolean isActive = true;
+
+    public ServiceCategory(ServiceCategoryDto serviceCategoryDto) {
+        this.name = serviceCategoryDto.getName().trim().toUpperCase();
+        this.lang = serviceCategoryDto.getLang();
+    }
 }

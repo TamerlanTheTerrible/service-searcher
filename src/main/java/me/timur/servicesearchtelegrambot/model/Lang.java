@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Lang {
-    private String en;
+    private String uz;
     private String ru;
 }

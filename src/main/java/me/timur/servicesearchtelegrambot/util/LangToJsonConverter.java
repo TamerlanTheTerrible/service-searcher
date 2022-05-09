@@ -5,11 +5,13 @@ import lombok.SneakyThrows;
 import me.timur.servicesearchtelegrambot.model.Lang;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 /**
  * Created by Temurbek Ismoilov on 08/02/22.
  */
 
+@Converter
 public class LangToJsonConverter implements AttributeConverter<Lang, String> {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -17,6 +19,8 @@ public class LangToJsonConverter implements AttributeConverter<Lang, String> {
     @SneakyThrows
     @Override
     public String convertToDatabaseColumn(Lang lang) {
+        lang.setRu(lang.getRu().trim());
+        lang.setUz(lang.getUz().trim());
         return mapper.writeValueAsString(lang);
     }
 
