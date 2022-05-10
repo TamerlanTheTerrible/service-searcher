@@ -1,10 +1,14 @@
 package me.timur.servicesearchtelegrambot.controller;
 
 import lombok.AllArgsConstructor;
+import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.model.BaseResponse;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Temurbek Ismoilov on 09/05/22.
@@ -15,6 +19,14 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ServiceController {
     private final ServiceManager serviceManager;
+
+    @GetMapping("/category")
+    public BaseResponse getAllCategories() {
+        List<ServiceCategory> categories = serviceManager.getAllCategories();
+        List<ServiceCategoryDto> categoryDtoList
+                = categories.stream().map(ServiceCategoryDto::new).collect(Collectors.toList());
+        return BaseResponse.payload(categoryDtoList);
+    }
 
     @PostMapping("/category")
     public BaseResponse saveServiceCategory(@RequestBody ServiceCategoryDto serviceCategoryDto){
@@ -29,4 +41,6 @@ public class ServiceController {
         serviceManager.updateCategory(categoryId, serviceCategoryDto);
         return BaseResponse.payload(null);
     }
+
+
 }

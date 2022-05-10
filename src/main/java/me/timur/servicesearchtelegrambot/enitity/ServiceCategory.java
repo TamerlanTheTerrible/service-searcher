@@ -25,7 +25,7 @@ public class ServiceCategory extends BaseEntity{
     private Lang lang;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+    private boolean active = true;
 
     public ServiceCategory(ServiceCategoryDto serviceCategoryDto) {
         this.name = serviceCategoryDto.getName().trim().toUpperCase();

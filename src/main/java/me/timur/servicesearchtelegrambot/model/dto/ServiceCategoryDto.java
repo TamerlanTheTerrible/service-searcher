@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.model.Lang;
 
 import java.io.Serializable;
@@ -22,4 +23,11 @@ public class ServiceCategoryDto implements Serializable {
     private Lang lang;
     @JsonProperty("is_active")
     private Boolean isActive;
+
+    public ServiceCategoryDto(ServiceCategory entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.lang = entity.getLang();
+        this.isActive = entity.isActive();
+    }
 }

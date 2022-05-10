@@ -8,6 +8,8 @@ import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static java.lang.String.format;
 
 /**
@@ -19,6 +21,11 @@ import static java.lang.String.format;
 public class ServiceManagerImpl implements ServiceManager {
     private final ServiceRepository serviceRepository;
     private final ServiceCategoryRepository serviceCategoryRepository;
+
+    @Override
+    public List<ServiceCategory> getAllCategories() {
+        return serviceCategoryRepository.findAllByActiveTrue();
+    }
 
     @Override
     public void saveCategory(ServiceCategoryDto serviceCategoryDto) {
