@@ -17,7 +17,7 @@ public interface ServiceManager {
 
     Service getService(Long serviceId);
 
-    List<Service> getAllServices();
+    List<Service> getAllActiveServices();
 
     void saveService(ServiceDto dto);
 

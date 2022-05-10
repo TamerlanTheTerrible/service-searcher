@@ -8,8 +8,11 @@ import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceDto;
 import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
+import me.timur.servicesearchtelegrambot.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -32,7 +35,7 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public List<Service> getAllServices() {
+    public List<Service> getAllActiveServices() {
         return serviceRepository.findAllByActiveTrue();
     }
 
@@ -56,10 +59,18 @@ public class ServiceManagerImpl implements ServiceManager {
         return serviceRepository.findAllByCategoryId(serviceCategoryId);
     }
 
-    //    TODO implement
     @Override
     public List<Service> getAllServicesByNameLike(String name) {
-        return null;
+        List<Service> allServices = getAllActiveServices();
+        List<Service> similarServices = new ArrayList<>();
+        double minimumSimilarity = 0.5;
+        for (Service service: allServices) {
+            double similarity = StringUtil.findSimilarities(service.getLang().getUz(), name);
+            if (similarity > minimumSimilarity){
+                similarServices.add(service);
+            }
+        }
+        return similarServices;
     }
 
     @Override
@@ -100,4 +111,5 @@ public class ServiceManagerImpl implements ServiceManager {
         category.setActive(false);
         serviceCategoryRepository.save(category);
     }
+
 }

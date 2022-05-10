@@ -10,8 +10,6 @@ import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by Temurbek Ismoilov on 09/05/22.
@@ -23,6 +21,15 @@ import java.util.stream.Collectors;
 public class ServiceController {
     private final ServiceManager serviceManager;
 
+
+    @GetMapping("/find/{searchedService}")
+    public BaseResponse getServiceByNameLike(@PathVariable String searchedService) {
+        List<Service> services = serviceManager.getAllServicesByNameLike(searchedService);
+        List<ServiceDto> serviceDtos = services.stream().map(ServiceDto::new).toList();
+        return BaseResponse.payload(serviceDtos);
+    }
+
+
     @GetMapping("/{serviceId}")
     public BaseResponse getService(@PathVariable Long serviceId) {
         Service service = serviceManager.getService(serviceId);
@@ -31,7 +38,7 @@ public class ServiceController {
 
     @GetMapping("/")
     public BaseResponse getAllServices() {
-        List<Service> services = serviceManager.getAllServices();
+        List<Service> services = serviceManager.getAllActiveServices();
         List<ServiceDto> serviceDtos = services.stream().map(ServiceDto::new).toList();
         return BaseResponse.payload(serviceDtos);
     }
