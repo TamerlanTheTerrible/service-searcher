@@ -1,7 +1,9 @@
 package me.timur.servicesearchtelegrambot.service;
 
+import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,5 +22,15 @@ public interface ServiceManager {
     void updateCategory(Long categoryId, ServiceCategoryDto serviceCategoryDto);
 
     ServiceCategory getServiceCategory(Long id);
+
+    Service getService(Long serviceId);
+
+    void saveService(ServiceDto dto);
+
+    void updateService(Long serviceId, ServiceDto dto);
+
+    List<Service> getAllServicesByCategory(Long serviceCategoryId);
+
+    List<Service> getAllServicesByNameLike(String name);
 
 }

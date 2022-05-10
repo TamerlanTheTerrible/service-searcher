@@ -19,8 +19,8 @@ public class LangToJsonConverter implements AttributeConverter<Lang, String> {
     @SneakyThrows
     @Override
     public String convertToDatabaseColumn(Lang lang) {
-        lang.setRu(lang.getRu().trim());
-        lang.setUz(lang.getUz().trim());
+        lang.setRu(lang.getRu().trim().toLowerCase());
+        lang.setUz(lang.getUz().trim().toLowerCase());
         return mapper.writeValueAsString(lang);
     }
 

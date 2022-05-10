@@ -2,11 +2,12 @@ package me.timur.servicesearchtelegrambot.service;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
+import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceDto;
 import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import static java.lang.String.format;
  * Created by Temurbek Ismoilov on 09/05/22.
  */
 
-@Service
+@org.springframework.stereotype.Service
 @RequiredArgsConstructor
 public class ServiceManagerImpl implements ServiceManager {
     private final ServiceRepository serviceRepository;
@@ -45,6 +46,39 @@ public class ServiceManagerImpl implements ServiceManager {
         return serviceCategoryRepository
                 .findById(id)
                 .orElseThrow(() -> new  ResourceNotFoundException(format("Could not find service category with id %s", id)));
+    }
+
+    @Override
+    public Service getService(Long id) {
+        return serviceRepository
+                .findById(id)
+                .orElseThrow(() -> new  ResourceNotFoundException(format("Could not find service with id %s", id)));
+    }
+
+    @Override
+    public void saveService(ServiceDto serviceDto) {
+        ServiceCategory category = getServiceCategory(serviceDto.getCategory().getId());
+        serviceRepository.save(new Service(serviceDto, category));
+    }
+
+    @Override
+    public void updateService(Long serviceId, ServiceDto dto) {
+        Service service = getService(serviceId);
+        service.setName(dto.getName().trim().toUpperCase());
+        service.getCategory().setId(dto.getCategory().getId());
+        service.setLang(dto.getLang());
+        serviceRepository.save(service);
+    }
+
+    @Override
+    public List<Service> getAllServicesByCategory(Long serviceCategoryId) {
+        return serviceRepository.findAllByCategoryId(serviceCategoryId);
+    }
+
+//    TODO implement
+    @Override
+    public List<Service> getAllServicesByNameLike(String name) {
+        return null;
     }
 
 }
