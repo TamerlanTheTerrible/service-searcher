@@ -32,6 +32,11 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
+    public List<Service> getAllServices() {
+        return serviceRepository.findAllByActiveTrue();
+    }
+
+    @Override
     public void saveService(ServiceDto serviceDto) {
         ServiceCategory category = getServiceCategory(serviceDto.getCategory().getId());
         serviceRepository.save(new Service(serviceDto, category));

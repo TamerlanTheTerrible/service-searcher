@@ -10,4 +10,6 @@ import java.util.List;
 public interface ServiceRepository extends JpaRepository<Service, Long> {
 
     List<Service> findAllByCategoryId(Long categoryId);
+
+    List<Service> findAllByActiveTrue();
 }

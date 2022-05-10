@@ -17,12 +17,13 @@ public interface ServiceManager {
 
     Service getService(Long serviceId);
 
+    List<Service> getAllServices();
+
     void saveService(ServiceDto dto);
 
     void updateService(Long serviceId, ServiceDto dto);
 
     List<Service> getAllServicesByCategory(Long serviceCategoryId);
-
 
     List<Service> getAllServicesByNameLike(String name);
 
@@ -37,4 +38,5 @@ public interface ServiceManager {
     ServiceCategory getServiceCategory(Long id);
 
     void deactivateServiceCategory(Long categoryId);
+
 }
