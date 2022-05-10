@@ -15,14 +15,6 @@ import java.util.List;
 @Transactional
 public interface ServiceManager {
 
-    List<ServiceCategory> getAllCategories();
-
-    void saveCategory(ServiceCategoryDto serviceCategoryDto);
-
-    void updateCategory(Long categoryId, ServiceCategoryDto serviceCategoryDto);
-
-    ServiceCategory getServiceCategory(Long id);
-
     Service getService(Long serviceId);
 
     void saveService(ServiceDto dto);
@@ -31,6 +23,18 @@ public interface ServiceManager {
 
     List<Service> getAllServicesByCategory(Long serviceCategoryId);
 
+
     List<Service> getAllServicesByNameLike(String name);
 
+    void deactivateService(Long serviceId);
+
+    List<ServiceCategory> getAllCategories();
+
+    void saveCategory(ServiceCategoryDto serviceCategoryDto);
+
+    void updateCategory(Long categoryId, ServiceCategoryDto serviceCategoryDto);
+
+    ServiceCategory getServiceCategory(Long id);
+
+    void deactivateServiceCategory(Long categoryId);
 }

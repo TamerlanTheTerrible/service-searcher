@@ -11,7 +11,7 @@ import java.time.format.DateTimeParseException;
  */
 
 public class DateUtil {
-    public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
+    public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public final static String DATE_PATTERN = "yyyy-MM-dd";
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 

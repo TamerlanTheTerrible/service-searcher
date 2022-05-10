@@ -48,6 +48,14 @@ public class ServiceController {
         return BaseResponse.payload(null);
     }
 
+
+    @DeleteMapping("/{serviceId}")
+    public BaseResponse deactivateServic(@PathVariable Long serviceId){
+        serviceManager.deactivateService(serviceId);
+        return BaseResponse.payload(null);
+    }
+
+
     @GetMapping("/category")
     public BaseResponse getAllCategories() {
         List<ServiceCategory> categories = serviceManager.getAllCategories();
@@ -66,6 +74,12 @@ public class ServiceController {
             @RequestBody ServiceCategoryDto serviceCategoryDto,
             @PathVariable Long categoryId){
         serviceManager.updateCategory(categoryId, serviceCategoryDto);
+        return BaseResponse.payload(null);
+    }
+
+    @DeleteMapping("/category/{categoryId}")
+    public BaseResponse deactivateServiceCategory(@PathVariable Long categoryId){
+        serviceManager.deactivateServiceCategory(categoryId);
         return BaseResponse.payload(null);
     }
 

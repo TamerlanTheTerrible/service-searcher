@@ -23,30 +23,6 @@ public class ServiceManagerImpl implements ServiceManager {
     private final ServiceRepository serviceRepository;
     private final ServiceCategoryRepository serviceCategoryRepository;
 
-    @Override
-    public List<ServiceCategory> getAllCategories() {
-        return serviceCategoryRepository.findAllByActiveTrue();
-    }
-
-    @Override
-    public void saveCategory(ServiceCategoryDto serviceCategoryDto) {
-        serviceCategoryRepository.save(new ServiceCategory(serviceCategoryDto));
-    }
-
-    @Override
-    public void updateCategory(Long categoryId, ServiceCategoryDto serviceCategoryDto) {
-        ServiceCategory category = getServiceCategory(categoryId);
-        category.setName(serviceCategoryDto.getName().trim().toUpperCase());
-        category.setLang(serviceCategoryDto.getLang());
-        serviceCategoryRepository.save(category);
-    }
-
-    @Override
-    public ServiceCategory getServiceCategory(Long id) {
-        return serviceCategoryRepository
-                .findById(id)
-                .orElseThrow(() -> new  ResourceNotFoundException(format("Could not find service category with id %s", id)));
-    }
 
     @Override
     public Service getService(Long id) {
@@ -75,10 +51,48 @@ public class ServiceManagerImpl implements ServiceManager {
         return serviceRepository.findAllByCategoryId(serviceCategoryId);
     }
 
-//    TODO implement
+    //    TODO implement
     @Override
     public List<Service> getAllServicesByNameLike(String name) {
         return null;
     }
 
+    @Override
+    public void deactivateService(Long serviceId) {
+        Service service = getService(serviceId);
+        service.setActive(false);
+        serviceRepository.save(service);
+    }
+
+    @Override
+    public List<ServiceCategory> getAllCategories() {
+        return serviceCategoryRepository.findAllByActiveTrue();
+    }
+
+    @Override
+    public void saveCategory(ServiceCategoryDto serviceCategoryDto) {
+        serviceCategoryRepository.save(new ServiceCategory(serviceCategoryDto));
+    }
+
+    @Override
+    public void updateCategory(Long categoryId, ServiceCategoryDto serviceCategoryDto) {
+        ServiceCategory category = getServiceCategory(categoryId);
+        category.setName(serviceCategoryDto.getName().trim().toUpperCase());
+        category.setLang(serviceCategoryDto.getLang());
+        serviceCategoryRepository.save(category);
+    }
+
+    @Override
+    public ServiceCategory getServiceCategory(Long id) {
+        return serviceCategoryRepository
+                .findById(id)
+                .orElseThrow(() -> new  ResourceNotFoundException(format("Could not find service category with id %s", id)));
+    }
+
+    @Override
+    public void deactivateServiceCategory(Long categoryId) {
+        ServiceCategory category = getServiceCategory(categoryId);
+        category.setActive(false);
+        serviceCategoryRepository.save(category);
+    }
 }
