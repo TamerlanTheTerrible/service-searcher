@@ -24,8 +24,7 @@ import java.sql.Timestamp;
 public class ServiceDto implements Serializable {
     private Long id;
     @JsonProperty("date_created")
-    @JsonFormat(pattern = DateUtil.DATE_TIME_PATTERN)
-    @JsonDeserialize(using = DateDeserializers.TimestampDeserializer.class)
+    @JsonFormat(pattern = DateUtil.DATE_TIME_PATTERN) @JsonDeserialize(using = DateDeserializers.TimestampDeserializer.class)
     private Timestamp dateCreated;
     private String name;
     private Lang lang;

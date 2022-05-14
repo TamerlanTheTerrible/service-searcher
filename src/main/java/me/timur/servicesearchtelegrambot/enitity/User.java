@@ -1,38 +1,35 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.model.dto.UserDto;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by Temurbek Ismoilov on 25/04/22.
  */
 
-@Data
+@Data @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
 
-    @Column(name = "telegram_id", nullable = false)
+    @Column(name = "telegram_id", nullable = false, unique = true)
     private Long telegramId;
 
-    @Column(name = "username", nullable = false)
-    private String userName;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @Column(name = "last_name")
-    private String lastName;
+    private String lastname;
 
     @Column(name = "first_name")
-    private String firstName;
+    private String firstname;
 
-    @Column(name = "phone")
+    @Column(name = "phone", unique = true)
     private String phone;
 
     @Column(name = "chat_id", nullable = false)
@@ -40,4 +37,14 @@ public class User extends BaseEntity {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    public User(UserDto dto) {
+        this.telegramId = dto.getTelegramId();
+        this.username = dto.getUsername();
+        this.firstname = dto.getFirstname();
+        this.lastname = dto.getLastname();
+        this.phone = dto.getPhone().replace(" ", "").replace("+", "");
+        this.chatId = dto.getChatId();
+        this.isActive = true;
+    }
 }
