@@ -42,7 +42,7 @@ public class UserController {
         return BaseResponse.payload(new UserDto(user));
     }
 
-    @PostMapping
+    @PostMapping("/")
     BaseResponse save(@RequestBody UserDto dto) {
         userService.save(dto);
         return BaseResponse.payload(null);
@@ -51,6 +51,12 @@ public class UserController {
     @PutMapping("/{userId}")
     BaseResponse update(@PathVariable Long userId, @RequestBody UserDto dto) {
         userService.update(userId, dto);
+        return BaseResponse.payload(null);
+    }
+
+    @DeleteMapping("/{userId}")
+    BaseResponse delete(@PathVariable Long userId) {
+        userService.changeStatus(userId, false);
         return BaseResponse.payload(null);
     }
 }
