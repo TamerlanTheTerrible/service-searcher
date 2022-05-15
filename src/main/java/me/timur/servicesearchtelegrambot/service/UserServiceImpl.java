@@ -3,7 +3,7 @@ package me.timur.servicesearchtelegrambot.service;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
-import me.timur.servicesearchtelegrambot.model.dto.UserDto;
+import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import me.timur.servicesearchtelegrambot.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public void save(UserDto dto) {
+    public void save(UserDTO dto) {
         userRepository.save(new User(dto));
     }
 
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(Long id, UserDto dto) {
+    public void update(Long id, UserDTO dto) {
         User user = getUserById(id);
         user.setTelegramId(requireNonNullElse(dto.getTelegramId(), user.getTelegramId()));
         user.setUsername(requireNonNullElse(dto.getUsername(), user.getUsername()));

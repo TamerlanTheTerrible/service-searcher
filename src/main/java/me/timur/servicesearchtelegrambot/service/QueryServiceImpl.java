@@ -2,7 +2,7 @@ package me.timur.servicesearchtelegrambot.service;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Query;
-import me.timur.servicesearchtelegrambot.model.dto.QueryDto;
+import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 import me.timur.servicesearchtelegrambot.repository.QueryRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class QueryServiceImpl implements QueryService {
     private QueryRepository queryRepository;
 
     @Override
-    public void save(QueryDto dto) {
+    public void save(QueryDTO dto) {
         queryRepository.save(new Query(dto));
     }
 }

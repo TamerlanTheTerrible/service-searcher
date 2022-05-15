@@ -1,14 +1,15 @@
 package me.timur.servicesearchtelegrambot.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.util.DateUtil;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -16,12 +17,15 @@ import java.time.LocalDateTime;
  */
 
 @Data
-public class ServiceProviderDto implements Serializable {
+@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ServiceProviderDTO extends BaseDTO {
     private Long id;
     @JsonProperty("date_created")
     @JsonFormat(pattern = DateUtil.DATE_TIME_PATTERN) @JsonDeserialize(using = DateDeserializers.TimestampDeserializer.class)
     private LocalDateTime dateCreated;
-    private ServiceDto service;
+    private ServiceDTO service;
     @JsonProperty("is_active")
     private Boolean isActive;
 }

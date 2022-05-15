@@ -1,7 +1,7 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.*;
-import me.timur.servicesearchtelegrambot.model.dto.QueryDto;
+import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 
 import javax.persistence.*;
 
@@ -30,7 +30,7 @@ public class Query extends BaseEntity{
     @JoinColumn(name = "status", nullable = false)
     private QueryStatus status;
 
-    public Query(QueryDto dto) {
+    public Query(QueryDTO dto) {
         this.client.setId(dto.getClient().getId());
         this.provider.setId(dto.getProvider().getId());
         this.service.setId(dto.getService().getId());

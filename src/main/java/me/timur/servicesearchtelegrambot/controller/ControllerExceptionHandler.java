@@ -3,6 +3,7 @@ package me.timur.servicesearchtelegrambot.controller;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.BaseResponse;
+import me.timur.servicesearchtelegrambot.model.dto.NoopDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,18 +19,17 @@ public class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public BaseResponse handleResourceNotFoundException(ResourceNotFoundException e){
+    public BaseResponse<NoopDTO> handleResourceNotFoundException(ResourceNotFoundException e){
         log.error(e.getMessage());
         return BaseResponse.error(e);
     }
     
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public BaseResponse handleUnexpectedException(Exception e){
+    public BaseResponse<NoopDTO> handleUnexpectedException(Exception e){
         log.error("Unexpected exception: " + e.getMessage(), e);
         return BaseResponse.error(e);
     }
-
 }
 
 

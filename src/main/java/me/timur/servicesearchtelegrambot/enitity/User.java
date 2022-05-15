@@ -2,7 +2,7 @@ package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.model.dto.UserDto;
+import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ public class User extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    public User(UserDto dto) {
+    public User(UserDTO dto) {
         this.telegramId = dto.getTelegramId();
         this.username = dto.getUsername();
         this.firstname = dto.getFirstname();

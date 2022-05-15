@@ -3,7 +3,7 @@ package me.timur.servicesearchtelegrambot.enitity;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.model.Lang;
-import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDTO;
 import me.timur.servicesearchtelegrambot.util.LangToJsonConverter;
 
 import javax.persistence.*;
@@ -27,7 +27,7 @@ public class ServiceCategory extends BaseEntity{
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    public ServiceCategory(ServiceCategoryDto serviceCategoryDto) {
+    public ServiceCategory(ServiceCategoryDTO serviceCategoryDto) {
         this.name = serviceCategoryDto.getName().trim().toUpperCase();
         this.lang = serviceCategoryDto.getLang();
     }

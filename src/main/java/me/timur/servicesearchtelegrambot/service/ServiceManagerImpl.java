@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
-import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
-import me.timur.servicesearchtelegrambot.model.dto.ServiceDto;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDTO;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceDTO;
 import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
 import me.timur.servicesearchtelegrambot.util.StringUtil;
@@ -39,13 +39,13 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void saveService(ServiceDto serviceDto) {
+    public void saveService(ServiceDTO serviceDto) {
         ServiceCategory category = getServiceCategory(serviceDto.getCategory().getId());
         serviceRepository.save(new Service(serviceDto, category));
     }
 
     @Override
-    public void updateService(Long serviceId, ServiceDto dto) {
+    public void updateService(Long serviceId, ServiceDTO dto) {
         Service service = getService(serviceId);
         service.setName(dto.getName().trim().toUpperCase());
         service.getCategory().setId(dto.getCategory().getId());
@@ -85,12 +85,12 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void saveCategory(ServiceCategoryDto serviceCategoryDto) {
+    public void saveCategory(ServiceCategoryDTO serviceCategoryDto) {
         serviceCategoryRepository.save(new ServiceCategory(serviceCategoryDto));
     }
 
     @Override
-    public void updateCategory(Long categoryId, ServiceCategoryDto serviceCategoryDto) {
+    public void updateCategory(Long categoryId, ServiceCategoryDTO serviceCategoryDto) {
         ServiceCategory category = getServiceCategory(categoryId);
         category.setName(serviceCategoryDto.getName().trim().toUpperCase());
         category.setLang(serviceCategoryDto.getLang());

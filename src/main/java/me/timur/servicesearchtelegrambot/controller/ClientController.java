@@ -1,7 +1,8 @@
 package me.timur.servicesearchtelegrambot.controller;
 
 import me.timur.servicesearchtelegrambot.model.BaseResponse;
-import me.timur.servicesearchtelegrambot.model.dto.QueryDto;
+import me.timur.servicesearchtelegrambot.model.dto.NoopDTO;
+import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,8 @@ public record ClientController(
 ) {
 
     @PostMapping
-    public BaseResponse saveQuery(@RequestBody QueryDto dto){
+    public BaseResponse<NoopDTO> saveQuery(@RequestBody QueryDTO dto){
         queryService.save(dto);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
 }

@@ -1,6 +1,6 @@
 package me.timur.servicesearchtelegrambot.service;
 
-import me.timur.servicesearchtelegrambot.model.dto.QueryDto;
+import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface QueryService {
-    void save(QueryDto dto);
+    void save(QueryDTO dto);
 }

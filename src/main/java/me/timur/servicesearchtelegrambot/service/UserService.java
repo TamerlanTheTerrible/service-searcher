@@ -1,7 +1,7 @@
 package me.timur.servicesearchtelegrambot.service;
 
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.model.dto.UserDto;
+import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface UserService {
 
-    void save(UserDto dto);
+    void save(UserDTO dto);
 
     User getUserById(Long id);
 
@@ -25,7 +25,7 @@ public interface UserService {
 
     List<User> getAllByStatus(Boolean isActive);
 
-    void update(Long id, UserDto dto);
+    void update(Long id, UserDTO dto);
 
     void changeStatus(Long id, Boolean status);
 }

@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.model.BaseResponse;
-import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDto;
-import me.timur.servicesearchtelegrambot.model.dto.ServiceDto;
+import me.timur.servicesearchtelegrambot.model.dto.NoopDTO;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDTO;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceDTO;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,81 +24,77 @@ public class ServiceController {
 
 
     @GetMapping("/find/{searchedService}")
-    public BaseResponse getServiceByNameLike(@PathVariable String searchedService) {
+    public BaseResponse<List<ServiceDTO>> getServiceByNameLike(@PathVariable String searchedService) {
         List<Service> services = serviceManager.getAllServicesByNameLike(searchedService);
-        List<ServiceDto> serviceDtos = services.stream().map(ServiceDto::new).toList();
-        return BaseResponse.payload(serviceDtos);
+        List<ServiceDTO> serviceDTOS = services.stream().map(ServiceDTO::new).toList();
+        return BaseResponse.payload(serviceDTOS);
     }
 
-
     @GetMapping("/{serviceId}")
-    public BaseResponse getService(@PathVariable Long serviceId) {
+    public BaseResponse<ServiceDTO> getService(@PathVariable Long serviceId) {
         Service service = serviceManager.getService(serviceId);
-        return BaseResponse.payload(new ServiceDto(service));
+        return BaseResponse.payload(new ServiceDTO(service));
     }
 
     @GetMapping("/")
-    public BaseResponse getAllServices() {
+    public BaseResponse<List<ServiceDTO>> getAllServices() {
         List<Service> services = serviceManager.getAllActiveServices();
-        List<ServiceDto> serviceDtos = services.stream().map(ServiceDto::new).toList();
-        return BaseResponse.payload(serviceDtos);
+        List<ServiceDTO> serviceDTOS = services.stream().map(ServiceDTO::new).toList();
+        return BaseResponse.payload(serviceDTOS);
     }
 
     @GetMapping("/category/{categoryId}")
-    public BaseResponse getServicesByCategory(@PathVariable Long categoryId) {
+    public BaseResponse<List<ServiceDTO>> getServicesByCategory(@PathVariable Long categoryId) {
         List<Service> services = serviceManager.getAllServicesByCategory(categoryId);
-        List<ServiceDto> serviceDtos = services.stream().map(ServiceDto::new).toList();
-        return BaseResponse.payload(serviceDtos);
+        List<ServiceDTO> serviceDTOS = services.stream().map(ServiceDTO::new).toList();
+        return BaseResponse.payload(serviceDTOS);
 
     }
 
     @PostMapping("")
-    public BaseResponse saveService(@RequestBody ServiceDto dto) {
+    public BaseResponse<NoopDTO> saveService(@RequestBody ServiceDTO dto) {
         serviceManager.saveService(dto);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
 
     @PutMapping("/{serviceId}")
-    public BaseResponse updateService(
-            @RequestBody ServiceDto dto,
+    public BaseResponse<NoopDTO> updateService(
+            @RequestBody ServiceDTO dto,
             @PathVariable Long serviceId) {
         serviceManager.updateService(serviceId, dto);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
-
 
     @DeleteMapping("/{serviceId}")
-    public BaseResponse deactivateServic(@PathVariable Long serviceId){
+    public BaseResponse<NoopDTO> deactivateService(@PathVariable Long serviceId){
         serviceManager.deactivateService(serviceId);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
 
-
     @GetMapping("/category")
-    public BaseResponse getAllCategories() {
+    public BaseResponse<List<ServiceCategoryDTO>> getAllCategories() {
         List<ServiceCategory> categories = serviceManager.getAllCategories();
-        List<ServiceCategoryDto> categoryDtoList = categories.stream().map(ServiceCategoryDto::new).toList();
+        List<ServiceCategoryDTO> categoryDtoList = categories.stream().map(ServiceCategoryDTO::new).toList();
         return BaseResponse.payload(categoryDtoList);
     }
 
     @PostMapping("/category")
-    public BaseResponse saveServiceCategory(@RequestBody ServiceCategoryDto serviceCategoryDto){
+    public BaseResponse<NoopDTO> saveServiceCategory(@RequestBody ServiceCategoryDTO serviceCategoryDto){
         serviceManager.saveCategory(serviceCategoryDto);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
 
     @PutMapping("/category/{categoryId}")
-    public BaseResponse updateServiceCategory(
-            @RequestBody ServiceCategoryDto serviceCategoryDto,
+    public BaseResponse<NoopDTO> updateServiceCategory(
+            @RequestBody ServiceCategoryDTO serviceCategoryDto,
             @PathVariable Long categoryId){
         serviceManager.updateCategory(categoryId, serviceCategoryDto);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
 
     @DeleteMapping("/category/{categoryId}")
-    public BaseResponse deactivateServiceCategory(@PathVariable Long categoryId){
+    public BaseResponse<NoopDTO> deactivateServiceCategory(@PathVariable Long categoryId){
         serviceManager.deactivateServiceCategory(categoryId);
-        return BaseResponse.payload(null);
+        return BaseResponse.payload();
     }
-
 }
