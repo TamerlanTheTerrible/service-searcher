@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
 import me.timur.servicesearchtelegrambot.util.DateUtil;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -24,8 +26,15 @@ public class ServiceProviderDTO extends BaseDTO {
     private Long id;
     @JsonProperty("date_created")
     @JsonFormat(pattern = DateUtil.DATE_TIME_PATTERN) @JsonDeserialize(using = DateDeserializers.TimestampDeserializer.class)
-    private LocalDateTime dateCreated;
+    private Timestamp dateCreated;
     private ServiceDTO service;
     @JsonProperty("is_active")
     private Boolean isActive;
+
+    public ServiceProviderDTO(ServiceProvider provider) {
+        this.id = provider.getId();
+        this.dateCreated = provider.getDateCreated();
+        this.service = new ServiceDTO(provider.getService());
+        this.isActive = provider.getIsActive();
+    }
 }

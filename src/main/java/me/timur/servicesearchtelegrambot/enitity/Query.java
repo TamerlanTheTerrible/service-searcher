@@ -16,19 +16,22 @@ public class Query extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "client_user_id", nullable = false)
-    private User client;
+    private User client = new User();
 
     @OneToOne
     @JoinColumn(name = "provider_id")
-    private ServiceProvider provider;
+    private ServiceProvider provider = new ServiceProvider();
 
     @OneToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private Service service = new Service();
 
     @ManyToOne
-    @JoinColumn(name = "status", nullable = false)
+    @JoinColumn(name = "status")
     private QueryStatus status;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 
     public Query(QueryDTO dto) {
         this.client.setId(dto.getClient().getId());

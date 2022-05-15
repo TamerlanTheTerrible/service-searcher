@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
  * Created by Temurbek Ismoilov on 15/05/22.
  */
 
-
 @Data
 @Builder
 @AllArgsConstructor
