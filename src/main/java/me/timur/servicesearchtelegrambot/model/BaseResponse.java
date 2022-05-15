@@ -1,9 +1,9 @@
 package me.timur.servicesearchtelegrambot.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.*;
+import me.timur.servicesearchtelegrambot.model.dto.BaseDTO;
+import me.timur.servicesearchtelegrambot.model.dto.ErrorDTO;
 import me.timur.servicesearchtelegrambot.model.dto.NoopDTO;
 
 /**
@@ -15,7 +15,7 @@ import me.timur.servicesearchtelegrambot.model.dto.NoopDTO;
 @AllArgsConstructor
 public class BaseResponse<T> {
     private T payload = null;
-    private ErrorPayload error = null;
+    private ErrorDTO error = null;
 
     public static <T> BaseResponse<T> payload(T payload){
         return BaseResponse.<T>builder()
@@ -29,25 +29,10 @@ public class BaseResponse<T> {
                 .build();
     }
 
-    public static BaseResponse<NoopDTO> error(Exception e) {
-        return BaseResponse.<NoopDTO>builder()
-                .error(new ErrorPayload(e))
+    public static BaseResponse<ErrorDTO> error(Exception e) {
+        return BaseResponse.<ErrorDTO>builder()
+                .error(new ErrorDTO(e))
                 .build();
     }
 }
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-class ErrorPayload {
-    private String name;
-    private String type;
-    private String message;
-
-    public ErrorPayload(Exception e) {
-        this.name = e.getClass().getSimpleName();
-        this.type = e.getClass().getTypeName();
-        this.message = e.getMessage();
-    }
-}
