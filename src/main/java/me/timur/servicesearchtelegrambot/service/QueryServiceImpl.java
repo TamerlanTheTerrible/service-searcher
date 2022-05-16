@@ -25,8 +25,9 @@ public class QueryServiceImpl implements QueryService {
     private final QueryRepository queryRepository;
 
     @Override
-    public void save(QueryDTO dto) {
-        queryRepository.save(new Query(dto));
+    public Long save(QueryDTO dto) {
+        Query query = queryRepository.save(new Query(dto));
+        return query.getId();
     }
 
     @Override

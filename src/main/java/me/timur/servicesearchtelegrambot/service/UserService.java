@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface UserService {
 
-    void save(UserDTO dto);
+    Long save(UserDTO dto);
 
     User getUserById(Long id);
 

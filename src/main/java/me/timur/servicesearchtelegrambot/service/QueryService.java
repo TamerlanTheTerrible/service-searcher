@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface QueryService {
 
-    void save(QueryDTO dto);
+    Long save(QueryDTO dto);
 
     Query getById(Long id);
 

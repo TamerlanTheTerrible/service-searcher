@@ -52,9 +52,9 @@ public class ServiceController {
     }
 
     @PostMapping("")
-    public BaseResponse<NoopDTO> saveService(@RequestBody ServiceDTO dto) {
-        serviceManager.saveService(dto);
-        return BaseResponse.payload();
+    public BaseResponse<Long> saveService(@RequestBody ServiceDTO dto) {
+        Long id = serviceManager.saveService(dto);
+        return BaseResponse.payload(id);
     }
 
     @PutMapping("/{serviceId}")
@@ -80,7 +80,7 @@ public class ServiceController {
 
     @PostMapping("/category")
     public BaseResponse<NoopDTO> saveServiceCategory(@RequestBody ServiceCategoryDTO serviceCategoryDto){
-        serviceManager.saveCategory(serviceCategoryDto);
+        Long id = serviceManager.saveCategory(serviceCategoryDto);
         return BaseResponse.payload();
     }
 

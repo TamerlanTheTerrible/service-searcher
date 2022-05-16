@@ -44,9 +44,9 @@ public class UserController {
     }
 
     @PostMapping("")
-    BaseResponse<NoopDTO> save(@RequestBody UserDTO dto) {
-        userService.save(dto);
-        return BaseResponse.payload();
+    BaseResponse<Long> save(@RequestBody UserDTO dto) {
+        Long id = userService.save(dto);
+        return BaseResponse.payload(id);
     }
 
     @PutMapping("/{userId}")

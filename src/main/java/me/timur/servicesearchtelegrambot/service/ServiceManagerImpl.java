@@ -39,9 +39,10 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void saveService(ServiceDTO serviceDto) {
+    public Long saveService(ServiceDTO serviceDto) {
         ServiceCategory category = getServiceCategory(serviceDto.getCategory().getId());
-        serviceRepository.save(new Service(serviceDto, category));
+        Service service = serviceRepository.save(new Service(serviceDto, category));
+        return service.getId();
     }
 
     @Override
@@ -85,8 +86,9 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void saveCategory(ServiceCategoryDTO serviceCategoryDto) {
-        serviceCategoryRepository.save(new ServiceCategory(serviceCategoryDto));
+    public Long saveCategory(ServiceCategoryDTO serviceCategoryDto) {
+        ServiceCategory category = serviceCategoryRepository.save(new ServiceCategory(serviceCategoryDto));
+        return category.getId();
     }
 
     @Override

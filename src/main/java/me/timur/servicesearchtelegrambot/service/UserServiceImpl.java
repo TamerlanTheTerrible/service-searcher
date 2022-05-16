@@ -23,8 +23,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public void save(UserDTO dto) {
-        userRepository.save(new User(dto));
+    public Long save(UserDTO dto) {
+        User user = userRepository.save(new User(dto));
+        return user.getId();
     }
 
     @Override

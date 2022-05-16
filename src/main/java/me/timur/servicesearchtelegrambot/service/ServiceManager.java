@@ -19,7 +19,7 @@ public interface ServiceManager {
 
     List<Service> getAllActiveServices();
 
-    void saveService(ServiceDTO dto);
+    Long saveService(ServiceDTO dto);
 
     void updateService(Long serviceId, ServiceDTO dto);
 
@@ -31,7 +31,7 @@ public interface ServiceManager {
 
     List<ServiceCategory> getAllCategories();
 
-    void saveCategory(ServiceCategoryDTO serviceCategoryDto);
+    Long saveCategory(ServiceCategoryDTO serviceCategoryDto);
 
     void updateCategory(Long categoryId, ServiceCategoryDTO serviceCategoryDto);
 

@@ -1,5 +1,6 @@
 package me.timur.servicesearchtelegrambot.controller;
 
+import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.model.BaseResponse;
 import me.timur.servicesearchtelegrambot.model.dto.NoopDTO;
@@ -15,9 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/query")
-public record QueryController(
-        QueryService queryService
-) {
+@RequiredArgsConstructor
+public final class QueryController {
+
+    private final QueryService queryService;
 
     @GetMapping("/{id}")
     public BaseResponse<QueryDTO> getById(@PathVariable Long id) {
@@ -45,8 +47,9 @@ public record QueryController(
     }
 
     @PostMapping("")
-    public BaseResponse<NoopDTO> saveQuery(@RequestBody QueryDTO dto){
-        queryService.save(dto);
-        return BaseResponse.payload();
+    public BaseResponse<Long> save(@RequestBody QueryDTO dto) {
+        Long id = queryService.save(dto);
+        return BaseResponse.payload(id);
     }
+
 }
