@@ -12,7 +12,6 @@ import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
 import me.timur.servicesearchtelegrambot.util.DateUtil;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * Created by Temurbek Ismoilov on 02/05/22.
@@ -27,14 +26,16 @@ public class ServiceProviderDTO extends BaseDTO {
     @JsonProperty("date_created")
     @JsonFormat(pattern = DateUtil.DATE_TIME_PATTERN) @JsonDeserialize(using = DateDeserializers.TimestampDeserializer.class)
     private Timestamp dateCreated;
+    private UserDTO user;
     private ServiceDTO service;
     @JsonProperty("is_active")
     private Boolean isActive;
 
-    public ServiceProviderDTO(ServiceProvider provider) {
-        this.id = provider.getId();
-        this.dateCreated = provider.getDateCreated();
-        this.service = new ServiceDTO(provider.getService());
-        this.isActive = provider.getIsActive();
+    public ServiceProviderDTO(ServiceProvider serviceProvider) {
+        this.id = serviceProvider.getId();
+        this.user = new UserDTO(serviceProvider.getUser());
+        this.dateCreated = serviceProvider.getDateCreated();
+        this.service = new ServiceDTO(serviceProvider.getService());
+        this.isActive = serviceProvider.getIsActive();
     }
 }
