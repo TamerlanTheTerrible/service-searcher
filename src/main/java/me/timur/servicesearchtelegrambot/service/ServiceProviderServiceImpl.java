@@ -29,6 +29,12 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     }
 
     @Override
+    public ServiceProvider getActiveById(Long id) {
+        return providerRepository.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find service with id %s", id)));
+    }
+
+    @Override
     public Long save(ServiceProviderDTO dto) {
         final ServiceProvider provider = providerRepository.save(new ServiceProvider(dto));
         return provider.getId();

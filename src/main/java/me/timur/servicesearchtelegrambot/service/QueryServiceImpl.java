@@ -3,6 +3,7 @@ package me.timur.servicesearchtelegrambot.service;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
+import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 import me.timur.servicesearchtelegrambot.repository.QueryRepository;
@@ -23,11 +24,18 @@ import static java.util.Objects.requireNonNullElse;
 public class QueryServiceImpl implements QueryService {
 
     private final QueryRepository queryRepository;
+    private final UserService userService;
+    private final ServiceProviderService providerService;
+    private final ServiceManager serviceManager;
 
     @Override
     public Long save(QueryDTO dto) {
-        Query query = queryRepository.save(new Query(dto));
-        return query.getId();
+        User client = userService.getActiveUserById(dto.getClient().getId());
+        ServiceProvider provider = providerService.getActiveById(dto.getProvider().getId());
+        me.timur.servicesearchtelegrambot.enitity.Service service = serviceManager.getActiveServiceById(dto.getService().getId());
+
+        Query query = new Query(client, provider, service);
+        return queryRepository.save(query).getId();
     }
 
     @Override

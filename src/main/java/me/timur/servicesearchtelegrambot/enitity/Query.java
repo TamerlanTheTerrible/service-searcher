@@ -38,4 +38,10 @@ public class Query extends BaseEntity{
         this.provider.setId(dto.getProvider().getId());
         this.service.setId(dto.getService().getId());
     }
+
+    public Query(User client, ServiceProvider provider, Service service) {
+        this.client = client;
+        this.provider = provider;
+        this.service = service;
+    }
 }

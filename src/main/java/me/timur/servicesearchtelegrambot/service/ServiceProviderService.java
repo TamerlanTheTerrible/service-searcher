@@ -15,6 +15,8 @@ public interface ServiceProviderService {
 
     ServiceProvider getById(Long providerId);
 
+    ServiceProvider getActiveById(Long id);
+
     Long save(ServiceProviderDTO dto);
 
     List<ServiceProvider> getAll();

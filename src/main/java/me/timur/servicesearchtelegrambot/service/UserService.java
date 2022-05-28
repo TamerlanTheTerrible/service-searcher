@@ -17,6 +17,8 @@ public interface UserService {
 
     User getUserById(Long id);
 
+    User getActiveUserById(Long id);
+
     User getUserByTgId(Long telegramId);
 
     User getUserByUsername(String username);

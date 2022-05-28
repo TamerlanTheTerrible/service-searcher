@@ -28,8 +28,13 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public Service getService(Long id) {
-        return serviceRepository
-                .findById(id)
+        return serviceRepository.findById(id)
+                .orElseThrow(() -> new  ResourceNotFoundException(format("Could not find service with id %s", id)));
+    }
+
+    @Override
+    public Service getActiveServiceById(Long id) {
+        return serviceRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new  ResourceNotFoundException(format("Could not find service with id %s", id)));
     }
 

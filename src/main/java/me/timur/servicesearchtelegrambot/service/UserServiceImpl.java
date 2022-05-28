@@ -35,6 +35,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getActiveUserById(Long id) {
+        return userRepository.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find user with id %s", id)));
+    }
+
+    @Override
     public User getUserByTgId(Long telegramId) {
         return userRepository.findByTelegramId(telegramId)
                 .orElseThrow(() -> new ResourceNotFoundException(format("Could not find user with telegramId %s", telegramId)));
