@@ -1,10 +1,12 @@
-package me.timur.servicesearchtelegrambot.service;
+package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import me.timur.servicesearchtelegrambot.repository.ServiceProviderRepository;
+import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import me.timur.servicesearchtelegrambot.service.ServiceProviderService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

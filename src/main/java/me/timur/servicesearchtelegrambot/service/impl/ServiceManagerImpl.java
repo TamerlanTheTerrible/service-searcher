@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.service;
+package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
@@ -8,6 +8,7 @@ import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDTO;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceDTO;
 import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
+import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import me.timur.servicesearchtelegrambot.util.StringUtil;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class ServiceManagerImpl implements ServiceManager {
     private final ServiceRepository serviceRepository;
     private final ServiceCategoryRepository serviceCategoryRepository;
 
+    private final static double MINIMUM_SIMILARITY_COEFFICIENT = 0.5;
 
     @Override
     public Service getService(Long id) {
@@ -68,10 +70,9 @@ public class ServiceManagerImpl implements ServiceManager {
     public List<Service> getAllServicesByNameLike(String name) {
         List<Service> allServices = getAllActiveServices();
         List<Service> similarServices = new ArrayList<>();
-        double minimumSimilarity = 0.5;
         for (Service service: allServices) {
             double similarity = StringUtil.findSimilarities(service.getLang().getUz(), name);
-            if (similarity > minimumSimilarity){
+            if (similarity > MINIMUM_SIMILARITY_COEFFICIENT){
                 similarServices.add(service);
             }
         }

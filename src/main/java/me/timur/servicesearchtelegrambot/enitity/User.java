@@ -1,7 +1,9 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 
 import javax.persistence.Column;
@@ -12,7 +14,9 @@ import javax.persistence.Table;
  * Created by Temurbek Ismoilov on 25/04/22.
  */
 
-@Data @RequiredArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {

@@ -23,8 +23,11 @@ public class StringUtil {
         return max;
     }
 
-    private static String[] split(String str2) {
-        return str2.replaceAll("/", " ").split("[\s;:\\-]");
+    private static String[] split(String str) {
+        if (str == null)
+            return new String[0];
+
+        return str.replaceAll("/", " ").split("[\s;:\\-]");
     }
 
     private static double findSimilarity(String x, String y) {
@@ -61,11 +64,5 @@ public class StringUtil {
         }
 
         return T[m][n];
-    }
-
-    public static void main(String[] args) {
-        System.out.println(
-                findSimilarities("remont ishlari", "remont/jarayoni")
-        );
     }
 }
