@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "chat_log")
 public class ChatLog extends BaseEntity{
     @Column(name = "id")
     private Long id;

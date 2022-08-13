@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.service.impl;
 
 import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
 import me.timur.servicesearchtelegrambot.repository.ChatLogRepository;
@@ -20,8 +21,8 @@ public class ChatLogServiceImpl implements ChatLogService {
     private final ChatLogRepository chatLogRepository;
 
     @Override
-    public void log(Chat chat) {
-        final ChatLog chatLog = new ChatLog(chat.id(), chat.description());
+    public void log(Update update, Chat chat) {
+        final ChatLog chatLog = new ChatLog(chat.id(), update.message().text());
         chatLogRepository.save(chatLog);
     }
 

@@ -6,8 +6,9 @@ import com.github.kshashov.telegram.api.bind.annotation.BotController;
 import com.github.kshashov.telegram.api.bind.annotation.BotRequest;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.BotService;
 import org.springframework.boot.SpringApplication;
@@ -30,12 +31,12 @@ public class ServiceSearchTelegramBotApplication implements TelegramMvcControlle
     }
 
     @BotRequest(value = "/start", type = {MessageType.CALLBACK_QUERY, MessageType.MESSAGE})
-    public BaseRequest start(User user, Chat chat) {
-        return botService.start(user, chat);
+    public BaseRequest start(Update update, Chat chat) {
+        return botService.start(update, chat);
     }
 
     @BotRequest(type = {MessageType.MESSAGE})
-    public BaseRequest anyText(Chat chat, Update update) {
+    public ReplyKeyboardMarkup anyText(Chat chat, Update update) {
         return botService.anyText(chat, update);
     }
 
