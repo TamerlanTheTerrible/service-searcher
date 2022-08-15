@@ -25,7 +25,7 @@ public class ServiceController {
 
     @GetMapping("/find/{searchedService}")
     public BaseResponse<List<ServiceDTO>> getServiceByNameLike(@PathVariable String searchedService) {
-        List<Service> services = serviceManager.getAllServicesByNameLike(searchedService);
+        List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(searchedService);
         List<ServiceDTO> serviceDTOS = services.stream().map(ServiceDTO::new).toList();
         return BaseResponse.payload(serviceDTOS);
     }

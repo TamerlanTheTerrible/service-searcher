@@ -21,13 +21,17 @@ public class ChatLog extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "tg_user_id")
+    private Long tgUserId;
+
     @Column(name = "tg_chat_id")
-    private Long tgChatId;
+    private String tgChatId;
 
     @Column(name = "message")
     private String message;
 
-    public ChatLog(Long tgChatId, String message) {
+    public ChatLog(Long tgUserId, String tgChatId, String message) {
+        this.tgUserId = tgUserId;
         this.tgChatId = tgChatId;
         this.message = message;
     }

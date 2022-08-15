@@ -1,15 +1,15 @@
 package me.timur.servicesearchtelegrambot.bot;
 
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
-import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.model.enums.Command;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +36,17 @@ public class BotService {
     }
 
     public SendMessage start(Update update, Chat chat) {
-        chatLogService.log(update, chat);
+        chatLogService.log(update);
         String responseMsg = "Добро пожаловать\nНапишите название услуги, которую вы ищите";
-        return new SendMessage(chat.id(),responseMsg);
+        return new SendMessage(chat.getId().toString(),responseMsg);
     }
 
     public ReplyKeyboardMarkup anyText(Chat chat, Update update) {
 //        if (!isSearchingService(chat))
 //            return (T) new SendMessage(chat.id(),"Неизвестная команда");
 
-        String serviceName = update.message().text();
-        List<Service> services = serviceManager.getAllServicesByNameLike(serviceName);
+        String serviceName = update.getMessage().getText();
+        List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(serviceName);
 
 //        if (services.size() == 0)
 //            return (T) new SendMessage(chat.id(),"Не удалось найти сервис. Пожалуйста попробуйте еще раз");
@@ -65,7 +65,9 @@ public class BotService {
             }
         }
 
-        return new ReplyKeyboardMarkup(keyboardWords);
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+
+        return new ReplyKeyboardMarkup();
     }
 
     /**
@@ -73,11 +75,11 @@ public class BotService {
      * (1) this is a first command/message (e.g. first record in the chat)
      * (2) or the previous command/message was "/start"
      */
-    private boolean isSearchingService(Chat chat) {
-        String lastChatCommand = chatLogService.getLastChatCommand(chat);
+    private boolean isSearchingService(Update update) {
+        String lastChatCommand = chatLogService.getLastChatCommand(update);
         if (lastChatCommand == null)
             return true;
         else
-            return Objects.equals(lastChatCommand, Command.START.getStringValue());
+            return Objects.equals(lastChatCommand, Command.START.getValue());
     }
 }

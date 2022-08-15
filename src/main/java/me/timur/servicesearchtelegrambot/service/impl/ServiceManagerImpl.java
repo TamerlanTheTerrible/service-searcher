@@ -1,8 +1,8 @@
 package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.enitity.Service;
+import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDTO;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceDTO;
@@ -67,7 +67,7 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public List<Service> getAllServicesByNameLike(String name) {
+    public List<Service> getAllServicesByActiveTrueAndNameLike(String name) {
         List<Service> allServices = getAllActiveServices();
         List<Service> similarServices = new ArrayList<>();
         for (Service service: allServices) {

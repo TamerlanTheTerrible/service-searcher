@@ -12,5 +12,5 @@ import java.util.Optional;
 
 @Repository
 public interface ChatLogRepository extends JpaRepository<ChatLog, Long> {
-    Optional<ChatLog> findTopByTgChatIdOrderByIdDesc(Long tgChatId);
+    Optional<ChatLog> findTopByTgChatIdOrderByIdDesc(String tgChatId);
 }

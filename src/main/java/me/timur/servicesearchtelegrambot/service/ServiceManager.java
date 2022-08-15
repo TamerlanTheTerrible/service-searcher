@@ -27,7 +27,7 @@ public interface ServiceManager {
 
     List<Service> getAllServicesByCategory(Long serviceCategoryId);
 
-    List<Service> getAllServicesByNameLike(String name);
+    List<Service> getAllServicesByActiveTrueAndNameLike(String name);
 
     void deactivateService(Long serviceId);
 

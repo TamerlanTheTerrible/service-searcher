@@ -8,12 +8,13 @@ import lombok.Getter;
 
 @Getter
 public enum Command {
-    START("/start");
+    START("/start"),
+    SERVICE_SEARCH("service_search");
 
-    private final String stringValue;
+    private final String value;
 
     Command(String s) {
-        this.stringValue = s;
+        this.value = s;
     }
 
 }
