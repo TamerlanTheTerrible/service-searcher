@@ -29,6 +29,9 @@ public class KeyboardUtil {
         //create keyboard from keyboard row list
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setKeyboard(rows);
+        keyboard.setResizeKeyboard(true);
+        keyboard.setOneTimeKeyboard(true);
+        keyboard.setSelective(false);
         return keyboard;
     }
 }
