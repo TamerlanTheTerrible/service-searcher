@@ -3,6 +3,7 @@ package me.timur.servicesearchtelegrambot.bot;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.model.enums.Command;
+import me.timur.servicesearchtelegrambot.model.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,38 +46,44 @@ public class DefaultUpdateHandler implements UpdateHandler {
             sendMessage = searchService(update);
 
         replyList.add(sendMessage);
-        chatLogService.log(update);
-
         return replyList;
     }
 
-    private SendMessage start(Update update) {
-        final String chatId = chatId(update);
+    private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
+        chatLogService.log(update, outcome);
+        return message(chatId(update), message);
+    }
 
-        return message(chatId, "Добро пожаловать");
+    private SendMessage logAndKeyboard(Update update, List<String> serviceNames, Integer keyboardRowSize, Outcome outcome) {
+        chatLogService.log(update, outcome);
+        return keyboard(chatId(update), serviceNames, keyboardRowSize);
+    }
+
+    private SendMessage start(Update update) {
+        return logAndMessage(update,"Добро пожаловать. Напишите названия сервиса, который вы ищите", Outcome.START);
     }
 
     private SendMessage searchService(Update update) {
-        final String chatId = chatId(update);
         String command = command(update);
-        SendMessage sendMessage;
 
-        final String lastChatCommand = chatLogService.getLastChatCommand(update);
-        if (lastChatCommand == null || lastChatCommand.equals(Command.START.getValue())) {
+        SendMessage sendMessage;
+        final String lastChatCommand = chatLogService.getLastChatOutcome(update);
+        if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name())) {
             final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
             if (services.isEmpty()) {
-                sendMessage = message(chatId, "Не удалось найти сервис. Попробуйте еще раз или выберите из списка");
+                sendMessage = logAndMessage(update, "Не удалось найти сервис. Попробуйте еще раз или выберите из списка", Outcome.SERVICE_SEARCH_FAILED);
             } else {
                 final List<String> serviceNames = services.stream().map(s -> s.getLang().getUz()).toList();
-                sendMessage = keyboard(chatId, serviceNames, keyboardRowSize);
+                sendMessage = logAndKeyboard(update, serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
             }
         }
         else {
-            sendMessage = message(chatId, "Неизвестная команда. Попробуйте еще раз");
+            sendMessage = logAndMessage(update, "Неизвестная команда. Попробуйте еще раз", Outcome.UNKNOWN_COMMAND);
         }
 
         return sendMessage;
     }
+
 
 
 }

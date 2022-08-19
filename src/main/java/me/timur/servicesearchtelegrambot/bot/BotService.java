@@ -36,7 +36,6 @@ public class BotService {
     }
 
     public SendMessage start(Update update, Chat chat) {
-        chatLogService.log(update);
         String responseMsg = "Добро пожаловать\nНапишите название услуги, которую вы ищите";
         return new SendMessage(chat.getId().toString(),responseMsg);
     }
@@ -76,7 +75,7 @@ public class BotService {
      * (2) or the previous command/message was "/start"
      */
     private boolean isSearchingService(Update update) {
-        String lastChatCommand = chatLogService.getLastChatCommand(update);
+        String lastChatCommand = chatLogService.getLastChatOutcome(update);
         if (lastChatCommand == null)
             return true;
         else

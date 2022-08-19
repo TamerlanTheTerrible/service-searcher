@@ -3,10 +3,12 @@ package me.timur.servicesearchtelegrambot.enitity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.timur.servicesearchtelegrambot.model.enums.Outcome;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 03/08/22.
@@ -27,12 +29,17 @@ public class ChatLog extends BaseEntity{
     @Column(name = "tg_chat_id")
     private String tgChatId;
 
-    @Column(name = "message")
-    private String message;
+    @Column(name = "command")
+    private String command;
 
-    public ChatLog(Long tgUserId, String tgChatId, String message) {
-        this.tgUserId = tgUserId;
-        this.tgChatId = tgChatId;
-        this.message = message;
+    @Column(name = "outcome")
+    @Enumerated(value = EnumType.STRING)
+    private Outcome outcome;
+
+    public ChatLog(Update update, Outcome outcome) {
+        this.tgUserId = tgUserId(update);
+        this.tgChatId = chatId(update);
+        this.command = command(update);
+        this.outcome = outcome;
     }
 }

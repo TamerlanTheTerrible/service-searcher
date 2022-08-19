@@ -8,8 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum Command {
-    START("/start"),
-    SERVICE_SEARCH("service_search");
+    START("/start");
 
     private final String value;
 
