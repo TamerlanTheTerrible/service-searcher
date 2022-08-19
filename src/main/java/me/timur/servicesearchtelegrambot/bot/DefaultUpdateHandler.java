@@ -35,16 +35,18 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
     @Override
     public List<BotApiMethod<Message>> handle(Update update) {
-        String command = command(update);
-
-        List<BotApiMethod<Message>> replyList = new ArrayList<>();
+        final String newCommand = command(update);
+        final String lastChatCommand = chatLogService.getLastChatOutcome(update);
         SendMessage sendMessage;
 
-        if (Objects.equals(command, Command.START.getValue()))
+        if (Objects.equals(newCommand, Command.START.getValue()))
             sendMessage = start(update);
-        else
+        else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name()))
             sendMessage = searchService(update);
+        else
+            sendMessage = unknownCommand(update);
 
+        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
         replyList.add(sendMessage);
         return replyList;
     }
@@ -65,24 +67,24 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
     private SendMessage searchService(Update update) {
         String command = command(update);
-
         SendMessage sendMessage;
-        final String lastChatCommand = chatLogService.getLastChatOutcome(update);
-        if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name())) {
-            final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
-            if (services.isEmpty()) {
-                sendMessage = logAndMessage(update, "Не удалось найти сервис. Попробуйте еще раз или выберите из списка", Outcome.SERVICE_SEARCH_FAILED);
-            } else {
-                final List<String> serviceNames = services.stream().map(s -> s.getLang().getUz()).toList();
-                sendMessage = logAndKeyboard(update, serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
-            }
-        }
-        else {
-            sendMessage = logAndMessage(update, "Неизвестная команда. Попробуйте еще раз", Outcome.UNKNOWN_COMMAND);
+
+        final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
+        if (services.isEmpty()) {
+            sendMessage = logAndMessage(update, "Не удалось найти сервис. Попробуйте еще раз или выберите из списка", Outcome.SERVICE_SEARCH_FAILED);
+        } else {
+            final List<String> serviceNames = services.stream().map(s -> s.getLang().getUz()).toList();
+            sendMessage = logAndKeyboard(update, serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
         }
 
         return sendMessage;
     }
+
+
+    private SendMessage unknownCommand(Update update) {
+        return logAndMessage(update, "Неизвестная команда. Попробуйте еще раз", Outcome.UNKNOWN_COMMAND);
+    }
+
 
 
 
