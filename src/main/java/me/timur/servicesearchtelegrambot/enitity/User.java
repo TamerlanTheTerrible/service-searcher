@@ -36,9 +36,6 @@ public class User extends BaseEntity {
     @Column(name = "phone", unique = true)
     private String phone;
 
-    @Column(name = "chat_id", nullable = false)
-    private String chatId;
-
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
@@ -48,7 +45,6 @@ public class User extends BaseEntity {
         this.firstname = dto.getFirstname();
         this.lastname = dto.getLastname();
         this.phone = dto.getPhone().replace(" ", "").replace("+", "");
-        this.chatId = dto.getChatId();
         this.isActive = true;
     }
 }

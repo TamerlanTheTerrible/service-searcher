@@ -9,6 +9,7 @@ import me.timur.servicesearchtelegrambot.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNullElse;
@@ -24,9 +25,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Long save(UserDTO dto) {
-        User user = userRepository.save(new User(dto));
-        return user.getId();
+    public User save(UserDTO dto) {
+        return userRepository.save(new User(dto));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByTgId(Long telegramId) {
         return userRepository.findByTelegramId(telegramId)
-                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find user with telegramId %s", telegramId)));
+                .orElse(null);
     }
 
     @Override
@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
         user.setPhone(requireNonNullElse(dto.getUsername(), user.getUsername()));
         user.setFirstname(requireNonNullElse(dto.getFirstname(), user.getFirstname()));
         user.setLastname(requireNonNullElse(dto.getLastname(), user.getLastname()));
-        user.setChatId(requireNonNullElse(dto.getChatId(), user.getChatId()));
         userRepository.save(user);
     }
 
@@ -81,5 +80,13 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(id);
         user.setIsActive(status);
         userRepository.save(user);
+    }
+
+    @Override
+    public User getOrSave(UserDTO dto) {
+        User user = getUserByTgId(dto.getTelegramId());
+        return Objects.nonNull(user)
+                ? user
+                : save(dto);
     }
 }

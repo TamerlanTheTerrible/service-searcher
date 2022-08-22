@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by Temurbek Ismoilov on 25/04/22.
  */
 
-@Data @RequiredArgsConstructor
+@Getter @Setter @RequiredArgsConstructor
 @Entity
 @Table(name = "query")
 public class Query extends BaseEntity{
@@ -42,6 +42,11 @@ public class Query extends BaseEntity{
     public Query(User client, ServiceProvider provider, Service service) {
         this.client = client;
         this.provider = provider;
+        this.service = service;
+    }
+
+    public Query(User client, Service service) {
+        this.client = client;
         this.service = service;
     }
 }

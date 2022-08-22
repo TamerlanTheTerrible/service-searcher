@@ -13,7 +13,9 @@ import java.util.List;
 @Transactional
 public interface QueryService {
 
-    Long save(QueryDTO dto);
+    Query save(QueryDTO dto);
+
+    Query save(Query query);
 
     Query getById(Long id);
 

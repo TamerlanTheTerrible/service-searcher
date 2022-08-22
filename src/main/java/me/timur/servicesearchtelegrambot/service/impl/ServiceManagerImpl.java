@@ -46,6 +46,13 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
+    public Service getServiceByName(String name) {
+        return serviceRepository
+                .findByLang_Uz(name)
+                .orElse(null);
+    }
+
+    @Override
     public Long saveService(ServiceDTO serviceDto) {
         ServiceCategory category = getServiceCategory(serviceDto.getCategory().getId());
         Service service = serviceRepository.save(new Service(serviceDto, category));

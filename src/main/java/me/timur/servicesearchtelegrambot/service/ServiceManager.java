@@ -21,6 +21,8 @@ public interface ServiceManager {
 
     List<Service> getAllActiveServices();
 
+    Service getServiceByName(String name);
+
     Long saveService(ServiceDTO dto);
 
     void updateService(Long serviceId, ServiceDTO dto);

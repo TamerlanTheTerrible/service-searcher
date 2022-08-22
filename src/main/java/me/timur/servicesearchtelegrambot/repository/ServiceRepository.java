@@ -14,4 +14,6 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     List<Service> findAllByCategoryId(Long categoryId);
 
     List<Service> findAllByActiveTrue();
+
+    Optional<Service> findByLang_Uz(String nameInUz);
 }

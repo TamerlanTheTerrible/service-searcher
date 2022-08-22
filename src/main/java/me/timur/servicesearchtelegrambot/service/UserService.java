@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface UserService {
 
-    Long save(UserDTO dto);
+    User save(UserDTO dto);
 
     User getUserById(Long id);
 
@@ -30,4 +30,6 @@ public interface UserService {
     void update(Long id, UserDTO dto);
 
     void changeStatus(Long id, Boolean status);
+
+    User getOrSave(UserDTO dto);
 }

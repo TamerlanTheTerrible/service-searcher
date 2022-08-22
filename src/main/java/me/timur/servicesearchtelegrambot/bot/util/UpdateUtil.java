@@ -1,7 +1,9 @@
 package me.timur.servicesearchtelegrambot.bot.util;
 
+import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.util.List;
@@ -25,6 +27,17 @@ public class UpdateUtil {
 
     public static Long tgUserId(Update update) {
         return update.getMessage().getFrom().getId();
+    }
+
+    public static UserDTO user(Update update) {
+        UserDTO dto = new UserDTO();
+        final User tgUser = update.getMessage().getFrom();
+        dto.setTelegramId(tgUser.getId());
+        dto.setUsername(tgUser.getUserName());
+        dto.setFirstname(tgUser.getFirstName());
+        dto.setLastname(tgUser.getLastName());
+        dto.setPhone(dto.getPhone());
+        return dto;
     }
 
     public static  SendMessage message(String chatId, String text) {

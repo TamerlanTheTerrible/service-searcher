@@ -48,7 +48,7 @@ public final class QueryController {
 
     @PostMapping("")
     public BaseResponse<Long> save(@RequestBody QueryDTO dto) {
-        Long id = queryService.save(dto);
+        Long id = queryService.save(dto).getId();
         return BaseResponse.payload(id);
     }
 

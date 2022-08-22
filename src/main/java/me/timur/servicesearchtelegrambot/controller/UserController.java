@@ -45,7 +45,7 @@ public class UserController {
 
     @PostMapping("")
     BaseResponse<Long> save(@RequestBody UserDTO dto) {
-        Long id = userService.save(dto);
+        Long id = userService.save(dto).getId();
         return BaseResponse.payload(id);
     }
 

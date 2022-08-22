@@ -33,13 +33,18 @@ public class QueryServiceImpl implements QueryService {
     private final ServiceManager serviceManager;
 
     @Override
-    public Long save(QueryDTO dto) {
+    public Query save(QueryDTO dto) {
         User client = userService.getActiveUserById(dto.getClient().getId());
         ServiceProvider provider = providerService.getActiveById(dto.getProvider().getId());
         me.timur.servicesearchtelegrambot.enitity.Service service = serviceManager.getActiveServiceById(dto.getService().getId());
 
         Query query = new Query(client, provider, service);
-        return queryRepository.save(query).getId();
+        return queryRepository.save(query);
+    }
+
+    @Override
+    public Query save(Query query) {
+        return queryRepository.save(query);
     }
 
     @Override
