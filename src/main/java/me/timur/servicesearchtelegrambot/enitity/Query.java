@@ -16,15 +16,15 @@ public class Query extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "client_user_id", nullable = false)
-    private User client = new User();
+    private User client;
 
     @OneToOne
     @JoinColumn(name = "provider_id")
-    private ServiceProvider provider = new ServiceProvider();
+    private ServiceProvider provider;
 
     @OneToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service = new Service();
+    private Service service;
 
     @ManyToOne
     @JoinColumn(name = "status")
@@ -32,12 +32,6 @@ public class Query extends BaseEntity{
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
-
-    public Query(QueryDTO dto) {
-        this.client.setId(dto.getClient().getId());
-        this.provider.setId(dto.getProvider().getId());
-        this.service.setId(dto.getService().getId());
-    }
 
     public Query(User client, ServiceProvider provider, Service service) {
         this.client = client;

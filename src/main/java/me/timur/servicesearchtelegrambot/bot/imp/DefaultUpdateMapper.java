@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.bot.imp;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.UpdateMapper;
 import me.timur.servicesearchtelegrambot.enitity.Query;
@@ -29,6 +30,7 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
  * Created by Temurbek Ismoilov on 13/08/22.
  */
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DefaultUpdateMapper implements UpdateMapper {
@@ -38,18 +40,23 @@ public class DefaultUpdateMapper implements UpdateMapper {
 
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
-        final String newCommand = command(update);
-        final String lastChatCommand = chatLogService.getLastChatOutcome(update);
-        SendMessage sendMessage;
+        SendMessage sendMessage = null;
+        try {
+            final String newCommand = command(update);
+            final String lastChatCommand = chatLogService.getLastChatOutcome(update);
 
-        if (Objects.equals(newCommand, Command.START.getValue()))
-            sendMessage = updateHandler.start(update);
-        else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name()))
-            sendMessage = updateHandler.searchService(update);
-        else if (lastChatCommand.equals(Outcome.SERVICE_SEARCH_SUCCESS.name()))
-            sendMessage = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
-        else
+            if (Objects.equals(newCommand, Command.START.getValue()))
+                sendMessage = updateHandler.start(update);
+            else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name()))
+                sendMessage = updateHandler.searchService(update);
+            else if (lastChatCommand.equals(Outcome.SERVICE_SEARCH_SUCCESS.name()))
+                sendMessage = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
+            else
+                sendMessage = updateHandler.unknownCommand(update);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             sendMessage = updateHandler.unknownCommand(update);
+        }
 
         final List<BotApiMethod<Message>> replyList = new ArrayList<>();
         replyList.add(sendMessage);

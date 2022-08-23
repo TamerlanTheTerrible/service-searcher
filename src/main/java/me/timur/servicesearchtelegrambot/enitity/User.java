@@ -9,6 +9,7 @@ import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Created by Temurbek Ismoilov on 25/04/22.
@@ -44,7 +45,9 @@ public class User extends BaseEntity {
         this.username = dto.getUsername();
         this.firstname = dto.getFirstname();
         this.lastname = dto.getLastname();
-        this.phone = dto.getPhone().replace(" ", "").replace("+", "");
+        if (Objects.nonNull(dto.getPhone())) {
+            this.phone = dto.getPhone().replace(" ", "").replace("+", "");
+        }
         this.isActive = true;
     }
 }
