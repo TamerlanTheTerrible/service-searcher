@@ -10,9 +10,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.message;
-
 /**
  * Created by Temurbek Ismoilov on 13/08/22.
  */
@@ -21,7 +18,7 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.message;
 @RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
-    private final UpdateHandler updateHandler;
+    private final UpdateMapper updateMapper;
 
     private final static String BOT_NAME = "UzservicesearchBot";
     private final static String BOT_TOKEN = "5452269303:AAGodrX6ZbfbFfo5GNkOK2CArsmyAqpdeyE";
@@ -46,7 +43,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     private void handle(Update update) throws TelegramApiException {
-        final List<BotApiMethod<Message>> sendMessageList = updateHandler.handle(update);
+        final List<BotApiMethod<Message>> sendMessageList = updateMapper.map(update);
         for (BotApiMethod<Message> message: sendMessageList) {
             execute(message);
         }

@@ -1,12 +1,10 @@
-package me.timur.servicesearchtelegrambot.bot;
+package me.timur.servicesearchtelegrambot.bot.imp;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
-import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
-import me.timur.servicesearchtelegrambot.model.enums.Command;
 import me.timur.servicesearchtelegrambot.model.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.QueryService;
@@ -19,14 +17,14 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
 
 /**
- * Created by Temurbek Ismoilov on 13/08/22.
+ * Created by Temurbek Ismoilov on 23/08/22.
  */
 
 @Component
@@ -36,32 +34,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
 
-    private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
     private final QueryService queryService;
     private final UserService userService;
+    private final ChatLogService chatLogService;
 
-    @Override
-    public List<BotApiMethod<Message>> handle(Update update) {
-        final String newCommand = command(update);
-        final String lastChatCommand = chatLogService.getLastChatOutcome(update);
-        SendMessage sendMessage;
-
-        if (Objects.equals(newCommand, Command.START.getValue()))
-            sendMessage = start(update);
-        else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name()))
-            sendMessage = searchService(update);
-        else if (lastChatCommand.equals(Outcome.SERVICE_SEARCH_SUCCESS.name()))
-            sendMessage = checkIfServiceSelected(update);
-        else
-            sendMessage = unknownCommand(update);
-
-        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
-        replyList.add(sendMessage);
-        return replyList;
-    }
-
-    private SendMessage checkIfServiceSelected(Update update) {
+    public SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update) {
         Service service = serviceManager.getServiceByName(command(update));
         SendMessage sendMessage;
         if (service == null) {
@@ -70,12 +48,13 @@ public class DefaultUpdateHandler implements UpdateHandler {
             User client = userService.getOrSave(user(update));
             Query query = new Query(client, service);
             queryService.save(query);
+            //TODO find and notify service providers
             sendMessage = logAndMessage(update, "Ваша заявка принято. С вами свяжутся, как только найдется нужный сервис провайдер", Outcome.QUERY_SAVED);
         }
         return sendMessage;
     }
 
-    private SendMessage searchService(Update update) {
+    public SendMessage searchService(Update update) {
         String command = command(update);
         SendMessage sendMessage;
 
@@ -90,7 +69,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return sendMessage;
     }
 
-    private SendMessage start(Update update) {
+    public SendMessage start(Update update) {
         //save if user doesn't exist
         User client = userService.getOrSave(user(update));
         final String name = Objects.nonNull(client.getFirstname()) ? client.getFirstname()
@@ -100,7 +79,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return logAndMessage(update,String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы ищите", name), Outcome.START);
     }
 
-    private SendMessage unknownCommand(Update update) {
+    public SendMessage unknownCommand(Update update) {
         return logAndMessage(update, "Неизвестная команда. Попробуйте еще раз", Outcome.UNKNOWN_COMMAND);
     }
 
@@ -113,9 +92,4 @@ public class DefaultUpdateHandler implements UpdateHandler {
         chatLogService.log(update, outcome);
         return keyboard(chatId(update), serviceNames, keyboardRowSize);
     }
-
-
-
-
-
 }

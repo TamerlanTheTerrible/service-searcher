@@ -1,15 +1,18 @@
 package me.timur.servicesearchtelegrambot.bot;
 
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
-
 /**
- * Created by Temurbek Ismoilov on 13/08/22.
+ * Created by Temurbek Ismoilov on 23/08/22.
  */
 
 public interface UpdateHandler {
-    List<BotApiMethod<Message>> handle(Update update);
+    SendMessage start(Update update);
+
+    SendMessage searchService(Update update);
+
+    SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update);
+
+    SendMessage unknownCommand(Update update);
 }
