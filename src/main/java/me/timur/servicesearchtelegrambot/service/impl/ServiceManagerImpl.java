@@ -48,7 +48,7 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public Service getServiceByName(String name) {
         return serviceRepository
-                .findByLang_Uz(name)
+                .findByNameUz(name)
                 .orElse(null);
     }
 
@@ -64,7 +64,8 @@ public class ServiceManagerImpl implements ServiceManager {
         Service service = getService(serviceId);
         service.setName(dto.getName().trim().toUpperCase());
         service.getCategory().setId(dto.getCategory().getId());
-        service.setLang(dto.getLang());
+        service.setNameUz(dto.getNameUz());
+        service.setNameRu(dto.getNameRu());
         serviceRepository.save(service);
     }
 
@@ -78,7 +79,7 @@ public class ServiceManagerImpl implements ServiceManager {
         List<Service> allServices = getAllActiveServices();
         List<Service> similarServices = new ArrayList<>();
         for (Service service: allServices) {
-            double similarity = StringUtil.findSimilarities(service.getLang().getUz(), name);
+            double similarity = StringUtil.findSimilarities(service.getNameUz(), name);
             if (similarity > MINIMUM_SIMILARITY_COEFFICIENT){
                 similarServices.add(service);
             }

@@ -20,9 +20,11 @@ public class Service extends BaseEntity{
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Convert(converter = LangToJsonConverter.class)
-    @Column(name = "lang", nullable = false)
-    private Lang lang;
+    @Column(name = "name_uz", nullable = false)
+    private String nameUz;
+
+    @Column(name = "name_ru", nullable = false)
+    private String nameRu;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -33,7 +35,8 @@ public class Service extends BaseEntity{
 
     public Service(ServiceDTO dto, ServiceCategory category) {
         this.name = dto.getName().trim().toUpperCase();
-        this.lang = dto.getLang();
+        this.nameUz = dto.getNameUz();
+        this.nameRu = dto.getNameRu();
         this.category = category;
     }
 }

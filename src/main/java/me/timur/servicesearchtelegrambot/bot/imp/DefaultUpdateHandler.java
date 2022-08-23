@@ -62,7 +62,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         if (services.isEmpty()) {
             sendMessage = logAndMessage(update, "Не удалось найти сервис. Попробуйте еще раз или выберите из списка", Outcome.SERVICE_SEARCH_FAILED);
         } else {
-            final List<String> serviceNames = services.stream().map(s -> s.getLang().getUz()).toList();
+            final List<String> serviceNames = services.stream().map(Service::getNameUz).toList();
             sendMessage = logAndKeyboard(update, serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
         }
 

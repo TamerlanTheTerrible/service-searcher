@@ -28,7 +28,10 @@ public class ServiceDTO extends BaseDTO {
     @JsonFormat(pattern = DateUtil.DATE_TIME_PATTERN) @JsonDeserialize(using = DateDeserializers.TimestampDeserializer.class)
     private Timestamp dateCreated;
     private String name;
-    private Lang lang;
+    @JsonProperty("name_uz")
+    private String nameUz;
+    @JsonProperty("name_ru")
+    private String nameRu;
     private ServiceCategoryDTO category;
     @JsonProperty("is_active")
     private Boolean isActive;
@@ -36,7 +39,9 @@ public class ServiceDTO extends BaseDTO {
     public ServiceDTO(Service entity) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.lang = entity.getLang();
+        this.nameUz = entity.getNameUz();
+        this.nameRu = entity.getNameRu();
+        this.nameRu = entity.getNameRu();
         this.category = new ServiceCategoryDTO(entity.getCategory());
         this.dateCreated = entity.getDateCreated();
         this.isActive = entity.getActive();
