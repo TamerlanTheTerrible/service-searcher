@@ -15,4 +15,6 @@ public interface UpdateHandler {
     SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update);
 
     SendMessage unknownCommand(Update update);
+
+    SendMessage getAllServices(Update update);
 }

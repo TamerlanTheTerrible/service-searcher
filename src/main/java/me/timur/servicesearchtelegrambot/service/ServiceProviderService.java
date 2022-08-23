@@ -1,5 +1,6 @@
 package me.timur.servicesearchtelegrambot.service;
 
+import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,4 +25,6 @@ public interface ServiceProviderService {
     void update(Long providerId, ServiceProviderDTO dto);
 
     void delete(Long providerId);
+
+    List<ServiceProvider> findAllByService(Service service);
 }

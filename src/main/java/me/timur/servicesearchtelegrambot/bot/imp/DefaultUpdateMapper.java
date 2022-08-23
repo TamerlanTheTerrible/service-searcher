@@ -47,6 +47,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
 
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+            else if (Objects.equals(newCommand, Outcome.ALL_SERVICES.getText())) {
+                sendMessage = updateHandler.getAllServices(update);
+            }
             else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name()))
                 sendMessage = updateHandler.searchService(update);
             else if (lastChatCommand.equals(Outcome.SERVICE_SEARCH_SUCCESS.name()))

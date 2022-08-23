@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.bot.util;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
@@ -15,11 +16,13 @@ public class KeyboardUtil {
     public static ReplyKeyboardMarkup keyboard(List<String> stringValues, Integer rowSize) {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow(rowSize);
+        Integer valuesCount = stringValues.size();
 
         for (int i = 0; i < stringValues.size(); i++) {
             //while row is not empty add new keyboardValue
-            while (row.isEmpty()) {
+            while (row.size() < rowSize && valuesCount > 0) {
                 row.add(stringValues.get(i));
+                valuesCount--;
                 i++;
             }
             //when row is full, add it to the row list and create a new row
@@ -33,5 +36,9 @@ public class KeyboardUtil {
         keyboard.setOneTimeKeyboard(true);
         keyboard.setSelective(false);
         return keyboard;
+    }
+
+    public static ReplyKeyboardRemove removeKeyBoard() {
+        return new ReplyKeyboardRemove();
     }
 }

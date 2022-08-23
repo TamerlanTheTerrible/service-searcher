@@ -5,6 +5,7 @@ import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
+import me.timur.servicesearchtelegrambot.model.enums.Command;
 import me.timur.servicesearchtelegrambot.model.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.QueryService;
@@ -12,11 +13,10 @@ import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import me.timur.servicesearchtelegrambot.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,7 +49,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
             Query query = new Query(client, service);
             queryService.save(query);
             //TODO find and notify service providers
-            sendMessage = logAndMessage(update, "Ваша заявка принято. С вами свяжутся, как только найдется нужный сервис провайдер", Outcome.QUERY_SAVED);
+            sendMessage = logAndMessage(update,  Outcome.QUERY_SAVED.getText(), Outcome.QUERY_SAVED);
         }
         return sendMessage;
     }
@@ -60,10 +60,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
         if (services.isEmpty()) {
-            sendMessage = logAndMessage(update, "Не удалось найти сервис. Попробуйте еще раз или выберите из списка", Outcome.SERVICE_SEARCH_FAILED);
+            sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_FAILED.getText(), Outcome.SERVICE_SEARCH_FAILED);
+            sendMessage.setReplyMarkup(keyboard(List.of(Outcome.ALL_SERVICES.getText()),keyboardRowSize));
         } else {
-            final List<String> serviceNames = services.stream().map(Service::getNameUz).toList();
-            sendMessage = logAndKeyboard(update, serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
+            final List<String> serviceNames = new ArrayList(services.stream().map(Service::getNameUz).toList());
+            serviceNames.add(0, Outcome.ALL_SERVICES.getText());
+            sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_SUCCESS.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
         }
 
         return sendMessage;
@@ -80,7 +82,13 @@ public class DefaultUpdateHandler implements UpdateHandler {
     }
 
     public SendMessage unknownCommand(Update update) {
-        return logAndMessage(update, "Неизвестная команда. Попробуйте еще раз", Outcome.UNKNOWN_COMMAND);
+        return logAndMessage(update, Outcome.UNKNOWN_COMMAND.getText(), Outcome.UNKNOWN_COMMAND);
+    }
+
+    @Override
+    public SendMessage getAllServices(Update update) {
+        final List<String> servicesNames = serviceManager.getAllActiveServices().stream().map(Service::getNameUz).toList();
+        return logAndKeyboard(update, Outcome.ALL_SERVICES.getText(), servicesNames, keyboardRowSize, Outcome.ALL_SERVICES);
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
@@ -88,8 +96,8 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return message(chatId(update), message);
     }
 
-    private SendMessage logAndKeyboard(Update update, List<String> serviceNames, Integer keyboardRowSize, Outcome outcome) {
+    private SendMessage logAndKeyboard(Update update, String message, List<String> serviceNames, Integer keyboardRowSize, Outcome outcome) {
         chatLogService.log(update, outcome);
-        return keyboard(chatId(update), serviceNames, keyboardRowSize);
+        return keyboard(chatId(update), message, serviceNames, keyboardRowSize);
     }
 }

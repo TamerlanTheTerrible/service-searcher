@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,14 +45,21 @@ public class UpdateUtil {
         return new SendMessage(chatId, text);
     }
 
-    public static  SendMessage keyboard(String chatId, List<String> serviceNames, Integer keyboardRowSize) {
-        SendMessage sendMessage;
-        final ReplyKeyboardMarkup keyboard = KeyboardUtil.keyboard(serviceNames, keyboardRowSize);
-        sendMessage = SendMessage.builder()
-                .chatId(chatId)
-                .text("ulalala")
-                .replyMarkup(keyboard)
-                .build();
+    public static  SendMessage keyboard(String chatId, String text, List<String> buttonValues,Integer keyboardRowSize) {
+        SendMessage sendMessage = message(chatId, text);
+        if (keyboardRowSize == 0) {
+            sendMessage.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+        } else {
+            sendMessage.setReplyMarkup(KeyboardUtil.keyboard(buttonValues, keyboardRowSize));
+        }
         return sendMessage;
+    }
+
+    public static ReplyKeyboardMarkup keyboard(List<String> buttonValues, Integer keyboardRowSize) {
+        return KeyboardUtil.keyboard(buttonValues, keyboardRowSize);
+    }
+
+    public static ReplyKeyboardRemove removeKeyboard() {
+        return KeyboardUtil.removeKeyBoard();
     }
 }

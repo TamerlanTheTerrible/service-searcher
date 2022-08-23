@@ -63,4 +63,9 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         provider.setIsActive(false);
         providerRepository.save(provider);
     }
+
+    @Override
+    public List<ServiceProvider> findAllByService(me.timur.servicesearchtelegrambot.enitity.Service service) {
+        return null;
+    }
 }
