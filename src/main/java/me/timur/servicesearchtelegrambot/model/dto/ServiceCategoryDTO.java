@@ -19,14 +19,12 @@ import me.timur.servicesearchtelegrambot.model.Lang;
 public class ServiceCategoryDTO extends BaseDTO {
     private Long id;
     private String name;
-    private Lang lang;
     @JsonProperty("is_active")
     private Boolean isActive;
 
     public ServiceCategoryDTO(ServiceCategory entity) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.lang = entity.getLang();
         this.isActive = entity.isActive();
     }
 }

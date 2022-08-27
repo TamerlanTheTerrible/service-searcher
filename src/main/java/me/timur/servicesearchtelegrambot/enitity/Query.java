@@ -1,7 +1,8 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
-import lombok.*;
-import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -32,6 +33,21 @@ public class Query extends BaseEntity{
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Query)) return false;
+
+        Query query = (Query) o;
+
+        return getClient().equals(query.getClient());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClient().hashCode();
+    }
 
     public Query(User client, ServiceProvider provider, Service service) {
         this.client = client;

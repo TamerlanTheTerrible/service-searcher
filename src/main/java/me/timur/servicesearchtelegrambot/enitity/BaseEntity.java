@@ -25,7 +25,7 @@ public class BaseEntity {
     private Long id;
 
     @CreationTimestamp
-    @Column(name = "date_created", nullable = false)
+    @Column(name = "date_created")
     private Timestamp dateCreated;
 
     @UpdateTimestamp

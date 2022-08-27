@@ -1,6 +1,5 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

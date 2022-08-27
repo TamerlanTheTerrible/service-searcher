@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class Bot extends TelegramLongPollingBot {
+public class ClientBot extends TelegramLongPollingBot {
 
     private final UpdateMapper updateMapper;
 
@@ -48,4 +48,5 @@ public class Bot extends TelegramLongPollingBot {
             execute(message);
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.bot.impl;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
@@ -37,20 +38,28 @@ public class DefaultUpdateHandler implements UpdateHandler {
     private final QueryService queryService;
     private final UserService userService;
     private final ChatLogService chatLogService;
+    private final ProviderNotifier providerNotifier;
 
-    public SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update) {
+    public List<SendMessage> saveQueryIfServiceFoundOrSearchFurther(Update update) {
         Service service = serviceManager.getServiceByName(command(update));
-        SendMessage sendMessage;
+        List<SendMessage> messages = new ArrayList<>();
         if (service == null) {
-            sendMessage = searchService(update);
+            messages.add(searchService(update));
         } else {
+            //save query
             User client = userService.getOrSave(user(update));
             Query query = new Query(client, service);
             queryService.save(query);
-            //TODO find and notify service providers
-            sendMessage = logAndMessage(update,  Outcome.QUERY_SAVED.getText(), Outcome.QUERY_SAVED);
+            //prepare message for client
+            SendMessage clientMsg = logAndMessage(update,  Outcome.QUERY_SAVED.getText(), Outcome.QUERY_SAVED);
+            clientMsg.setReplyMarkup(removeKeyboard());
+            messages.add(clientMsg);
+            //prepare messages for providers
+            final List<SendMessage> providerMessages = providerNotifier.notifyProviders(query);
+            messages.addAll(providerMessages);
+            //delete keyboard
         }
-        return sendMessage;
+        return messages;
     }
 
     public SendMessage searchService(Update update) {
@@ -77,7 +86,9 @@ public class DefaultUpdateHandler implements UpdateHandler {
                 : Objects.nonNull(client.getLastname()) ? client.getLastname()
                 : Objects.nonNull(client.getUsername()) ? client.getUsername()
                 : "друг";
-        return logAndMessage(update,String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы ищите", name), Outcome.START);
+        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы ищите", name), Outcome.START);
+        sendMessage.setReplyMarkup(removeKeyboard());
+        return sendMessage;
     }
 
     public SendMessage unknownCommand(Update update) {

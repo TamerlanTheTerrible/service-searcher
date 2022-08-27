@@ -66,6 +66,6 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 
     @Override
     public List<ServiceProvider> findAllByService(me.timur.servicesearchtelegrambot.enitity.Service service) {
-        return null;
+        return providerRepository.findAllByServiceAndIsActiveTrue(service);
     }
 }

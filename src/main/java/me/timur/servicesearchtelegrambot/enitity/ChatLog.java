@@ -42,4 +42,19 @@ public class ChatLog extends BaseEntity{
         this.command = command(update);
         this.outcome = outcome;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChatLog)) return false;
+
+        ChatLog chatLog = (ChatLog) o;
+
+        return getId().equals(chatLog.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }

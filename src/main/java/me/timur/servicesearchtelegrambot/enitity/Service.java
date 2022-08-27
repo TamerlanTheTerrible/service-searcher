@@ -1,18 +1,20 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.model.Lang;
+import lombok.*;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceDTO;
-import me.timur.servicesearchtelegrambot.util.LangToJsonConverter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by Temurbek Ismoilov on 25/04/22.
  */
 
-@Data @RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "service")
 public class Service extends BaseEntity{
@@ -38,5 +40,18 @@ public class Service extends BaseEntity{
         this.nameUz = dto.getNameUz();
         this.nameRu = dto.getNameRu();
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Service service = (Service) o;
+        return getId() != null && Objects.equals(getId(), service.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

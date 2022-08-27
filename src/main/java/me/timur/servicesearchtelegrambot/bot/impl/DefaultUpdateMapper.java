@@ -36,20 +36,29 @@ public class DefaultUpdateMapper implements UpdateMapper {
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
         final List<String> serviceNames = serviceManager.getAllActiveServiceNames();
+
+        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update);
             final String lastChatCommand = chatLogService.getLastChatOutcome(update);
 
+            // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+            // list of all services required
             else if (Objects.equals(newCommand, Outcome.ALL_SERVICES.getText())) {
                 sendMessage = updateHandler.getAllServices(update);
             }
+            // searching a service
             else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
-            else if ((lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()) || lastChatCommand.equals(Outcome.ALL_SERVICES.name())) && serviceNames.contains(newCommand))
-                sendMessage = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
+            // required service found
+            else if ((lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()) || lastChatCommand.equals(Outcome.ALL_SERVICES.name())) && serviceNames.contains(newCommand)) {
+                List<SendMessage> messages = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
+                replyList.addAll(messages);
+            }
+            // unknown command
             else
                 sendMessage = updateHandler.unknownCommand(update);
         } catch (Exception e) {
@@ -57,8 +66,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
             sendMessage = updateHandler.unknownCommand(update);
         }
 
-        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
-        replyList.add(sendMessage);
+        if (sendMessage != null) {
+            replyList.add(sendMessage);
+        }
         return replyList;
     }
 }

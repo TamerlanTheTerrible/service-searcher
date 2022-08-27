@@ -39,6 +39,6 @@ public class KeyboardUtil {
     }
 
     public static ReplyKeyboardRemove removeKeyBoard() {
-        return new ReplyKeyboardRemove();
+        return new ReplyKeyboardRemove(true, false);
     }
 }
