@@ -59,12 +59,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
         if (services.isEmpty()) {
-            sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_FAILED.getText(), Outcome.SERVICE_SEARCH_FAILED);
+            sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), Outcome.SERVICE_SEARCH_NOT_FOUND);
             sendMessage.setReplyMarkup(keyboard(List.of(Outcome.ALL_SERVICES.getText()),keyboardRowSize));
         } else {
             final List<String> serviceNames = new ArrayList(services.stream().map(Service::getNameUz).toList());
             serviceNames.add(0, Outcome.ALL_SERVICES.getText());
-            sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_SUCCESS.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_SUCCESS);
+            sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 
         return sendMessage;
@@ -86,7 +86,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage getAllServices(Update update) {
-        final List<String> servicesNames = serviceManager.getAllActiveServices().stream().map(Service::getNameUz).toList();
+        final List<String> servicesNames = serviceManager.getAllActiveServiceNames();
         return logAndKeyboard(update, Outcome.ALL_SERVICES.getText(), servicesNames, keyboardRowSize, Outcome.ALL_SERVICES);
     }
 

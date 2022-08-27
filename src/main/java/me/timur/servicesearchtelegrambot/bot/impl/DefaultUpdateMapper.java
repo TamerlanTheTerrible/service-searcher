@@ -7,6 +7,7 @@ import me.timur.servicesearchtelegrambot.bot.UpdateMapper;
 import me.timur.servicesearchtelegrambot.model.enums.Command;
 import me.timur.servicesearchtelegrambot.model.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
+import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -30,9 +31,11 @@ public class DefaultUpdateMapper implements UpdateMapper {
 
     private final ChatLogService chatLogService;
     private final UpdateHandler updateHandler;
+    private final ServiceManager serviceManager;
 
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
+        final List<String> serviceNames = serviceManager.getAllActiveServiceNames();
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update);
@@ -43,9 +46,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
             else if (Objects.equals(newCommand, Outcome.ALL_SERVICES.getText())) {
                 sendMessage = updateHandler.getAllServices(update);
             }
-            else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FAILED.name()))
+            else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
-            else if (lastChatCommand.equals(Outcome.SERVICE_SEARCH_SUCCESS.name()))
+            else if ((lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()) || lastChatCommand.equals(Outcome.ALL_SERVICES.name())) && serviceNames.contains(newCommand))
                 sendMessage = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
             else
                 sendMessage = updateHandler.unknownCommand(update);

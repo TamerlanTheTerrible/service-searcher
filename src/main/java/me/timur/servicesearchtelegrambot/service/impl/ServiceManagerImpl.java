@@ -10,6 +10,7 @@ import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import me.timur.servicesearchtelegrambot.util.StringUtil;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,12 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public List<Service> getAllActiveServices() {
         return serviceRepository.findAllByActiveTrue();
+    }
+
+    @Override
+    @Cacheable("serviceNames")
+    public List<String> getAllActiveServiceNames() {
+        return getAllActiveServices().stream().map(Service::getNameUz).toList();
     }
 
     @Override
