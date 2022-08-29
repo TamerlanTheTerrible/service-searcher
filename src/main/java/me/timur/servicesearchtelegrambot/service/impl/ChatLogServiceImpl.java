@@ -2,7 +2,7 @@ package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
-import me.timur.servicesearchtelegrambot.model.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
 import me.timur.servicesearchtelegrambot.repository.ChatLogRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import org.springframework.stereotype.Service;

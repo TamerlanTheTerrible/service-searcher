@@ -1,6 +1,6 @@
 package me.timur.servicesearchtelegrambot.service;
 
-import me.timur.servicesearchtelegrambot.model.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**

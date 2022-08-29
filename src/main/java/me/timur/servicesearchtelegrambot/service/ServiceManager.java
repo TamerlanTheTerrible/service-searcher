@@ -4,7 +4,6 @@ import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.ServiceCategory;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceCategoryDTO;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceDTO;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,9 +19,11 @@ public interface ServiceManager {
 
     Service getActiveServiceById(Long id);
 
-    List<Service> getAllActiveServices();
+    List<Service> getActiveServices();
 
-    List<String> getAllActiveServiceNames();
+    List<String> getActiveServiceNames();
+
+    List<String> getActiveCategoryNames();
 
     Service getServiceByName(String name);
 
@@ -30,7 +31,7 @@ public interface ServiceManager {
 
     void updateService(Long serviceId, ServiceDTO dto);
 
-    List<Service> getAllServicesByCategory(Long serviceCategoryId);
+    List<String> getServicesNamesByCategoryName(String categoryName);
 
     List<Service> getAllServicesByActiveTrueAndNameLike(String name);
 

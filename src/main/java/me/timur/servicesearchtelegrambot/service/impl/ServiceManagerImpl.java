@@ -42,20 +42,27 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public List<Service> getAllActiveServices() {
+    public List<Service> getActiveServices() {
         return serviceRepository.findAllByActiveTrue();
     }
 
     @Override
     @Cacheable("serviceNames")
-    public List<String> getAllActiveServiceNames() {
-        return getAllActiveServices().stream().map(Service::getNameUz).toList();
+    public List<String> getActiveServiceNames() {
+        return getActiveServices().stream().map(Service::getName).toList();
+    }
+
+    @Override
+    public List<String> getActiveCategoryNames() {
+        return serviceCategoryRepository.findAllByActiveTrue()
+                .stream().map(ServiceCategory::getName)
+                .toList();
     }
 
     @Override
     public Service getServiceByName(String name) {
         return serviceRepository
-                .findByNameUz(name)
+                .findByName(name)
                 .orElse(null);
     }
 
@@ -77,13 +84,13 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public List<Service> getAllServicesByCategory(Long serviceCategoryId) {
-        return serviceRepository.findAllByCategoryId(serviceCategoryId);
+    public List<String> getServicesNamesByCategoryName(String categoryName) {
+        return serviceRepository.findAllByCategoryName(categoryName).stream().map(Service::getName).toList();
     }
 
     @Override
     public List<Service> getAllServicesByActiveTrueAndNameLike(String name) {
-        List<Service> allServices = getAllActiveServices();
+        List<Service> allServices = getActiveServices();
         List<Service> similarServices = new ArrayList<>();
         for (Service service: allServices) {
             double similarity = StringUtil.findSimilarities(service.getNameUz(), name);
@@ -116,7 +123,6 @@ public class ServiceManagerImpl implements ServiceManager {
     public void updateCategory(Long categoryId, ServiceCategoryDTO serviceCategoryDto) {
         ServiceCategory category = getServiceCategory(categoryId);
         category.setName(serviceCategoryDto.getName().trim().toUpperCase());
-        category.setLang(serviceCategoryDto.getLang());
         serviceCategoryRepository.save(category);
     }
 

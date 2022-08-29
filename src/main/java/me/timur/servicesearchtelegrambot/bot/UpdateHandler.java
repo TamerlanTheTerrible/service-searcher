@@ -18,5 +18,7 @@ public interface UpdateHandler {
 
     SendMessage unknownCommand(Update update);
 
-    SendMessage getAllServices(Update update);
+    SendMessage getServicesByCategoryName(Update update);
+
+    SendMessage getCategories(Update update);
 }

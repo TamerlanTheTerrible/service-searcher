@@ -11,11 +11,11 @@ import java.util.Optional;
 public interface ServiceRepository extends JpaRepository<Service, Long> {
     Optional<Service> findByIdAndActiveTrue(Long id);
 
-    List<Service> findAllByCategoryId(Long categoryId);
+    List<Service> findAllByCategoryName(String categoryName);
 
     List<Service> findAllByActiveTrue();
 
-    Optional<Service> findByNameUz(String nameUz);
+    Optional<Service> findByName(String nameUz);
 
     Optional<Service> findByNameRu(String nameRU);
 }

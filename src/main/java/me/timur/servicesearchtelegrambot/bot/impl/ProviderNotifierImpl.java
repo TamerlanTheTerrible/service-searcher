@@ -8,12 +8,10 @@ import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
 import me.timur.servicesearchtelegrambot.bot.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.model.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ServiceProviderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.ArrayList;
 import java.util.List;

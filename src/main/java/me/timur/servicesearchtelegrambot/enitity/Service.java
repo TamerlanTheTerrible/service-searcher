@@ -22,10 +22,10 @@ public class Service extends BaseEntity{
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "name_uz", nullable = false)
+    @Column(name = "name_uz")
     private String nameUz;
 
-    @Column(name = "name_ru", nullable = false)
+    @Column(name = "name_ru")
     private String nameRu;
 
     @ManyToOne

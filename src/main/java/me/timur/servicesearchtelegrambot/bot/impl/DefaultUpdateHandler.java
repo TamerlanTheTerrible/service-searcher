@@ -6,7 +6,8 @@ import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.model.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
+import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
@@ -57,7 +58,6 @@ public class DefaultUpdateHandler implements UpdateHandler {
             //prepare messages for providers
             final List<SendMessage> providerMessages = providerNotifier.notifyProviders(query);
             messages.addAll(providerMessages);
-            //delete keyboard
         }
         return messages;
     }
@@ -69,10 +69,10 @@ public class DefaultUpdateHandler implements UpdateHandler {
         final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
         if (services.isEmpty()) {
             sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), Outcome.SERVICE_SEARCH_NOT_FOUND);
-            sendMessage.setReplyMarkup(keyboard(List.of(Outcome.ALL_SERVICES.getText()),keyboardRowSize));
+            sendMessage.setReplyMarkup(keyboard(List.of(Outcome.CATEGORIES.getText()),keyboardRowSize));
         } else {
             final List<String> serviceNames = new ArrayList(services.stream().map(Service::getNameUz).toList());
-            serviceNames.add(0, Outcome.ALL_SERVICES.getText());
+            serviceNames.add(0, Outcome.CATEGORIES.getText());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 
@@ -91,15 +91,24 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return sendMessage;
     }
 
+    @Override
+    public SendMessage getServicesByCategoryName(Update update) {
+        List<String> servicesNames = serviceManager.getServicesNamesByCategoryName(command(update));
+        ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
+        modifiableList.add(Outcome.BACK_TO_CATEGORIES.getText());
+        return logAndKeyboard(update, command(update), modifiableList, keyboardRowSize, Outcome.SERVICES);
+    }
+
+    @Override
+    public SendMessage getCategories(Update update) {
+        final List<String> categoryNames = serviceManager.getActiveCategoryNames();
+        return logAndKeyboard(update, Outcome.CATEGORIES.getText(), categoryNames, keyboardRowSize, Outcome.CATEGORIES);
+    }
+
     public SendMessage unknownCommand(Update update) {
         return logAndMessage(update, Outcome.UNKNOWN_COMMAND.getText(), Outcome.UNKNOWN_COMMAND);
     }
 
-    @Override
-    public SendMessage getAllServices(Update update) {
-        final List<String> servicesNames = serviceManager.getAllActiveServiceNames();
-        return logAndKeyboard(update, Outcome.ALL_SERVICES.getText(), servicesNames, keyboardRowSize, Outcome.ALL_SERVICES);
-    }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
         chatLogService.log(update, outcome);

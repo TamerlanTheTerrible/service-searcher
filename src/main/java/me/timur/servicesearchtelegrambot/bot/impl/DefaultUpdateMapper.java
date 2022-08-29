@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.UpdateMapper;
-import me.timur.servicesearchtelegrambot.model.enums.Command;
-import me.timur.servicesearchtelegrambot.model.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.enums.Command;
+import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
+import me.timur.servicesearchtelegrambot.enitity.Service;
+import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.stereotype.Component;
@@ -32,10 +34,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
     private final ChatLogService chatLogService;
     private final UpdateHandler updateHandler;
     private final ServiceManager serviceManager;
-
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
-        final List<String> serviceNames = serviceManager.getAllActiveServiceNames();
+        final List<String> serviceNames = serviceManager.getActiveServiceNames();
 
         final List<BotApiMethod<Message>> replyList = new ArrayList<>();
         SendMessage sendMessage = null;
@@ -46,15 +47,19 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+                // list of all services required
+            else if (Objects.equals(newCommand, Outcome.CATEGORIES.getText()) || Objects.equals(newCommand, Outcome.BACK_TO_CATEGORIES.getText()) ) {
+                sendMessage = updateHandler.getCategories(update);
+            }
             // list of all services required
-            else if (Objects.equals(newCommand, Outcome.ALL_SERVICES.getText())) {
-                sendMessage = updateHandler.getAllServices(update);
+            else if (lastChatCommand.equals(Outcome.CATEGORIES.name()) || lastChatCommand.equals(Outcome.BACK_TO_CATEGORIES.name())) {
+                sendMessage = updateHandler.getServicesByCategoryName(update);
             }
             // searching a service
-            else if (lastChatCommand == null || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()))
+            else if (lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
             // required service found
-            else if ((lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()) || lastChatCommand.equals(Outcome.ALL_SERVICES.name())) && serviceNames.contains(newCommand)) {
+            else if ((lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICES.name())) && serviceNames.contains(newCommand)) {
                 List<SendMessage> messages = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
                 replyList.addAll(messages);
             }

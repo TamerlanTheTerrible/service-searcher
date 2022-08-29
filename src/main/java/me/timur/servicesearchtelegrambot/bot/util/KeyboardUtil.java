@@ -17,15 +17,18 @@ public class KeyboardUtil {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow(rowSize);
         Integer valuesCount = stringValues.size();
+        Integer rowElementsLeft = rowSize;
 
-        for (int i = 0; i < stringValues.size(); i++) {
+        for (int i = 0; i < stringValues.size();) {
             //while row is not empty add new keyboardValue
-            while (row.size() < rowSize && valuesCount > 0) {
+            while (rowElementsLeft > 0 && valuesCount > 0) {
                 row.add(stringValues.get(i));
                 valuesCount--;
+                rowElementsLeft--;
                 i++;
             }
             //when row is full, add it to the row list and create a new row
+            rowElementsLeft = rowSize;
             rows.add(row);
             row = new KeyboardRow(rowSize);
         }
