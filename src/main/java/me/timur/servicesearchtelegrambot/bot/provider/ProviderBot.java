@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProviderBot extends TelegramLongPollingBot {
 
-    private final UpdateMapper updateMapper;
+    private final ProviderUpdateMapper providerUpdateMapper;
 
     private final static String BOT_NAME = "UzserviceproviderBot";
   private final static String BOT_TOKEN = "5619769900:AAGHABIkbQ7DkItKLowv6N4cm_uW3rN4M1U";
@@ -43,7 +43,7 @@ public class ProviderBot extends TelegramLongPollingBot {
     }
 
     private void handle(Update update) throws TelegramApiException {
-        final List<BotApiMethod<Message>> sendMessageList = updateMapper.map(update);
+        final List<BotApiMethod<Message>> sendMessageList = providerUpdateMapper.map(update);
         for (BotApiMethod<Message> message: sendMessageList) {
             execute(message);
         }

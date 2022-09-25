@@ -35,8 +35,17 @@ public class DefaultUpdateMapper implements UpdateMapper {
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();
-
         final List<BotApiMethod<Message>> replyList = new ArrayList<>();
+
+        SendMessage sendMessage = tryToMap(update, serviceNames, replyList);
+
+        if (sendMessage != null)
+            replyList.add(sendMessage);
+
+        return replyList;
+    }
+
+    private SendMessage tryToMap(Update update, List<String> serviceNames, List<BotApiMethod<Message>> replyList) {
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update);
@@ -68,10 +77,6 @@ public class DefaultUpdateMapper implements UpdateMapper {
             log.error(e.getMessage(), e);
             sendMessage = updateHandler.unknownCommand(update);
         }
-
-        if (sendMessage != null) {
-            replyList.add(sendMessage);
-        }
-        return replyList;
+        return sendMessage;
     }
 }
