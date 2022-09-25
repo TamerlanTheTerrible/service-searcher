@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot.util;
+package me.timur.servicesearchtelegrambot.bot.client.util;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;

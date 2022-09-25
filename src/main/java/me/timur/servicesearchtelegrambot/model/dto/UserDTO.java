@@ -8,10 +8,8 @@ import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.bot.util.UpdateUtil;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.util.DateUtil;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.sql.Timestamp;
 

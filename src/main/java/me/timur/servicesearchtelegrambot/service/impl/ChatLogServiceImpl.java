@@ -2,7 +2,7 @@ package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
-import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.repository.ChatLogRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Optional;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 06/08/22.

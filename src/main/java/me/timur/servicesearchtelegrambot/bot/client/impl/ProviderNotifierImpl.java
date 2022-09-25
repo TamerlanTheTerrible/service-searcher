@@ -1,12 +1,12 @@
-package me.timur.servicesearchtelegrambot.bot.impl;
+package me.timur.servicesearchtelegrambot.bot.client.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.util.UpdateUtil;
+import me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
-import me.timur.servicesearchtelegrambot.bot.ProviderNotifier;
+import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.service.ServiceProviderService;
 import org.springframework.beans.factory.annotation.Value;

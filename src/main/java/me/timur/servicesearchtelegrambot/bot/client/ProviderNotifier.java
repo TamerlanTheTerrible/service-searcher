@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot;
+package me.timur.servicesearchtelegrambot.bot.client;
 
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import org.springframework.scheduling.annotation.Async;

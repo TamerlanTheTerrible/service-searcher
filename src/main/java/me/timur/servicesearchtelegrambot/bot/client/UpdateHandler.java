@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot;
+package me.timur.servicesearchtelegrambot.bot.client;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;

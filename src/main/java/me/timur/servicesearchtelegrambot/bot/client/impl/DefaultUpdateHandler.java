@@ -1,13 +1,12 @@
-package me.timur.servicesearchtelegrambot.bot.impl;
+package me.timur.servicesearchtelegrambot.bot.client.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.bot.ProviderNotifier;
-import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
+import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
-import me.timur.servicesearchtelegrambot.repository.ServiceCategoryRepository;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
@@ -22,8 +21,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
+import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.chatId;
 
 /**
  * Created by Temurbek Ismoilov on 23/08/22.

@@ -3,12 +3,12 @@ package me.timur.servicesearchtelegrambot.enitity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.persistence.*;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 03/08/22.

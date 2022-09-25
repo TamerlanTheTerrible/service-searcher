@@ -1,13 +1,11 @@
-package me.timur.servicesearchtelegrambot.bot.impl;
+package me.timur.servicesearchtelegrambot.bot.client.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.UpdateHandler;
-import me.timur.servicesearchtelegrambot.bot.UpdateMapper;
-import me.timur.servicesearchtelegrambot.bot.enums.Command;
-import me.timur.servicesearchtelegrambot.bot.enums.Outcome;
-import me.timur.servicesearchtelegrambot.enitity.Service;
-import me.timur.servicesearchtelegrambot.repository.ServiceRepository;
+import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.client.UpdateMapper;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.stereotype.Component;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 13/08/22.

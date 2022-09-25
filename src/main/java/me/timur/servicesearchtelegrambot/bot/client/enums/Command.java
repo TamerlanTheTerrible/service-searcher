@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot.enums;
+package me.timur.servicesearchtelegrambot.bot.client.enums;
 
 import lombok.Getter;
 

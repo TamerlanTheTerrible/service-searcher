@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot;
+package me.timur.servicesearchtelegrambot.bot.client;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
