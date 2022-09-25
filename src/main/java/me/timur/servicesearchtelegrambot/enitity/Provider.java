@@ -1,10 +1,10 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.*;
-import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,17 +21,16 @@ public class Provider extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user = new User();
-
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    private Service service = new Service();
+    private User user;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    public Provider(ServiceProviderDTO dto) {
-        this.user.setId(dto.getUser().getId());
+    @OneToMany(mappedBy = "provider", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<ProviderService> services;
+
+    public Provider(User user) {
+        this.user = user;
         this.isActive = true;
     }
 

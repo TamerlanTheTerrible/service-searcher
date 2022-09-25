@@ -20,8 +20,8 @@ import java.util.Objects;
 public class ProviderServiceSubscription extends BaseEntity{
 
     @ManyToOne
-    @JoinColumn(name = "provider_id", nullable = false)
-    private Provider provider;
+    @JoinColumn(name = "provider_service_id", nullable = false)
+    private ProviderService providerService;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;

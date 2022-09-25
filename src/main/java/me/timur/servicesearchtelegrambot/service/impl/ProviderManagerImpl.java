@@ -41,12 +41,6 @@ public class ProviderManagerImpl implements ProviderManager {
     }
 
     @Override
-    public Long save(ServiceProviderDTO dto) {
-        final Provider provider = providerRepository.save(new Provider(dto));
-        return provider.getId();
-    }
-
-    @Override
     public List<Provider> getAll() {
         return providerRepository.findAll();
     }
@@ -56,7 +50,7 @@ public class ProviderManagerImpl implements ProviderManager {
         Provider provider = getById(providerId);
 
         final me.timur.servicesearchtelegrambot.enitity.Service service = serviceManager.getService(dto.getService().getId());
-        provider.setService(service);
+//        provider.setService(service);
 
         providerRepository.save(provider);
     }
@@ -77,7 +71,7 @@ public class ProviderManagerImpl implements ProviderManager {
     public Provider getOrSave(UserDTO userDTO) {
         User user = userService.getOrSave(userDTO);
         Provider provider = providerRepository.findByUserTelegramId(user.getTelegramId())
-                .orElse(providerRepository.save(new Provider()));
+                .orElse(providerRepository.save(new Provider(user)));
         return null;
     }
 }

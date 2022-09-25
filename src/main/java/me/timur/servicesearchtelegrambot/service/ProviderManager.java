@@ -19,8 +19,6 @@ public interface ProviderManager {
 
     Provider getActiveById(Long id);
 
-    Long save(ServiceProviderDTO dto);
-
     List<Provider> getAll();
 
     void update(Long providerId, ServiceProviderDTO dto);
