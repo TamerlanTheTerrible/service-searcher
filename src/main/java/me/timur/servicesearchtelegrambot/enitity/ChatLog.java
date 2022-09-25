@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.persistence.*;
 
-import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 03/08/22.

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
-import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.chatId;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
 
 /**
  * Created by Temurbek Ismoilov on 23/08/22.

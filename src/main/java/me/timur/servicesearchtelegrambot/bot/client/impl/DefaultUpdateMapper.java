@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.timur.servicesearchtelegrambot.bot.client.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 13/08/22.

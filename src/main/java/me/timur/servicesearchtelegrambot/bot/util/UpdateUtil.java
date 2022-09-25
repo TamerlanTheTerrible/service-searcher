@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot.client.util;
+package me.timur.servicesearchtelegrambot.bot.util;
 
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
