@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -49,14 +50,14 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     @Cacheable("serviceNames")
     public List<String> getActiveServiceNames() {
-        return getActiveServices().stream().map(Service::getName).toList();
+        return getActiveServices().stream().map(Service::getName).collect(Collectors.toList());
     }
 
     @Override
     public List<String> getActiveCategoryNames() {
         return serviceCategoryRepository.findAllByActiveTrue()
                 .stream().map(ServiceCategory::getName)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public List<String> getServicesNamesByCategoryName(String categoryName) {
-        return serviceRepository.findAllByCategoryName(categoryName).stream().map(Service::getName).toList();
+        return serviceRepository.findAllByCategoryName(categoryName).stream().map(Service::getName).collect(Collectors.toList());
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     public void update(Long providerId, ServiceProviderDTO dto) {
         ServiceProvider provider = getById(providerId);
 
-        final var service = serviceManager.getService(dto.getService().getId());
+        final me.timur.servicesearchtelegrambot.enitity.Service service = serviceManager.getService(dto.getService().getId());
         provider.setService(service);
 
         providerRepository.save(provider);

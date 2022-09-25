@@ -20,6 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
@@ -68,10 +69,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
         if (services.isEmpty()) {
+            List<String> keyboardValues = new ArrayList<>();
+            keyboardValues.add(Outcome.CATEGORIES.getText());
             sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), Outcome.SERVICE_SEARCH_NOT_FOUND);
-            sendMessage.setReplyMarkup(keyboard(List.of(Outcome.CATEGORIES.getText()),keyboardRowSize));
+            sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
         } else {
-            final List<String> serviceNames = new ArrayList(services.stream().map(Service::getNameUz).toList());
+            final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
             serviceNames.add(0, Outcome.CATEGORIES.getText());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }

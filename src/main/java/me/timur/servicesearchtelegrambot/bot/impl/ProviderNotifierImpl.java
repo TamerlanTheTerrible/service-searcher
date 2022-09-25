@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by Temurbek Ismoilov on 27/08/22.
@@ -34,7 +35,7 @@ public class ProviderNotifierImpl implements ProviderNotifier {
     @Override
     public List<SendMessage> notifyProviders(Query query) {
         final List<ServiceProvider> providers = findProvidersByService(query.getService());
-        log.info(String.format("Query %s providers -> %s", query.getId(), providers.stream().map(ServiceProvider::getId).toList()));
+        log.info(String.format("Query %s providers -> %s", query.getId(), providers.stream().map(ServiceProvider::getId).collect(Collectors.toList())));
 
         List<SendMessage> messages = new ArrayList<>();
         for (ServiceProvider provider: providers) {

@@ -31,9 +31,6 @@ public class ChatLogServiceImpl implements ChatLogService {
     @Override
     public String getLastChatOutcome(Update update) {
         final Optional<ChatLog> chatLogOpt = chatLogRepository.findTopByTgChatIdOrderByIdDesc(chatId(update));
-        if (chatLogOpt.isEmpty())
-            return null;
-        else
-            return chatLogOpt.get().getOutcome().name();
+        return chatLogOpt.map(chatLog -> chatLog.getOutcome().name()).orElse(null);
     }
 }

@@ -27,7 +27,7 @@ public class StringUtil {
         if (str == null)
             return new String[0];
 
-        return str.replaceAll("/", " ").split("[\s;:\\-]");
+        return str.replaceAll("/", " ").split(" ");
     }
 
     private static double findSimilarity(String x, String y) {

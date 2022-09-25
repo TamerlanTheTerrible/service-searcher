@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElse;
 
 /**
  * Created by Temurbek Ismoilov on 14/05/22.
@@ -67,11 +66,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(Long id, UserDTO dto) {
         User user = getUserById(id);
-        user.setTelegramId(requireNonNullElse(dto.getTelegramId(), user.getTelegramId()));
-        user.setUsername(requireNonNullElse(dto.getUsername(), user.getUsername()));
-        user.setPhone(requireNonNullElse(dto.getUsername(), user.getUsername()));
-        user.setFirstname(requireNonNullElse(dto.getFirstname(), user.getFirstname()));
-        user.setLastname(requireNonNullElse(dto.getLastname(), user.getLastname()));
+        user.setTelegramId(dto.getTelegramId() != null ? dto.getTelegramId() : user.getTelegramId());
+        user.setUsername(dto.getUsername() != null ? dto.getUsername() : user.getUsername());
+        user.setPhone(dto.getUsername() != null ? dto.getUsername() : user.getUsername());
+        user.setFirstname(dto.getFirstname() != null ? dto.getFirstname() : user.getFirstname());
+        user.setLastname(dto.getLastname() != dto.getLastname() ? dto.getLastname() : user.getLastname());
         userRepository.save(user);
     }
 

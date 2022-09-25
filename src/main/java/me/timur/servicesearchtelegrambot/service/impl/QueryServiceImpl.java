@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElse;
 
 /**
  * Created by Temurbek Ismoilov on 25/04/22.
@@ -62,7 +61,7 @@ public class QueryServiceImpl implements QueryService {
     public void update(Long id, QueryDTO dto) {
         Query query = getById(id);
         ServiceProvider provider = new ServiceProvider();
-        provider.setId(requireNonNullElse(dto.getProvider().getId(), query.getProvider().getId()));
+        provider.setId(dto.getProvider().getId() != null ? dto.getProvider().getId() : query.getProvider().getId());
         query.setProvider(provider);
 //        query.getStatus().setName(requireNonNullElse(dto.getStatus(), query.getStatus().getName()));
         queryRepository.save(query);
