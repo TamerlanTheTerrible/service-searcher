@@ -16,31 +16,38 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "service_provider")
-public class ServiceProvider extends BaseEntity{
+@Table(name = "provider")
+public class Provider extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user = new User();
 
     @ManyToOne
-    @JoinColumn(name = "service_id", nullable = false)
+    @JoinColumn(name = "service_id")
     private Service service = new Service();
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    public ServiceProvider(ServiceProviderDTO dto) {
+    public Provider(ServiceProviderDTO dto) {
         this.user.setId(dto.getUser().getId());
-        this.service.setId(dto.getService().getId());
         this.isActive = true;
+    }
+
+    public String getName() {
+        if (this.user == null) return "";
+        return Objects.nonNull(this.user.getFirstname()) ? this.user.getFirstname()
+                : Objects.nonNull(this.user.getLastname()) ? this.user.getLastname()
+                : Objects.nonNull(this.user.getUsername()) ? this.user.getUsername()
+                : "друг";
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ServiceProvider provider = (ServiceProvider) o;
+        Provider provider = (Provider) o;
         return getId() != null && Objects.equals(getId(), provider.getId());
     }
 

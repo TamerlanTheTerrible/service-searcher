@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
+import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.util.DateUtil;
 
 import java.sql.Timestamp;
@@ -31,11 +31,11 @@ public class ServiceProviderDTO extends BaseDTO {
     @JsonProperty("is_active")
     private Boolean isActive;
 
-    public ServiceProviderDTO(ServiceProvider serviceProvider) {
-        this.id = serviceProvider.getId();
-        this.user = new UserDTO(serviceProvider.getUser());
-        this.dateCreated = serviceProvider.getDateCreated();
-        this.service = new ServiceDTO(serviceProvider.getService());
-        this.isActive = serviceProvider.getIsActive();
+    public ServiceProviderDTO(Provider provider) {
+        this.id = provider.getId();
+        this.user = new UserDTO(provider.getUser());
+        this.dateCreated = provider.getDateCreated();
+        this.service = new ServiceDTO(provider.getService());
+        this.isActive = provider.getIsActive();
     }
 }

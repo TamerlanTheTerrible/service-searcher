@@ -107,10 +107,10 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return logAndKeyboard(update, Outcome.CATEGORIES.getText(), categoryNames, keyboardRowSize, Outcome.CATEGORIES);
     }
 
+    @Override
     public SendMessage unknownCommand(Update update) {
         return logAndMessage(update, Outcome.UNKNOWN_COMMAND.getText(), Outcome.UNKNOWN_COMMAND);
     }
-
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
         chatLogService.log(update, outcome);

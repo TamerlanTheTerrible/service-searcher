@@ -21,7 +21,7 @@ public class Query extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "provider_id")
-    private ServiceProvider provider;
+    private Provider provider;
 
     @OneToOne
     @JoinColumn(name = "service_id", nullable = false)
@@ -49,7 +49,7 @@ public class Query extends BaseEntity{
         return getClient().hashCode();
     }
 
-    public Query(User client, ServiceProvider provider, Service service) {
+    public Query(User client, Provider provider, Service service) {
         this.client = client;
         this.provider = provider;
         this.service = service;

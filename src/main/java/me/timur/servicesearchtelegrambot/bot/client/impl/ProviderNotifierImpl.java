@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.util.UpdateUtil;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
-import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
+import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.service.ServiceProviderService;
+import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -27,18 +27,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProviderNotifierImpl implements ProviderNotifier {
 
-    private final ServiceProviderService providerService;
+    private final ProviderManager providerManager;
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
 
     @Override
     public List<SendMessage> notifyProviders(Query query) {
-        final List<ServiceProvider> providers = findProvidersByService(query.getService());
-        log.info(String.format("Query %s providers -> %s", query.getId(), providers.stream().map(ServiceProvider::getId).collect(Collectors.toList())));
+        final List<Provider> providers = findProvidersByService(query.getService());
+        log.info(String.format("Query %s providers -> %s", query.getId(), providers.stream().map(Provider::getId).collect(Collectors.toList())));
 
         List<SendMessage> messages = new ArrayList<>();
-        for (ServiceProvider provider: providers) {
+        for (Provider provider: providers) {
             try {
                 SendMessage message = prepareMessage(provider, query);
                 messages.add(message);
@@ -50,7 +50,7 @@ public class ProviderNotifierImpl implements ProviderNotifier {
         return messages;
     }
 
-    private SendMessage prepareMessage(ServiceProvider provider, Query query) {
+    private SendMessage prepareMessage(Provider provider, Query query) {
         final User user = provider.getUser();
         if (user == null) {
             return null;
@@ -61,10 +61,10 @@ public class ProviderNotifierImpl implements ProviderNotifier {
         return UpdateUtil.message(user.getTelegramId().toString(),"Новый запрос от " + clientContact);
     }
 
-    private List<ServiceProvider> findProvidersByService(Service service) {
+    private List<Provider> findProvidersByService(Service service) {
         if (service == null) {
             return new ArrayList<>();
         }
-        return providerService.findAllByService(service);
+        return providerManager.findAllByService(service);
     }
 }

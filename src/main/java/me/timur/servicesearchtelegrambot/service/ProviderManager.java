@@ -1,8 +1,9 @@
 package me.timur.servicesearchtelegrambot.service;
 
 import me.timur.servicesearchtelegrambot.enitity.Service;
-import me.timur.servicesearchtelegrambot.enitity.ServiceProvider;
+import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
+import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -12,19 +13,21 @@ import java.util.List;
  */
 
 @Transactional
-public interface ServiceProviderService {
+public interface ProviderManager {
 
-    ServiceProvider getById(Long providerId);
+    Provider getById(Long providerId);
 
-    ServiceProvider getActiveById(Long id);
+    Provider getActiveById(Long id);
 
     Long save(ServiceProviderDTO dto);
 
-    List<ServiceProvider> getAll();
+    List<Provider> getAll();
 
     void update(Long providerId, ServiceProviderDTO dto);
 
     void delete(Long providerId);
 
-    List<ServiceProvider> findAllByService(Service service);
+    List<Provider> findAllByService(Service service);
+
+    Provider getOrSave(UserDTO user);
 }

@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProviderProviderUpdateMapperImpl implements ProviderUpdateMapper {
+public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
 
     private final ProviderUpdateHandler updateHandler;
 

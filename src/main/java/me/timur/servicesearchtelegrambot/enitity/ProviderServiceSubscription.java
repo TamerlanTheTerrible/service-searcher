@@ -16,12 +16,12 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "service_provider_subscription")
-public class ServiceProviderSubscription extends BaseEntity{
+@Table(name = "provider_service_subscription")
+public class ProviderServiceSubscription extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "provider_id", nullable = false)
-    private ServiceProvider provider;
+    private Provider provider;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -36,7 +36,7 @@ public class ServiceProviderSubscription extends BaseEntity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ServiceProviderSubscription that = (ServiceProviderSubscription) o;
+        ProviderServiceSubscription that = (ProviderServiceSubscription) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
