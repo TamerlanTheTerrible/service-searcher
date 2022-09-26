@@ -15,6 +15,7 @@ import me.timur.servicesearchtelegrambot.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -35,13 +36,19 @@ public class ProviderManagerImpl implements ProviderManager {
     @Override
     public Provider getById(Long id) {
         return providerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find service with id %s", id)));
+                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find provider with id %s", id)));
     }
 
     @Override
     public Provider getActiveById(Long id) {
         return providerRepository.findByIdAndIsActiveTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find service with id %s", id)));
+                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find provider with id %s", id)));
+    }
+
+    @Override
+    public Provider getByUserTelegramId(Long telegramId) {
+        return providerRepository.findByUserTelegramId(telegramId)
+                .orElseThrow(() -> new ResourceNotFoundException(format("Could not find provider with telegramid %s", telegramId)));
     }
 
     @Override
@@ -77,8 +84,7 @@ public class ProviderManagerImpl implements ProviderManager {
     @Override
     public Provider getOrSave(UserDTO userDTO) {
         User user = userService.getOrSave(userDTO);
-        return providerRepository
-                .findByUserTelegramId(user.getTelegramId())
-                .orElse(providerRepository.save(new Provider(user)));
+        Optional<Provider> providerOptional = providerRepository.findByUserTelegramId(user.getTelegramId());
+        return providerOptional.orElseGet(() -> providerRepository.save(new Provider(user)));
     }
 }

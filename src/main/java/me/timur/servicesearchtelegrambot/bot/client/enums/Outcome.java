@@ -17,7 +17,12 @@ public enum Outcome {
     ACCEPT("Принять"),
     DENY("Отказать"),
     BACK_TO_CATEGORIES("Все категории"),
-    UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз");
+
+    PROVIDER_SERVICE_ALREADY_EXISTS("Этот сервис у Вас уже зарегистрирован"),
+    PROVIDER_SERVICE_SAVED("Сервис сохранён"),
+
+    UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз")
+    ;
 
     private final String text;
 

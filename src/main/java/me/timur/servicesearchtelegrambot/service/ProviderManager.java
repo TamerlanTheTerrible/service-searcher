@@ -19,6 +19,8 @@ public interface ProviderManager {
 
     Provider getActiveById(Long id);
 
+    Provider getByUserTelegramId(Long telegramId);
+
     List<Provider> getAll();
 
     void update(Long providerId, ServiceProviderDTO dto);

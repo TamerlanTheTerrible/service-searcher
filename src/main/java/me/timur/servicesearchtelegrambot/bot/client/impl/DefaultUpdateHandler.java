@@ -41,6 +41,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
     private final ChatLogService chatLogService;
     private final ProviderNotifier providerNotifier;
 
+    @Override
     public List<SendMessage> saveQueryIfServiceFoundOrSearchFurther(Update update) {
         Service service = serviceManager.getServiceByName(command(update));
         List<SendMessage> messages = new ArrayList<>();
@@ -62,6 +63,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return messages;
     }
 
+    @Override
     public SendMessage searchService(Update update) {
         String command = command(update);
         SendMessage sendMessage;
@@ -81,6 +83,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return sendMessage;
     }
 
+    @Override
     public SendMessage start(Update update) {
         //save if user doesn't exist
         User client = userService.getOrSave(user(update));
