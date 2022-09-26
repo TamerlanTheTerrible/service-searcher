@@ -74,7 +74,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
             sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
         } else {
             final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
-            serviceNames.add(0, Outcome.CATEGORIES.getText());
+            serviceNames.add(Outcome.CATEGORIES.getText());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 

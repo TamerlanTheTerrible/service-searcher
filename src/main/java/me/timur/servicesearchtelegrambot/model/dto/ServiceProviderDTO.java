@@ -35,7 +35,7 @@ public class ServiceProviderDTO extends BaseDTO {
         this.id = provider.getId();
         this.user = new UserDTO(provider.getUser());
         this.dateCreated = provider.getDateCreated();
-        this.service = new ServiceDTO(provider.getService());
+//        this.service = new ServiceDTO(provider.getService());
         this.isActive = provider.getIsActive();
     }
 }

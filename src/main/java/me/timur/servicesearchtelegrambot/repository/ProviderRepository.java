@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface ProviderRepository extends JpaRepository<Provider, Long> {
     Optional<Provider> findByIdAndIsActiveTrue(Long id);
-    List<Provider> findAllByServiceAndIsActiveTrue(Service service);
+    List<Provider> findAllByIdInAndIsActiveTrue(List<Long> ids);
+//    List<Provider> findAllByServiceAndIsActiveTrue(Service service);
     Optional<Provider> findByUserTelegramId(Long tgID);
 }

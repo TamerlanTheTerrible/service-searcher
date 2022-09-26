@@ -1,7 +1,6 @@
 package me.timur.servicesearchtelegrambot.bot.client;
 
 import me.timur.servicesearchtelegrambot.enitity.Query;
-import org.springframework.scheduling.annotation.Async;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;

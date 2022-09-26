@@ -9,7 +9,6 @@ import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
@@ -28,9 +27,6 @@ import java.util.stream.Collectors;
 public class ProviderNotifierImpl implements ProviderNotifier {
 
     private final ProviderManager providerManager;
-
-    @Value("${keyboard.size.row}")
-    private Integer keyboardRowSize;
 
     @Override
     public List<SendMessage> notifyProviders(Query query) {
@@ -58,6 +54,7 @@ public class ProviderNotifierImpl implements ProviderNotifier {
 
         final User client = query.getClient();
         String clientContact = Objects.nonNull(client.getUsername()) ? client.getUsername() : client.getPhone();
+
         return UpdateUtil.message(user.getTelegramId().toString(),"Новый запрос от " + clientContact);
     }
 

@@ -2,17 +2,20 @@ package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.enitity.Provider;
+import me.timur.servicesearchtelegrambot.enitity.ProviderService;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import me.timur.servicesearchtelegrambot.repository.ProviderRepository;
+import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -27,6 +30,7 @@ public class ProviderManagerImpl implements ProviderManager {
     private final ProviderRepository providerRepository;
     private final ServiceManager serviceManager;
     private final UserService userService;
+    private final ProviderServiceRepository providerServiceRepository;
 
     @Override
     public Provider getById(Long id) {
@@ -64,14 +68,17 @@ public class ProviderManagerImpl implements ProviderManager {
 
     @Override
     public List<Provider> findAllByService(me.timur.servicesearchtelegrambot.enitity.Service service) {
-        return providerRepository.findAllByServiceAndIsActiveTrue(service);
+        List<Long> providerIdList = providerServiceRepository.findAllByService(service)
+                .stream().map(ps -> ps.getProvider().getId()).collect(Collectors.toList());
+
+        return providerRepository.findAllByIdInAndIsActiveTrue(providerIdList);
     }
 
     @Override
     public Provider getOrSave(UserDTO userDTO) {
         User user = userService.getOrSave(userDTO);
-        Provider provider = providerRepository.findByUserTelegramId(user.getTelegramId())
+        return providerRepository
+                .findByUserTelegramId(user.getTelegramId())
                 .orElse(providerRepository.save(new Provider(user)));
-        return null;
     }
 }
