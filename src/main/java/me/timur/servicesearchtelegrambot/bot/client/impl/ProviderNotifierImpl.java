@@ -54,8 +54,8 @@ public class ProviderNotifierImpl implements ProviderNotifier {
 
         final User client = query.getClient();
         String clientContact = Objects.nonNull(client.getUsername()) ? client.getUsername() : client.getPhone();
-
-        return UpdateUtil.message(user.getTelegramId().toString(),"Новый запрос от " + clientContact);
+        String message = String.format("Новый запрос от %s на %s", clientContact, query.getService().getName());
+        return UpdateUtil.message(provider.getUser().getTelegramId().toString(), message);
     }
 
     private List<Provider> findProvidersByService(Service service) {
