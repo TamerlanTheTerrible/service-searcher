@@ -20,6 +20,7 @@ public enum Outcome {
 
     PROVIDER_SERVICE_ALREADY_EXISTS("Этот сервис у Вас уже зарегистрирован"),
     PROVIDER_SERVICE_SAVED("Сервис сохранён"),
+    RECEIVE_QUERY_NOTIFICATION("Запрос"),
 
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз")
     ;

@@ -11,4 +11,5 @@ import java.util.List;
 
 public interface ProviderNotifier {
     List<SendMessage> notifyProviders(Query query);
+    SendMessage sendToTheGroup(Query query);
 }

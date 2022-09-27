@@ -21,7 +21,7 @@ public class ProviderBot extends TelegramLongPollingBot {
     private final ProviderUpdateMapper providerUpdateMapper;
 
     private final static String BOT_NAME = "UzserviceproviderBot";
-  private final static String BOT_TOKEN = "5619769900:AAGHABIkbQ7DkItKLowv6N4cm_uW3rN4M1U";
+    private final static String BOT_TOKEN = "5619769900:AAGHABIkbQ7DkItKLowv6N4cm_uW3rN4M1U";
 
     @Override
     public String getBotUsername() {

@@ -32,6 +32,7 @@ public class DefaultUpdateMapper implements UpdateMapper {
     private final ChatLogService chatLogService;
     private final UpdateHandler updateHandler;
     private final ServiceManager serviceManager;
+
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();

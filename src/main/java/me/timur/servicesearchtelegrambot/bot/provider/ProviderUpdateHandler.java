@@ -21,4 +21,6 @@ public interface ProviderUpdateHandler {
     SendMessage saveServiceIfServiceFoundOrSearchFurther(Update update);
 
     SendMessage searchService(Update update);
+
+    SendMessage handleQuery(Update update);
 }

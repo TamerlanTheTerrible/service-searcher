@@ -9,6 +9,7 @@ import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class ProviderNotifierImpl implements ProviderNotifier {
+
+    @Value("${group.service.searcher.id.dev}")
+    private String serviceSearcherGroupId;
 
     private final ProviderManager providerManager;
 
@@ -44,6 +48,14 @@ public class ProviderNotifierImpl implements ProviderNotifier {
         }
 
         return messages;
+    }
+
+    @Override
+    public SendMessage sendToTheGroup(Query query) {
+        final User client = query.getClient();
+        String clientContact = Objects.nonNull(client.getUsername()) ? client.getUsername() : client.getPhone();
+        String message = String.format("Новый запрос от %s на %s", clientContact, query.getService().getName());
+        return UpdateUtil.message(serviceSearcherGroupId, message);
     }
 
     private SendMessage prepareMessage(Provider provider, Query query) {

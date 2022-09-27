@@ -8,6 +8,7 @@ import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateMapper;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,6 +34,9 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
 
+    @Value("${group.service.searcher.id.dev}")
+    private Long serviceSearcherGroupId;
+
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
         final List<BotApiMethod<Message>> replyList = new ArrayList<>();
@@ -52,11 +56,13 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
         try {
             final String newCommand = command(update);
             final String lastChatCommand = chatLogService.getLastChatOutcome(update);
-
+            //check if it is from the group
+            if (update.getMessage().isGroupMessage() && Objects.equals(update.getMessage().getChatId(), serviceSearcherGroupId))
+                sendMessage = updateHandler.handleQuery(update);
             // start command called
-            if (Objects.equals(newCommand, Command.START.getValue()))
+            else if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
-                // list of all services required
+            // list of all services required
             else if (Objects.equals(newCommand, Outcome.CATEGORIES.getText()) || Objects.equals(newCommand, Outcome.BACK_TO_CATEGORIES.getText()) ) {
                 sendMessage = updateHandler.getCategories(update);
             }
@@ -71,7 +77,6 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // searching a service
             else if (lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
-
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);

@@ -31,13 +31,13 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
 @RequiredArgsConstructor
 public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
-    @Value("${keyboard.size.row}")
-    private Integer keyboardRowSize;
-
     private final ProviderManager providerManager;
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
     private final ProviderServiceRepository providerServiceRepository;
+
+    @Value("${keyboard.size.row}")
+    private Integer keyboardRowSize;
 
     @Override
     public SendMessage start(Update update) {
@@ -67,6 +67,11 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         }
 
         return sendMessage;
+    }
+
+    @Override
+    public SendMessage handleQuery(Update update) {
+        return message(update.getMessage().getFrom().getId().toString(), update.getMessage().getText());
     }
 
     @Override

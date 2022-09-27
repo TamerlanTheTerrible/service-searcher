@@ -43,6 +43,10 @@ public class ClientBot extends TelegramLongPollingBot {
     }
 
     private void handle(Update update) throws TelegramApiException {
+        if (update.getMessage().isGroupMessage()){
+            return;
+        }
+
         final List<BotApiMethod<Message>> sendMessageList = updateMapper.map(update);
         for (BotApiMethod<Message> message: sendMessageList) {
             execute(message);

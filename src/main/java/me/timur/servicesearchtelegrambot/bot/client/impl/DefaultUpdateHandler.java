@@ -57,8 +57,8 @@ public class DefaultUpdateHandler implements UpdateHandler {
             clientMsg.setReplyMarkup(removeKeyboard());
             messages.add(clientMsg);
             //prepare messages for providers
-            final List<SendMessage> providerMessages = providerNotifier.notifyProviders(query);
-            messages.addAll(providerMessages);
+            SendMessage groupMessage = providerNotifier.sendToTheGroup(query);
+            messages.add(groupMessage);
         }
         return messages;
     }
