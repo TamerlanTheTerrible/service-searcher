@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProviderNotifierImpl implements ProviderNotifier {
 
-    @Value("${group.service.searcher.id.dev}")
-    private String serviceSearcherGroupId;
+    @Value("${channel.service.searcher.id.dev}")
+    private String serviceSearchChannelId;
 
     private final ProviderManager providerManager;
 
@@ -55,7 +55,7 @@ public class ProviderNotifierImpl implements ProviderNotifier {
         final User client = query.getClient();
         String clientContact = Objects.nonNull(client.getUsername()) ? client.getUsername() : client.getPhone();
         String message = String.format("Новый запрос от %s на %s", clientContact, query.getService().getName());
-        return UpdateUtil.message(serviceSearcherGroupId, message);
+        return UpdateUtil.message(serviceSearchChannelId, message);
     }
 
     private SendMessage prepareMessage(Provider provider, Query query) {
