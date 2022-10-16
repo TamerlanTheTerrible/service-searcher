@@ -52,9 +52,7 @@ public class ProviderNotifierImpl implements ProviderNotifier {
 
     @Override
     public SendMessage sendToTheGroup(Query query) {
-        final User client = query.getClient();
-        String clientContact = Objects.nonNull(client.getUsername()) ? client.getUsername() : client.getPhone();
-        String message = String.format("Новый запрос от %s на %s", clientContact, query.getService().getName());
+        String message = String.format("Новый запрос #%s на %s", query.getId(), query.getService().getName());
         return UpdateUtil.message(serviceSearchChannelId, message);
     }
 
