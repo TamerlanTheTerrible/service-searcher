@@ -19,6 +19,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -120,6 +121,29 @@ public class DefaultUpdateHandler implements UpdateHandler {
                 .stream().map(q -> "#" + q.getId() +" : " + q.getService().getName())
                 .collect(Collectors.toList());
         return logAndKeyboard(update, Command.MY_QUERIES.getValue(), queryNames, 1, Outcome.MY_QUERIES);
+    }
+
+    @Override
+    public SendMessage getQueryById(Update update) {
+        String command = command(update);
+        String queryId = command.substring(0, command.indexOf(" "));
+
+        List<String> buttonList = new ArrayList<>();
+        buttonList.add(Outcome.DEACTIVATE_QUERY.getText() + " " + queryId);
+        buttonList.add(Outcome.BACK_TO_MY_QUERIES.getText());
+        return logAndKeyboard(update, command, buttonList, 2, Outcome.CHOOSE_QUERY);
+    }
+
+    @Override
+    public SendMessage deactivateQuery(Update update) {
+        String command = command(update);
+        Long queryId = Long.valueOf(
+                command.substring(command.indexOf("#") + 1, command.length())
+        );
+
+        queryService.delete(queryId);
+
+        return logAndMessage(update, Outcome.QUERY_DEACTIVATED.getText(), Outcome.QUERY_DEACTIVATED);
     }
 
     @Override

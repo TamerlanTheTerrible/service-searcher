@@ -23,4 +23,8 @@ public interface UpdateHandler {
     SendMessage getCategories(Update update);
 
     SendMessage getUserQueries(Update update);
+
+    SendMessage getQueryById(Update update);
+
+    SendMessage deactivateQuery(Update update);
 }

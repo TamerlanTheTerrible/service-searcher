@@ -55,6 +55,15 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+                // get all user queries
+            else if (newCommand.equals(Command.MY_QUERIES.getValue()) || newCommand.equals(Outcome.BACK_TO_MY_QUERIES.getText()))
+                sendMessage = updateHandler.getUserQueries(update);
+                // choose active query
+            else if (lastChatCommand.equals(Outcome.MY_QUERIES.name()) && newCommand.startsWith("#"))
+                sendMessage = updateHandler.getQueryById(update);
+                // deactivate query
+            else if (newCommand.contains(Outcome.DEACTIVATE_QUERY.getText()))
+                sendMessage = updateHandler.deactivateQuery(update);
             // list of all services required
             else if (Objects.equals(newCommand, Outcome.CATEGORIES.getText()) || Objects.equals(newCommand, Outcome.BACK_TO_CATEGORIES.getText()) ) {
                 sendMessage = updateHandler.getCategories(update);
@@ -71,9 +80,6 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // searching a service
             else if (newCommand.equals(Command.NEW_SEARCH.getValue()) || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
-            // get all user services
-            else if (newCommand.equals(Command.MY_QUERIES.getValue()))
-                sendMessage = updateHandler.getUserQueries(update);
             // unknown command
             else
                 sendMessage = updateHandler.unknownCommand(update);
