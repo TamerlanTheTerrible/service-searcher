@@ -3,10 +3,12 @@ package me.timur.servicesearchtelegrambot.bot.client.impl;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
+import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
@@ -108,6 +110,16 @@ public class DefaultUpdateHandler implements UpdateHandler {
     public SendMessage getCategories(Update update) {
         final List<String> categoryNames = serviceManager.getActiveCategoryNames();
         return logAndKeyboard(update, Outcome.CATEGORIES.getText(), categoryNames, keyboardRowSize, Outcome.CATEGORIES);
+    }
+
+    @Override
+    public SendMessage getUserQueries(Update update) {
+        final UserDTO userDTO = user(update);
+        List<String> queryNames = queryService
+                .getAllActiveByClientTgId(userDTO.getTelegramId())
+                .stream().map(q -> "#" + q.getId() +" : " + q.getService().getName())
+                .collect(Collectors.toList());
+        return logAndKeyboard(update, Command.MY_QUERIES.getValue(), queryNames, 1, Outcome.MY_QUERIES);
     }
 
     @Override

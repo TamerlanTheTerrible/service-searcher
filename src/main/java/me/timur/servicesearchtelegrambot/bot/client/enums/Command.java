@@ -8,8 +8,10 @@ import lombok.Getter;
 
 @Getter
 public enum Command {
-    START("/start");
-
+    START("/start"),
+    NEW_SEARCH("/search"),
+    MY_QUERIES("/queries"),
+    ;
     private final String value;
 
     Command(String s) {

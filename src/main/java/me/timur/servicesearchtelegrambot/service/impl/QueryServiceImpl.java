@@ -73,4 +73,9 @@ public class QueryServiceImpl implements QueryService {
         query.setIsActive(false);
         queryRepository.save(query);
     }
+
+    @Override
+    public List<Query> getAllActiveByClientTgId(Long tgId) {
+        return queryRepository.findAllByClientTelegramIdAndIsActiveTrue(tgId);
+    }
 }

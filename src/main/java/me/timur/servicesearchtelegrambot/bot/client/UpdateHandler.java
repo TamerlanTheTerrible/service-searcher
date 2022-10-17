@@ -21,4 +21,6 @@ public interface UpdateHandler {
     SendMessage getServicesByCategoryName(Update update);
 
     SendMessage getCategories(Update update);
+
+    SendMessage getUserQueries(Update update);
 }

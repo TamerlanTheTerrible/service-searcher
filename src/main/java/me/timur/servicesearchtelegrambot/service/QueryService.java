@@ -25,4 +25,5 @@ public interface QueryService {
 
     void delete(Long id);
 
+    List<Query> getAllActiveByClientTgId(Long tgId);
 }

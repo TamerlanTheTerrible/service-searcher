@@ -22,7 +22,10 @@ public enum Outcome {
     PROVIDER_SERVICE_SAVED("Сервис сохранён"),
     RECEIVE_QUERY_NOTIFICATION("Запрос"),
 
-    UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз")
+    UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),
+
+    NEW_SEARCH("/search"),
+    MY_QUERIES("/queries"),
     ;
 
     private final String text;
