@@ -43,7 +43,7 @@ public class ClientBot extends TelegramLongPollingBot {
     }
 
     private void handle(Update update) throws TelegramApiException {
-        if (update.getMessage().isChannelMessage()){
+        if (update.getChannelPost() != null){
             return;
         }
 
@@ -52,5 +52,4 @@ public class ClientBot extends TelegramLongPollingBot {
             execute(message);
         }
     }
-
 }
