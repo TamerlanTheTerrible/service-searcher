@@ -34,9 +34,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
     private final ServiceManager serviceManager;
 
     @Override
-    public List<BotApiMethod<Message>> map(Update update) {
+    public List<SendMessage> map(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();
-        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
+        final List<SendMessage> replyList = new ArrayList<>();
 
         SendMessage sendMessage = tryToMap(update, serviceNames, replyList);
 
@@ -46,7 +46,7 @@ public class DefaultUpdateMapper implements UpdateMapper {
         return replyList;
     }
 
-    private SendMessage tryToMap(Update update, List<String> serviceNames, List<BotApiMethod<Message>> replyList) {
+    private SendMessage tryToMap(Update update, List<String> serviceNames, List<SendMessage> replyList) {
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update);
@@ -55,7 +55,10 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
-                // get all user queries
+            //save phone
+            else if (update.getMessage() != null && update.getMessage().getContact() != null &&  update.getMessage().getContact().getPhoneNumber() != null)
+                replyList.addAll(updateHandler.savePhone(update));
+            // get all user queries
             else if (newCommand.equals(Command.MY_QUERIES.getValue()) || newCommand.equals(Outcome.BACK_TO_MY_QUERIES.getText()))
                 sendMessage = updateHandler.getUserQueries(update);
                 // choose active query

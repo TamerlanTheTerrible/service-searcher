@@ -32,4 +32,6 @@ public interface UserService {
     void changeStatus(Long id, Boolean status);
 
     User getOrSave(UserDTO dto);
+
+    User save(User user);
 }

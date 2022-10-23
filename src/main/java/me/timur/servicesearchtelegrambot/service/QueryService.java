@@ -5,6 +5,7 @@ import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Temurbek Ismoilov on 24/04/22.
@@ -26,4 +27,6 @@ public interface QueryService {
     void delete(Long id);
 
     List<Query> getAllActiveByClientTgId(Long tgId);
+
+    Optional<Query> getLastActiveByClientTgId(Long tgId);
 }

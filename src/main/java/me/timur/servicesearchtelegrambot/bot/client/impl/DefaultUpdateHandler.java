@@ -3,11 +3,12 @@ package me.timur.servicesearchtelegrambot.bot.client.impl;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
+import me.timur.servicesearchtelegrambot.bot.util.PhoneUtil;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.QueryService;
@@ -18,14 +19,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
 
 /**
  * Created by Temurbek Ismoilov on 23/08/22.
@@ -55,16 +52,60 @@ public class DefaultUpdateHandler implements UpdateHandler {
             User client = userService.getOrSave(user(update));
             Query query = new Query(client, service);
             queryService.save(query);
-            //prepare message for client
-            SendMessage clientMsg = logAndMessage(update,  Outcome.QUERY_SAVED.getText(), Outcome.QUERY_SAVED);
-            clientMsg.setReplyMarkup(removeKeyboard());
-            messages.add(clientMsg);
-            //prepare messages for providers
-            SendMessage groupMessage = providerNotifier.sendToTheGroup(query);
-            messages.add(groupMessage);
+
+            // check phone number
+            if (client.getPhone() != null)
+                messages.addAll(sendNewQueryNotifications(update));
+            else {
+                // request phone
+                SendMessage phoneRequest = logAndMessage(update, "Пожалуйста, напишите номер телефона, чтобы с вами могли связаться", Outcome.PHONE_REQUESTED);
+                phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
+                messages.add(phoneRequest);
+            }
         }
         return messages;
     }
+
+    @Override
+    public List<SendMessage> savePhone(Update update) {
+        //get and validate phone number
+        String phone = update.getMessage().getContact().getPhoneNumber();
+
+        if (!PhoneUtil.isValid(phone)) {
+            List<SendMessage> messages = new ArrayList<>();
+            SendMessage phoneRequest = logAndMessage(update, Outcome.INVALID_PHONE_FORMAT_SENT.getText(), Outcome.INVALID_PHONE_FORMAT_SENT);
+            phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
+            messages.add(phoneRequest);
+            return messages;
+        }
+
+        //set phone to user
+        User user = userService.getUserByTgId(user(update).getTelegramId());
+        user.setPhone(phone);
+        userService.save(user);
+
+        // after getting phone query notifications can be sent
+        return sendNewQueryNotifications(update);
+    }
+
+    @Override
+    public List<SendMessage> sendNewQueryNotifications(Update update) {
+        List<SendMessage> messages = new ArrayList<>();
+
+        // prepare messages for providers
+        Optional<Query> queryOpt = queryService.getLastActiveByClientTgId(Long.valueOf(chatId(update)));
+        if (!queryOpt.isPresent())
+            return messages;
+        else
+            messages.add(providerNotifier.sendToTheGroup(queryOpt.get()));
+
+        // prepare message for client
+        SendMessage clientMsg = logAndMessage(update,  Outcome.QUERY_SAVED.getText(), Outcome.QUERY_NOTIFIED);
+        clientMsg.setReplyMarkup(removeKeyboard());
+        messages.add(clientMsg);
+        return messages;
+    }
+
 
     @Override
     public SendMessage searchService(Update update) {
@@ -120,7 +161,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
                 .getAllActiveByClientTgId(userDTO.getTelegramId())
                 .stream().map(q -> "#" + q.getId() +" : " + q.getService().getName())
                 .collect(Collectors.toList());
-        return logAndKeyboard(update, Command.MY_QUERIES.getValue(), queryNames, 1, Outcome.MY_QUERIES);
+        return logAndKeyboard(update, Outcome.MY_QUERIES.getText(), queryNames, 1, Outcome.MY_QUERIES);
     }
 
     @Override

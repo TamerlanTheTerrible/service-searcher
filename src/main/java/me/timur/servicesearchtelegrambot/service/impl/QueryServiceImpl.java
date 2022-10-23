@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -77,5 +78,10 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public List<Query> getAllActiveByClientTgId(Long tgId) {
         return queryRepository.findAllByClientTelegramIdAndIsActiveTrue(tgId);
+    }
+
+    @Override
+    public Optional<Query> getLastActiveByClientTgId(Long tgId) {
+        return queryRepository.findTopByClientTelegramIdAndIsActiveTrueOrderByIdDesc(tgId);
     }
 }

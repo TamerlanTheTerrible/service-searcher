@@ -88,4 +88,9 @@ public class UserServiceImpl implements UserService {
                 ? user
                 : save(dto);
     }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }
