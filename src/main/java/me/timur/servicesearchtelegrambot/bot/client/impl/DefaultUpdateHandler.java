@@ -53,17 +53,86 @@ public class DefaultUpdateHandler implements UpdateHandler {
             Query query = new Query(client, service);
             queryService.save(query);
 
-            // check phone number
-            if (client.getPhone() != null)
+            //if client has a username continue with sending notifications. Else request username or phone
+            if (client.getUsername() != null) {
                 messages.addAll(sendNewQueryNotifications(update));
-            else {
-                // request phone
-                SendMessage phoneRequest = logAndMessage(update, "Пожалуйста, напишите номер телефона, чтобы с вами могли связаться", Outcome.PHONE_REQUESTED);
-                phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
-                messages.add(phoneRequest);
+            } else {
+                List<String> keyboard = new ArrayList<>(2);
+                keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
+                keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
+                // request contact
+                SendMessage contactRequest = logAndKeyboard(
+                        update,
+                        "Пожалуйста, выберите способ обратной связи\n" +
+                                "Чтобы с вами могли связаться через имя пользовательское имя в телеграмме, пожалуйста, " +
+                                "сначала пропищите её в настройках телеграмма (Настройки -> имя пользователя) " +
+                                "и нажмите кнопку `" + Outcome.USERNAME + "`",
+                        keyboard,
+                        2,
+                        Outcome.CONTACT_REQUESTED
+                );
+                messages.add(contactRequest);
             }
+
+//            else {
+//                // check phone
+//                if (client.getPhone() != null) {
+//                    List<String> keyboard = new ArrayList<>(2);
+//                    keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
+//                    keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
+//                    // request contact
+//                    SendMessage contactRequest = logAndKeyboard(
+//                            update,
+//                            "Пожалуйста, выберите способ обратной связи\n" +
+//                            "Чтобы с вами могли связаться через имя пользовательское имя в телеграмме, пожалуйста, " +
+//                            "сначала пропищите её в настройках телеграмма (Настройки -> имя пользователя) " +
+//                            "и нажмите кнопку `" + Outcome.USERNAME + "`",
+//                            keyboard,
+//                            2,
+//                            Outcome.CONTACT_REQUESTED
+//                    );
+//                    messages.add(contactRequest);
+//                }
+//                else {
+//                    // request phone
+//                    SendMessage phoneRequest = logAndMessage(update, "Пожалуйста, напишите номер телефона, чтобы с вами могли связаться", Outcome.PHONE_REQUESTED);
+//                    phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
+//                    messages.add(phoneRequest);
+//                }
+//            }
         }
         return messages;
+    }
+
+    @Override
+    public List<SendMessage> sendNotificationIfUsernamePresent(Update update) {
+        List<SendMessage> messages = new ArrayList<>();
+
+        final String userName = update.getMessage().getFrom().getUserName();
+        if (userName == null) {
+            List<String> keyboard = new ArrayList<>(2);
+            keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
+            keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
+        // request contact
+        SendMessage contactRequest = logAndKeyboard(
+              update,
+              "Ваше пользовательское имя все ещё пустой. Возможно вы его не прописали"
+                  + "Пожалуйста, добавьте его настройках телеграмма (Настройки -> имя пользователя) "
+                  + "и потом нажмите кнопку `" + Outcome.USERNAME + "`."
+                  + "Если предпочитаете связь через телефон, нажмите кнопку `" + Outcome.PHONE + "`.",
+              keyboard,
+              2,
+              Outcome.CONTACT_REQUESTED);
+            messages.add(contactRequest);
+        }
+        return messages;
+    }
+
+    @Override
+    public SendMessage requestPhone(Update update) {
+        SendMessage phoneRequest = logAndMessage(update, "Пожалуйста, напишите номер телефона, чтобы с вами могли связаться", Outcome.PHONE_REQUESTED);
+        phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
+        return phoneRequest;
     }
 
     @Override
@@ -199,6 +268,6 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
     private SendMessage logAndKeyboard(Update update, String message, List<String> serviceNames, Integer keyboardRowSize, Outcome outcome) {
         chatLogService.log(update, outcome);
-        return keyboard(chatId(update), message, serviceNames, keyboardRowSize);
+        return keyboard(chatId(update), message, serviceNames, 2);
     }
 }

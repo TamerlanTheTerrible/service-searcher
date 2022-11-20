@@ -9,16 +9,15 @@ import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.command;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.tgUserId;
 
 /**
  * Created by Temurbek Ismoilov on 13/08/22.
@@ -55,6 +54,12 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+            // send notifications if username exists
+            else if (Objects.equals(newCommand, Outcome.USERNAME.getText()))
+                replyList.addAll( updateHandler.sendNotificationIfUsernamePresent(update));
+            // request phone
+            else if (Objects.equals(newCommand, Outcome.PHONE.getText()))
+                sendMessage = updateHandler.requestPhone(update);
             //save phone
             else if (update.getMessage() != null && update.getMessage().getContact() != null &&  update.getMessage().getContact().getPhoneNumber() != null)
                 replyList.addAll(updateHandler.savePhone(update));
@@ -84,11 +89,11 @@ public class DefaultUpdateMapper implements UpdateMapper {
             else if (newCommand.equals(Command.NEW_SEARCH.getValue()) || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
             // unknown command
-            else
-                sendMessage = updateHandler.unknownCommand(update);
+//            else
+//                sendMessage = updateHandler.unknownCommand(update);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            sendMessage = updateHandler.unknownCommand(update);
+            log.error("ERROR for user " + tgUserId(update) + " : " + e.getMessage(), e);
+//            sendMessage = updateHandler.unknownCommand(update);
         }
         return sendMessage;
     }

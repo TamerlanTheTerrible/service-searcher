@@ -32,6 +32,9 @@ public enum Outcome {
     BACK_TO_MY_QUERIES("Вернуться к запросам"),
     QUERY_NOTIFIED("Запрос разослан"),
     PHONE_REQUESTED("Телефон запросан"),
+    CONTACT_REQUESTED("Имя пользователя"),
+    USERNAME("Имя пользователя"),
+    PHONE("Телефон"),
     INVALID_PHONE_FORMAT_SENT("Неверный формат телефона, отправьте еще раз")
     ;
 

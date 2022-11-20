@@ -13,6 +13,10 @@ import java.util.List;
 public interface UpdateHandler {
     SendMessage start(Update update);
 
+    List<SendMessage> sendNotificationIfUsernamePresent(Update update);
+
+    SendMessage requestPhone(Update update);
+
     List<SendMessage> savePhone(Update update);
 
     List<SendMessage> sendNewQueryNotifications(Update update);
