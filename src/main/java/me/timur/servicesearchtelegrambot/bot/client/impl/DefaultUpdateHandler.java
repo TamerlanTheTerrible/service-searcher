@@ -73,33 +73,6 @@ public class DefaultUpdateHandler implements UpdateHandler {
                 );
                 messages.add(contactRequest);
             }
-
-//            else {
-//                // check phone
-//                if (client.getPhone() != null) {
-//                    List<String> keyboard = new ArrayList<>(2);
-//                    keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
-//                    keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
-//                    // request contact
-//                    SendMessage contactRequest = logAndKeyboard(
-//                            update,
-//                            "Пожалуйста, выберите способ обратной связи\n" +
-//                            "Чтобы с вами могли связаться через имя пользовательское имя в телеграмме, пожалуйста, " +
-//                            "сначала пропищите её в настройках телеграмма (Настройки -> имя пользователя) " +
-//                            "и нажмите кнопку `" + Outcome.USERNAME + "`",
-//                            keyboard,
-//                            2,
-//                            Outcome.CONTACT_REQUESTED
-//                    );
-//                    messages.add(contactRequest);
-//                }
-//                else {
-//                    // request phone
-//                    SendMessage phoneRequest = logAndMessage(update, "Пожалуйста, напишите номер телефона, чтобы с вами могли связаться", Outcome.PHONE_REQUESTED);
-//                    phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
-//                    messages.add(phoneRequest);
-//                }
-//            }
         }
         return messages;
     }
