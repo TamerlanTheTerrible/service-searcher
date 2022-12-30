@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.bot.client;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -21,8 +22,10 @@ public class ClientBot extends TelegramLongPollingBot {
 
     private final UpdateMapper updateMapper;
 
-    private final static String BOT_NAME = "UzservicesearchBot";
-    private final static String BOT_TOKEN = "5452269303:AAGodrX6ZbfbFfo5GNkOK2CArsmyAqpdeyE";
+    @Value("${bot.username}")
+    private String BOT_NAME;
+    @Value("${bot.token}")
+    private String BOT_TOKEN;
 
     @Override
     public String getBotUsername() {
