@@ -16,7 +16,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "services")
+@Table(name = "service")
 public class Service extends BaseEntity{
 
     @Column(name = "name", nullable = false)
