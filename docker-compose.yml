@@ -1,0 +1,25 @@
+version: '1'
+services:
+  service-searcher-prod:
+    container_name: service-searcher-prod
+    build:
+      context: target/generated-sources/annotations
+      dockerfile: src/main/resources/Dockerfile
+    ports:
+      - "8181:8181"
+#    networks:
+#      - default-network
+  db:
+    image: postgres:15.1
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=V6kqYL8OzTT4SwM
+      - POSTGRES_DB=service_searcher
+#    networks:
+#      - default-network
+#networks:
+#  default-network:
+#    driver: bridge

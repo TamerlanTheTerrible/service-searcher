@@ -29,9 +29,6 @@ public class ProviderServiceSubscription extends BaseEntity{
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
