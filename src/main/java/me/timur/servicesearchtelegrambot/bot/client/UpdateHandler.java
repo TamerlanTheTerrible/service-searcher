@@ -1,6 +1,5 @@
 package me.timur.servicesearchtelegrambot.bot.client;
 
-import me.timur.servicesearchtelegrambot.enitity.Query;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -13,6 +12,8 @@ import java.util.List;
 public interface UpdateHandler {
     SendMessage start(Update update);
 
+    List<SendMessage> addQueryCommentAndRequestContact(Update update);
+
     List<SendMessage> sendNotificationIfUsernamePresent(Update update);
 
     SendMessage requestPhone(Update update);
@@ -23,7 +24,7 @@ public interface UpdateHandler {
 
     SendMessage searchService(Update update);
 
-    List<SendMessage> saveQueryIfServiceFoundOrSearchFurther(Update update);
+    SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update);
 
     SendMessage unknownCommand(Update update);
 

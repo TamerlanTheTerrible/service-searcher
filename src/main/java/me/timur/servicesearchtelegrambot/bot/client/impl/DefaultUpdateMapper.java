@@ -81,9 +81,11 @@ public class DefaultUpdateMapper implements UpdateMapper {
                 sendMessage = updateHandler.getServicesByCategoryName(update);
             }
             // required service found
-            else if ((lastChatCommand.equals(Outcome.SERVICES.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name())) && serviceNames.contains(newCommand)) {
-                List<SendMessage> messages = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
-                replyList.addAll(messages);
+            else if ((lastChatCommand.equals(Outcome.SERVICES.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name())) && serviceNames.contains(newCommand))
+                sendMessage = updateHandler.saveQueryIfServiceFoundOrSearchFurther(update);
+            // query comment requested
+            else if (lastChatCommand.equals(Outcome.QUERY_COMMENT_REQUESTED.name())) {
+                replyList.addAll(updateHandler.addQueryCommentAndRequestContact(update));
             }
             // searching a service
             else if (newCommand.equals(Command.NEW_SEARCH.getValue()) || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))

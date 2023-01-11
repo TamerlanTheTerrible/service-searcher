@@ -42,38 +42,72 @@ public class DefaultUpdateHandler implements UpdateHandler {
     private final ProviderNotifier providerNotifier;
 
     @Override
-    public List<SendMessage> saveQueryIfServiceFoundOrSearchFurther(Update update) {
+    public SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update) {
         Service service = serviceManager.getServiceByName(command(update));
-        List<SendMessage> messages = new ArrayList<>();
         if (service == null) {
-            messages.add(searchService(update));
+            return searchService(update);
         } else {
             //save query
             User client = userService.getOrSave(user(update));
             Query query = new Query(client, service);
             queryService.save(query);
 
-            //if client has a username continue with sending notifications. Else request username or phone
-            if (client.getUsername() != null) {
-                messages.addAll(sendNewQueryNotifications(update));
-            } else {
-                List<String> keyboard = new ArrayList<>(2);
-                keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
-                keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
-                // request contact
-                SendMessage contactRequest = logAndKeyboard(
-                        update,
-                        "Пожалуйста, выберите способ обратной связи\n" +
-                                "Чтобы с вами могли связаться через имя пользовательское имя в телеграмме, пожалуйста, " +
-                                "сначала пропищите её в настройках телеграмма (Настройки -> имя пользователя) " +
-                                "и нажмите кнопку `" + Outcome.USERNAME + "`",
-                        keyboard,
-                        2,
-                        Outcome.CONTACT_REQUESTED
-                );
-                messages.add(contactRequest);
-            }
+            //request query comment
+            List<String> keyboard = new ArrayList<>();
+            keyboard.add(Outcome.SKIP.getText());
+            return logAndKeyboard(
+                    update,
+                    Outcome.QUERY_COMMENT_REQUESTED.getText(),
+                    keyboard,
+                    1,
+                    Outcome.QUERY_COMMENT_REQUESTED
+            );
         }
+    }
+
+    @Override
+    public List<SendMessage> addQueryCommentAndRequestContact(Update update) {
+        //get last active query
+        final Query query = queryService.getLastActiveByClientTgId(Long.valueOf(chatId(update))).orElse(null);
+        if (query == null) {
+            return null;
+        }
+
+        // add comment to the query
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            query.setComment(newCommand);
+            queryService.save(query);
+        }
+
+        return requestContact(update);
+    }
+
+    private List<SendMessage> requestContact(Update update) {
+        User client = userService.getOrSave(user(update));
+        List<SendMessage> messages = new ArrayList<>();
+
+        //if client has a username continue with sending notifications. Else request username or phone
+        if (client.getUsername() != null) {
+            messages.addAll(sendNewQueryNotifications(update));
+        } else {
+            List<String> keyboard = new ArrayList<>(2);
+            keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
+            keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
+            // request contact
+            SendMessage contactRequest = logAndKeyboard(
+                    update,
+                    "Пожалуйста, выберите способ обратной связи\n" +
+                            "Чтобы с вами могли связаться через имя пользовательское имя в телеграмме, пожалуйста, " +
+                            "сначала пропищите её в настройках телеграмма (Настройки -> имя пользователя) " +
+                            "и нажмите кнопку `" + Outcome.USERNAME + "`",
+                    keyboard,
+                    2,
+                    Outcome.CONTACT_REQUESTED
+            );
+            messages.add(contactRequest);
+        }
+
         return messages;
     }
 

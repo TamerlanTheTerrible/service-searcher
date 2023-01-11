@@ -36,7 +36,10 @@ public enum Outcome {
     CONTACT_REQUESTED("Имя пользователя"),
     USERNAME("Имя пользователя"),
     PHONE("Телефон"),
-    INVALID_PHONE_FORMAT_SENT("Неверный формат телефона, отправьте еще раз")
+    INVALID_PHONE_FORMAT_SENT("Неверный формат телефона, отправьте еще раз"),
+
+    QUERY_COMMENT_REQUESTED("Напишите детали вашего запроса (опционально)"),
+    SKIP("➡️Пропустить"),
     ;
 
     private final String text;
