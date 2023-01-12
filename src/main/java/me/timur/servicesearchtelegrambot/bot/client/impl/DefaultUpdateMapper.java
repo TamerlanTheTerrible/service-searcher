@@ -54,6 +54,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+            // new search command
+            else if (newCommand.equals(Command.NEW_SEARCH.getValue()))
+                sendMessage = updateHandler.searchNewService(update);
             // send notifications if username exists
             else if (Objects.equals(newCommand, Outcome.USERNAME.getText()))
                 replyList.addAll( updateHandler.sendNotificationIfUsernamePresent(update));
@@ -88,8 +91,8 @@ public class DefaultUpdateMapper implements UpdateMapper {
                 replyList.addAll(updateHandler.addQueryCommentAndRequestContact(update));
             }
             // searching a service
-            else if (newCommand.equals(Command.NEW_SEARCH.getValue()) || lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
-                sendMessage = updateHandler.searchService(update);
+            else if (lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.NEW_SEARCH.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
+                sendMessage = updateHandler.searchWithOptions(update);
             // unknown command
 //            else
 //                sendMessage = updateHandler.unknownCommand(update);

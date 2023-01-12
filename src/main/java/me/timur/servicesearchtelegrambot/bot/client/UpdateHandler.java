@@ -22,7 +22,9 @@ public interface UpdateHandler {
 
     List<SendMessage> sendNewQueryNotifications(Update update);
 
-    SendMessage searchService(Update update);
+    SendMessage searchNewService(Update update);
+
+    SendMessage searchWithOptions(Update update);
 
     SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update);
 

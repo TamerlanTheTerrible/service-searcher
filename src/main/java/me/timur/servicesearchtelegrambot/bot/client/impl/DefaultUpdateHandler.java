@@ -45,7 +45,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
     public SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update) {
         Service service = serviceManager.getServiceByName(command(update));
         if (service == null) {
-            return searchService(update);
+            return searchWithOptions(update);
         } else {
             //save query
             User client = userService.getOrSave(user(update));
@@ -182,9 +182,15 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return messages;
     }
 
+    @Override
+    public SendMessage searchNewService(Update update) {
+        final SendMessage sendMessage = logAndMessage(update,"Напишите названия сервиса, который вы ищите", Outcome.NEW_SEARCH);
+        sendMessage.setReplyMarkup(removeKeyboard());
+        return sendMessage;
+    }
 
     @Override
-    public SendMessage searchService(Update update) {
+    public SendMessage searchWithOptions(Update update) {
         String command = command(update);
         SendMessage sendMessage;
 
