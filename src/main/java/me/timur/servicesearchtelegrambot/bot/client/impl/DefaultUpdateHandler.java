@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Region;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.bot.util.PhoneUtil;
 import me.timur.servicesearchtelegrambot.enitity.Query;
@@ -40,6 +41,55 @@ public class DefaultUpdateHandler implements UpdateHandler {
     private final UserService userService;
     private final ChatLogService chatLogService;
     private final ProviderNotifier providerNotifier;
+
+    @Override
+    public SendMessage start(Update update) {
+        //save if user doesn't exist
+        User client = userService.getOrSave(user(update));
+        final String name = Objects.nonNull(client.getFirstname()) ? client.getFirstname()
+                : Objects.nonNull(client.getLastname()) ? client.getLastname()
+                : Objects.nonNull(client.getUsername()) ? client.getUsername()
+                : "друг";
+//        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы ищите", name), Outcome.START);
+//        sendMessage.setReplyMarkup(removeKeyboard());
+//        return sendMessage;
+
+        return logAndKeyboard(
+                update,
+                String.format("Добро пожаловать, %s. " + Outcome.REGION_REQUESTED.getText(), name),
+                Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                2,
+                Outcome.REGION_REQUESTED
+        );
+    }
+
+    @Override
+    public SendMessage saveRegionAndRequestService(Update update) {
+        Region region = Region.getByRussian(command(update));
+        if (region == null) {
+            return logAndKeyboard(
+                    update,
+                    Outcome.REGION_REQUESTED.getText(),
+                    Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                    2,
+                    Outcome.REGION_REQUESTED
+            );
+        } else {
+            //set region for a user
+            final User user = userService.getUserByTgId(Long.valueOf(chatId(update)));
+            user.setRegion(region);
+            userService.save(user);
+            //search new service
+            return searchNewService(update);
+        }
+    }
+
+    @Override
+    public SendMessage searchNewService(Update update) {
+        final SendMessage sendMessage = logAndMessage(update,"Напишите названия сервиса, который вы ищите", Outcome.NEW_SEARCH);
+        sendMessage.setReplyMarkup(removeKeyboard());
+        return sendMessage;
+    }
 
     @Override
     public SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update) {
@@ -183,13 +233,6 @@ public class DefaultUpdateHandler implements UpdateHandler {
     }
 
     @Override
-    public SendMessage searchNewService(Update update) {
-        final SendMessage sendMessage = logAndMessage(update,"Напишите названия сервиса, который вы ищите", Outcome.NEW_SEARCH);
-        sendMessage.setReplyMarkup(removeKeyboard());
-        return sendMessage;
-    }
-
-    @Override
     public SendMessage searchWithOptions(Update update) {
         String command = command(update);
         SendMessage sendMessage;
@@ -206,19 +249,6 @@ public class DefaultUpdateHandler implements UpdateHandler {
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 
-        return sendMessage;
-    }
-
-    @Override
-    public SendMessage start(Update update) {
-        //save if user doesn't exist
-        User client = userService.getOrSave(user(update));
-        final String name = Objects.nonNull(client.getFirstname()) ? client.getFirstname()
-                : Objects.nonNull(client.getLastname()) ? client.getLastname()
-                : Objects.nonNull(client.getUsername()) ? client.getUsername()
-                : "друг";
-        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы ищите", name), Outcome.START);
-        sendMessage.setReplyMarkup(removeKeyboard());
         return sendMessage;
     }
 

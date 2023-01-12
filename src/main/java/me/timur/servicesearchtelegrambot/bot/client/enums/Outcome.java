@@ -40,6 +40,8 @@ public enum Outcome {
 
     QUERY_COMMENT_REQUESTED("Напишите детали вашего запроса (опционально)"),
     SKIP("➡️Пропустить"),
+
+    REGION_REQUESTED("Выберите регион вашего проживания")
     ;
 
     private final String text;

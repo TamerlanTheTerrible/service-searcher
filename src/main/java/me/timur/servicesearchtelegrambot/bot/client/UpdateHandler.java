@@ -26,6 +26,8 @@ public interface UpdateHandler {
 
     SendMessage searchWithOptions(Update update);
 
+    SendMessage saveRegionAndRequestService(Update update);
+
     SendMessage saveQueryIfServiceFoundOrSearchFurther(Update update);
 
     SendMessage unknownCommand(Update update);
