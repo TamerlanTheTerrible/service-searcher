@@ -277,7 +277,9 @@ public class DefaultUpdateHandler implements UpdateHandler {
         final List<Query> queries = queryService.getAllActiveByClientTgId(userDTO.getTelegramId());
 
         if (queries.isEmpty()) {
-            return logAndMessage(update, "У вас нет активных запросов", Outcome.MY_QUERIES);
+            final SendMessage sendMessage = logAndMessage(update, "У вас нет активных запросов", Outcome.MY_QUERIES);
+            sendMessage.setReplyMarkup(removeKeyboard());
+            return sendMessage;
         } else {
             List<String> queryNames = queries.stream()
                     .map(q -> "#" + q.getId() +" : " + q.getService().getName())
