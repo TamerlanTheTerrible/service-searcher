@@ -274,11 +274,16 @@ public class DefaultUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage getUserQueries(Update update) {
         final UserDTO userDTO = user(update);
-        List<String> queryNames = queryService
-                .getAllActiveByClientTgId(userDTO.getTelegramId())
-                .stream().map(q -> "#" + q.getId() +" : " + q.getService().getName())
-                .collect(Collectors.toList());
-        return logAndKeyboard(update, Outcome.MY_QUERIES.getText(), queryNames, 1, Outcome.MY_QUERIES);
+        final List<Query> queries = queryService.getAllActiveByClientTgId(userDTO.getTelegramId());
+
+        if (queries.isEmpty()) {
+            return logAndMessage(update, "У вас нет активных запросов", Outcome.MY_QUERIES);
+        } else {
+            List<String> queryNames = queries.stream()
+                    .map(q -> "#" + q.getId() +" : " + q.getService().getName())
+                    .collect(Collectors.toList());
+            return logAndKeyboard(update, Outcome.MY_QUERIES.getText(), queryNames, 1, Outcome.MY_QUERIES);
+        }
     }
 
     @Override
