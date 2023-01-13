@@ -41,8 +41,6 @@ public class ChatLog extends BaseEntity{
     @Enumerated(value = EnumType.STRING)
     private ChatLogType logType;
 
-
-
     public ChatLog(Update update, Outcome outcome) {
         this.tgUserId = tgUserId(update);
         this.tgChatId = chatId(update);

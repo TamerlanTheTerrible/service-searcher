@@ -49,7 +49,9 @@ public class DefaultUpdateMapper implements UpdateMapper {
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update);
-            final String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT);
+            final String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT) != null
+                    ? chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT)
+                    : "";
 
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))

@@ -222,11 +222,16 @@ public class DefaultUpdateHandler implements UpdateHandler {
         Optional<Query> queryOpt = queryService.getLastActiveByClientTgId(Long.valueOf(chatId(update)));
         if (!queryOpt.isPresent())
             return messages;
-        else
-            messages.add(providerNotifier.sendToTheGroup(queryOpt.get()));
+
+        final Query query = queryOpt.get();
+        messages.add(providerNotifier.sendToTheGroup(query));
 
         // prepare message for client
-        SendMessage clientMsg = logAndMessage(update,  Outcome.QUERY_SAVED.getText(), Outcome.QUERY_NOTIFIED);
+        SendMessage clientMsg = logAndMessage(
+                update,
+                Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId(),
+                Outcome.QUERY_NOTIFIED);
+
         clientMsg.setReplyMarkup(removeKeyboard());
         messages.add(clientMsg);
         return messages;
