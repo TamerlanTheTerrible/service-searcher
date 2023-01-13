@@ -3,7 +3,8 @@ package me.timur.servicesearchtelegrambot.enitity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.client.enums.ChatLogType;
+import me.timur.servicesearchtelegrambot.bot.client.enums. Outcome;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.persistence.*;
@@ -36,11 +37,18 @@ public class ChatLog extends BaseEntity{
     @Enumerated(value = EnumType.STRING)
     private Outcome outcome;
 
+    @Column(name = "log_type")
+    @Enumerated(value = EnumType.STRING)
+    private ChatLogType logType;
+
+
+
     public ChatLog(Update update, Outcome outcome) {
         this.tgUserId = tgUserId(update);
         this.tgChatId = chatId(update);
         this.command = command(update);
         this.outcome = outcome;
+        this.logType = ChatLogType.CLIENT;
     }
 
     @Override

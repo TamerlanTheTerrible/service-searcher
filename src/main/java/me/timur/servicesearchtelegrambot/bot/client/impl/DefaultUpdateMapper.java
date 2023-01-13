@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateMapper;
+import me.timur.servicesearchtelegrambot.bot.client.enums.ChatLogType;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
@@ -16,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.command;
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.tgUserId;
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 
 /**
  * Created by Temurbek Ismoilov on 13/08/22.
@@ -49,7 +49,7 @@ public class DefaultUpdateMapper implements UpdateMapper {
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update);
-            final String lastChatCommand = chatLogService.getLastChatOutcome(update);
+            final String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT);
 
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
@@ -97,11 +97,11 @@ public class DefaultUpdateMapper implements UpdateMapper {
             else if (lastChatCommand.equals(Outcome.NEW_SEARCH.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchWithOptions(update);
             // unknown command
-//            else
-//                sendMessage = updateHandler.unknownCommand(update);
+            else
+                sendMessage = updateHandler.unknownCommand(update);
         } catch (Exception e) {
-            log.error("ERROR for user " + tgUserId(update) + " : " + e.getMessage(), e);
-//            sendMessage = updateHandler.unknownCommand(update);
+            log.error("ERROR --- user: {} command: {} msg: {}", chatId(update), (command(update) != null ? command(update): "null command"), e.getMessage(), e);
+            sendMessage = updateHandler.unknownCommand(update);
         }
         return sendMessage;
     }
