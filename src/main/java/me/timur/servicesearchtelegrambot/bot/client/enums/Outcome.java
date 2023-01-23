@@ -31,7 +31,7 @@ public enum Outcome {
     MY_QUERIES("/queries"),
     CHOOSE_QUERY("Выбрать запрос"),
     DEACTIVATE_QUERY("Закрыть запрос"),
-  QUERY_DEACTIVATED("Запрос закрыт ❌"),
+    QUERY_DEACTIVATED("Запрос закрыт ❌"),
     BACK_TO_MY_QUERIES("Вернуться к запросам"),
     QUERY_NOTIFIED("Запрос разослан"),
     PHONE_REQUESTED("Телефон запросан"),
