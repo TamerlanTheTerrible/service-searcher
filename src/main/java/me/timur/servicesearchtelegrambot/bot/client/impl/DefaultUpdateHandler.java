@@ -56,7 +56,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         return logAndKeyboard(
                 update,
-                String.format("Добро пожаловать, %s. ☺️ " + Outcome.REGION_REQUESTED.getText(), name),
+                String.format("Добро пожаловать, %s. " + Outcome.REGION_REQUESTED.getText(), name),
                 Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
                 2,
                 Outcome.REGION_REQUESTED
@@ -86,11 +86,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage searchNewService(Update update) {
-    final SendMessage sendMessage =
-        logAndMessage(
-            update,
-            "Напишите названия сервиса, который вы ищите \uD83D\uDD0E\n",
-            Outcome.NEW_SEARCH);
+        final SendMessage sendMessage = logAndMessage(update,"Напишите названия сервиса, который вы ищите", Outcome.NEW_SEARCH);
         sendMessage.setReplyMarkup(removeKeyboard());
         return sendMessage;
     }
@@ -230,12 +226,11 @@ public class DefaultUpdateHandler implements UpdateHandler {
         final Query query = queryOpt.get();
         messages.add(providerNotifier.sendToTheGroup(query));
 
-    // prepare message for client
-    SendMessage clientMsg =
-        logAndMessage(
-            update,
-            Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId() + "\uD83D\uDE0C",
-            Outcome.QUERY_NOTIFIED);
+        // prepare message for client
+        SendMessage clientMsg = logAndMessage(
+                update,
+                Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId(),
+                Outcome.QUERY_NOTIFIED);
 
         clientMsg.setReplyMarkup(removeKeyboard());
         messages.add(clientMsg);
