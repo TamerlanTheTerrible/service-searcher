@@ -54,12 +54,12 @@ public class DefaultUpdateMapper implements UpdateMapper {
                     : "";
 
             // start command called
-            if (Objects.equals(newCommand, Command.START.getValue()))
+            if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
             else if (Objects.equals(newCommand, "/test"))
                 sendMessage = updateHandler.test(update);
             // new search command
-            else if (newCommand.equals(Command.NEW_SEARCH.getValue()))
+            else if (newCommand.equals(Command.NEW_SEARCH.getText()) || newCommand.equals(Command.NEW_SEARCH_BUTTON.getText()))
                 sendMessage = updateHandler.searchNewService(update);
                 // region requested
             else if (lastChatCommand.equals(Outcome.REGION_REQUESTED.name()))
@@ -74,7 +74,7 @@ public class DefaultUpdateMapper implements UpdateMapper {
             else if (update.getMessage() != null && update.getMessage().getContact() != null &&  update.getMessage().getContact().getPhoneNumber() != null)
                 replyList.addAll(updateHandler.savePhone(update));
             // get all user queries
-            else if (newCommand.equals(Command.MY_QUERIES.getValue()) || newCommand.equals(Outcome.BACK_TO_MY_QUERIES.getText()))
+            else if (newCommand.equals(Command.MY_QUERIES.getText()) || newCommand.equals(Outcome.BACK_TO_MY_QUERIES.getText()) || newCommand.equals(Command.MY_QUERIES_BUTTON.getText()))
                 sendMessage = updateHandler.getUserQueries(update);
                 // choose active query
             else if (lastChatCommand.equals(Outcome.MY_QUERIES.name()) && newCommand.startsWith("#"))

@@ -3,6 +3,7 @@ package me.timur.servicesearchtelegrambot.bot.client.impl;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Region;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
@@ -174,8 +175,8 @@ public class DefaultUpdateHandler implements UpdateHandler {
             List<String> keyboard = new ArrayList<>(2);
             keyboard.add(Outcome.USERNAME.getText());
             keyboard.add(Outcome.PHONE.getText());
-        // request contact
-        SendMessage contactRequest = logAndKeyboard(
+            // request contact
+            SendMessage contactRequest = logAndKeyboard(
               update,
               "Ваше пользовательское имя все ещё пустой. Возможно вы его не прописали "
                   + "Пожалуйста, добавьте его настройках телеграмма (Настройки -> имя пользователя) "
@@ -231,15 +232,16 @@ public class DefaultUpdateHandler implements UpdateHandler {
         messages.add(providerNotifier.sendToTheGroup(query));
 
     // prepare message for client
-    SendMessage clientMsg =
-        logAndMessage(
-            update,
-            Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId() + "\uD83D\uDE0C",
-            Outcome.QUERY_NOTIFIED);
+        SendMessage clientMsg =
+            logAndKeyboard(
+                update,
+                Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId() + "\uD83D\uDE0C",
+                commandButtons(),
+                2,
+                Outcome.QUERY_NOTIFIED);
 
-        clientMsg.setReplyMarkup(removeKeyboard());
-        messages.add(clientMsg);
-        return messages;
+            messages.add(clientMsg);
+            return messages;
     }
 
     @Override
@@ -251,7 +253,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         if (services.isEmpty()) {
             List<String> keyboardValues = new ArrayList<>();
             keyboardValues.add(Outcome.CATEGORIES.getText());
-            sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), Outcome.SERVICE_SEARCH_NOT_FOUND);
+            sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), commandButtons(), 2, Outcome.SERVICE_SEARCH_NOT_FOUND);
             sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
         } else {
             final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
@@ -282,7 +284,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
         final List<Query> queries = queryService.getAllActiveByClientTgId(userDTO.getTelegramId());
 
         if (queries.isEmpty()) {
-            final SendMessage sendMessage = logAndMessage(update, "У вас нет активных запросов", Outcome.MY_QUERIES);
+            final SendMessage sendMessage = logAndKeyboard(update, "У вас нет активных запросов", commandButtons(), 2, Outcome.MY_QUERIES);
             sendMessage.setReplyMarkup(removeKeyboard());
             return sendMessage;
         } else {
@@ -313,7 +315,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         queryService.delete(queryId);
 
-        return logAndMessage(update, Outcome.QUERY_DEACTIVATED.getText(), Outcome.QUERY_DEACTIVATED);
+        return logAndKeyboard(update, Outcome.QUERY_DEACTIVATED.getText(), commandButtons(), 2, Outcome.QUERY_DEACTIVATED);
     }
 
     @Override
@@ -325,7 +327,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage unknownCommand(Update update) {
-        return logAndMessage(update, Outcome.UNKNOWN_COMMAND.getText(), Outcome.UNKNOWN_COMMAND);
+        return logAndKeyboard(update, Outcome.UNKNOWN_COMMAND.getText(), commandButtons(), 2, Outcome.UNKNOWN_COMMAND);
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
@@ -336,5 +338,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
     private SendMessage logAndKeyboard(Update update, String message, List<String> serviceNames, Integer keyboardRowSize, Outcome outcome) {
         chatLogService.log(update, outcome);
         return keyboard(chatId(update), message, serviceNames, 2);
+    }
+
+    private List<String> commandButtons() {
+        List<String> list = new ArrayList<>();
+        list.add(Command.NEW_SEARCH_BUTTON.getText());
+        list.add(Command.MY_QUERIES_BUTTON.getText());
+        return list;
     }
 }
