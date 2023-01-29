@@ -27,6 +27,9 @@ public class ServiceCategory extends BaseEntity{
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
+    @Column(name = "priority", nullable = false)
+    private int priority = 5;
+
     public ServiceCategory(ServiceCategoryDTO serviceCategoryDto) {
         this.name = serviceCategoryDto.getName().trim().toUpperCase();
         this.active = true;

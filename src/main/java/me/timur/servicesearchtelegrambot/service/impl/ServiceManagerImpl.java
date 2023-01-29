@@ -55,7 +55,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public List<String> getActiveCategoryNames() {
-        return serviceCategoryRepository.findAllByActiveTrue()
+        return serviceCategoryRepository.findAllByActiveTrueOrderByPriorityAsc()
                 .stream().map(ServiceCategory::getName)
                 .collect(Collectors.toList());
     }
@@ -111,7 +111,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public List<ServiceCategory> getAllCategories() {
-        return serviceCategoryRepository.findAllByActiveTrue();
+        return serviceCategoryRepository.findAllByActiveTrueOrderByPriorityAsc();
     }
 
     @Override

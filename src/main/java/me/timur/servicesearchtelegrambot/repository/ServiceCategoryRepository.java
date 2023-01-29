@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ServiceCategoryRepository extends JpaRepository<ServiceCategory, Long> {
 
-    List<ServiceCategory> findAllByActiveTrue();
+    List<ServiceCategory> findAllByActiveTrueOrderByPriorityAsc();
 }
