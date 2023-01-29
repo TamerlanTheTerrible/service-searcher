@@ -56,6 +56,10 @@ public interface ProviderUpdateHandler {
 
     SendMessage saveInstagram(Update update);
 
+    SendMessage editCompanyInfo(Update update);
+
+    SendMessage saveCompanyInfo(Update update);
+
     SendMessage editTelegram(Update update);
 
     SendMessage saveTelegram(Update update);

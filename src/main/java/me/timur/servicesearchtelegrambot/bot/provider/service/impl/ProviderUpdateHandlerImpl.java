@@ -284,8 +284,13 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
         if (provider.getCompanyInformation() == null)
             keyboardValues.add("➕ " + Outcome.COMPANY_INFO_REQUESTED.getText());
-        else
-            keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation().substring(0, provider.getCompanyInformation().length() / 5));
+        else  {
+            final int length = provider.getCompanyInformation().length();
+            keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation().substring(
+                            0, (length <= 20L ? length : length / 5)
+                    )
+            );
+        }
 
         return logAndKeyboard(update, Outcome.MY_INFO.getText(), keyboardValues, keyboardRowSize, Outcome.MY_SERVICES);
     }
@@ -407,6 +412,29 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         providerManager.save(provider);
         return providerInfo(update);
     }
+
+
+    @Override
+    public SendMessage editCompanyInfo(Update update) {
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.BACK.getText());
+        return logAndKeyboard(
+                update,
+                "Напишите " + Outcome.COMPANY_INFO_REQUESTED.getText().toLowerCase(Locale.ROOT),
+                keyboard,
+                1,
+                Outcome.COMPANY_INFO_REQUESTED);
+    }
+
+    @Override
+    public SendMessage saveCompanyInfo(Update update) {
+        final String newCommand = command(update);
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        provider.setCompanyInformation(newCommand);
+        providerManager.save(provider);
+        return providerInfo(update);
+    }
+
 
     @Override
     public SendMessage editTelegram(Update update) {

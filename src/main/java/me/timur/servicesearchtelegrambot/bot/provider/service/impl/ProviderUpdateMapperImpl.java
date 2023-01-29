@@ -111,6 +111,12 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 //save instagram
             else if (lastChatCommand.equals(Outcome.INSTAGRAM_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
                 sendMessage = updateHandler.saveInstagram(update);
+                //request company info
+            else if (newCommand.contains(Outcome.COMPANY_INFO_REQUESTED.getText()))
+                sendMessage = updateHandler.editCompanyInfo(update);
+                //save company info
+            else if (lastChatCommand.equals(Outcome.COMPANY_INFO_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveCompanyInfo(update);
                 //request telegram
             else if (newCommand.contains(Outcome.TELEGRAM_REQUESTED.getText()))
                 sendMessage = updateHandler.editTelegram(update);
