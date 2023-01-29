@@ -48,7 +48,7 @@ public class DefaultUpdateMapper implements UpdateMapper {
     private SendMessage tryToMap(Update update, List<String> serviceNames, List<SendMessage> replyList) {
         SendMessage sendMessage = null;
         try {
-            final String newCommand = command(update);
+            final String newCommand = command(update) != null ? command(update) : "";
             final String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT) != null
                     ? chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT)
                     : "";
@@ -56,6 +56,8 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
+            else if (Objects.equals(newCommand, "/test"))
+                sendMessage = updateHandler.test(update);
             // new search command
             else if (newCommand.equals(Command.NEW_SEARCH.getValue()))
                 sendMessage = updateHandler.searchNewService(update);

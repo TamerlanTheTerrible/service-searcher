@@ -17,13 +17,9 @@ import java.util.Objects;
 public class UpdateUtil {
 
     public static String command(Update update) {
-        if (Objects.nonNull(update.getMessage())) {
-            final String msgTxt = update.getMessage().getText();
-            final int underscoreIndex = msgTxt.indexOf("_");
-            return underscoreIndex == -1 ? msgTxt : msgTxt.substring(underscoreIndex) ;
-        } else {
-            return update.getCallbackQuery().getMessage().getText();
-        }
+        return Objects.nonNull(update.getMessage())
+                ? update.getMessage().getText()
+                : update.getChannelPost().getText();
     }
 
     public static String chatId(Update update) {

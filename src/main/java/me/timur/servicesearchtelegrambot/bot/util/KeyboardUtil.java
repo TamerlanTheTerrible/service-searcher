@@ -1,11 +1,15 @@
 package me.timur.servicesearchtelegrambot.bot.util;
 
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,6 +17,21 @@ import java.util.List;
  */
 
 public class KeyboardUtil {
+
+    public static InlineKeyboardMarkup webAppKeyboard() {
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+        WebAppInfo info = new WebAppInfo("https://telegram.mihailgok.ru");
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setWebApp(info);
+        button.setText("just test");
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(button);
+        List<List<InlineKeyboardButton>>  rows = new ArrayList<>();
+        rows.add(row);
+        keyboard.setKeyboard(rows);
+
+        return keyboard;
+    }
 
     public static ReplyKeyboardMarkup keyboard(List<String> stringValues, Integer rowSize) {
         List<KeyboardRow> rows = new ArrayList<>();

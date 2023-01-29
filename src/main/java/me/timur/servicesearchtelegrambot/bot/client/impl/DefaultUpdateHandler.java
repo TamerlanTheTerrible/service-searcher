@@ -146,8 +146,8 @@ public class DefaultUpdateHandler implements UpdateHandler {
             messages.addAll(sendNewQueryNotifications(update));
         } else {
             List<String> keyboard = new ArrayList<>(2);
-            keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
-            keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
+            keyboard.add(Outcome.USERNAME.getText());
+            keyboard.add(Outcome.PHONE.getText());
             // request contact
             SendMessage contactRequest = logAndKeyboard(
                     update,
@@ -172,12 +172,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
         final String userName = update.getMessage().getFrom().getUserName();
         if (userName == null) {
             List<String> keyboard = new ArrayList<>(2);
-            keyboard.add("\uD83D\uDC64" + "_" + Outcome.USERNAME.getText());
-            keyboard.add("\uD83D\uDCDE" + "_" + Outcome.PHONE.getText());
+            keyboard.add(Outcome.USERNAME.getText());
+            keyboard.add(Outcome.PHONE.getText());
         // request contact
         SendMessage contactRequest = logAndKeyboard(
               update,
-              "Ваше пользовательское имя все ещё пустой. Возможно вы его не прописали"
+              "Ваше пользовательское имя все ещё пустой. Возможно вы его не прописали "
                   + "Пожалуйста, добавьте его настройках телеграмма (Настройки -> имя пользователя) "
                   + "и потом нажмите кнопку `" + Outcome.USERNAME + "`."
                   + "Если предпочитаете связь через телефон, нажмите кнопку `" + Outcome.PHONE + "`.",
@@ -314,6 +314,13 @@ public class DefaultUpdateHandler implements UpdateHandler {
         queryService.delete(queryId);
 
         return logAndMessage(update, Outcome.QUERY_DEACTIVATED.getText(), Outcome.QUERY_DEACTIVATED);
+    }
+
+    @Override
+    public SendMessage test(Update update) {
+        SendMessage message = message(chatId(update), "just test text");
+        message.setReplyMarkup(KeyboardUtil.webAppKeyboard());
+        return message;
     }
 
     @Override

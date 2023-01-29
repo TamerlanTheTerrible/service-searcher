@@ -41,4 +41,6 @@ public interface UpdateHandler {
     SendMessage getQueryById(Update update);
 
     SendMessage deactivateQuery(Update update);
+
+    SendMessage test(Update update);
 }
