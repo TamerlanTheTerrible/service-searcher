@@ -1,7 +1,7 @@
 package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.bot.client.enums.ChatLogType;
+import me.timur.servicesearchtelegrambot.bot.ChatLogType;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.repository.ChatLogRepository;
@@ -24,14 +24,20 @@ public class ChatLogServiceImpl implements ChatLogService {
     private final ChatLogRepository chatLogRepository;
 
     @Override
-    public void log(Update update, Outcome outcome) {
-        final ChatLog chatLog = new ChatLog(update, outcome);
+    public void log(Update update, Outcome outcome, ChatLogType logType) {
+        final ChatLog chatLog = new ChatLog(update, outcome, logType);
+        chatLogRepository.save(chatLog);
+    }
+
+    @Override
+    public void log(Update update, me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome outcome, ChatLogType logType) {
+        final ChatLog chatLog = new ChatLog(update, outcome, logType);
         chatLogRepository.save(chatLog);
     }
 
     @Override
     public String getLastChatOutcome(Update update, ChatLogType type) {
         final Optional<ChatLog> chatLogOpt = chatLogRepository.findTopByTgChatIdAndLogTypeOrderByIdDesc(chatId(update), type);
-        return chatLogOpt.map(chatLog -> chatLog.getOutcome().name()).orElse(null);
+        return chatLogOpt.map(ChatLog::getOutcome).orElse(null);
     }
 }

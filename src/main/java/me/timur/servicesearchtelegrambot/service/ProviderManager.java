@@ -1,5 +1,6 @@
 package me.timur.servicesearchtelegrambot.service;
 
+import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
@@ -27,7 +28,11 @@ public interface ProviderManager {
 
     void delete(Long providerId);
 
-    List<Provider> findAllByService(Service service);
+    List<Provider> findAllByServiceAndRegionAndActiveSubscription(Service service, Region region);
 
     Provider getOrSave(UserDTO user);
+
+    Provider save(Provider provider);
+
+    List<Provider> findAllByService(Service service);
 }

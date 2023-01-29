@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot.client.enums;
+package me.timur.servicesearchtelegrambot.bot;
 
 /**
  * Created by Temurbek Ismoilov on 13/01/23.

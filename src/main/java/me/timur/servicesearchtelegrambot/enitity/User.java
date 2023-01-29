@@ -3,7 +3,7 @@ package me.timur.servicesearchtelegrambot.enitity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Region;
+import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 
 import javax.persistence.*;

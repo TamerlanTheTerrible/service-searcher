@@ -1,11 +1,12 @@
 package me.timur.servicesearchtelegrambot.bot.client.impl;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.ChatLogType;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Region;
+import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.bot.util.PhoneUtil;
 import me.timur.servicesearchtelegrambot.enitity.Query;
@@ -331,12 +332,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
-        chatLogService.log(update, outcome);
+        chatLogService.log(update, outcome, ChatLogType.CLIENT);
         return message(chatId(update), message);
     }
 
     private SendMessage logAndKeyboard(Update update, String message, List<String> serviceNames, Integer keyboardRowSize, Outcome outcome) {
-        chatLogService.log(update, outcome);
+        chatLogService.log(update, outcome, ChatLogType.CLIENT);
         return keyboard(chatId(update), message, serviceNames, 2);
     }
 

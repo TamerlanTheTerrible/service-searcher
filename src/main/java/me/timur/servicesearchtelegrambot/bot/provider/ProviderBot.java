@@ -1,6 +1,7 @@
-package me.timur.servicesearchtelegrambot.bot.client;
+package me.timur.servicesearchtelegrambot.bot.provider;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -18,13 +19,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ClientBot extends TelegramLongPollingBot {
+public class ProviderBot extends TelegramLongPollingBot {
 
-    private final UpdateMapper updateMapper;
+    private final ProviderUpdateMapper providerUpdateMapper;
 
-    @Value("${bot.client.username}")
+    @Value("${bot.provider.username}")
     private String BOT_NAME;
-    @Value("${bot.client.token}")
+    @Value("${bot.provider.token}")
     private String BOT_TOKEN;
 
     @Override
@@ -47,13 +48,10 @@ public class ClientBot extends TelegramLongPollingBot {
     }
 
     private void handle(Update update) throws TelegramApiException {
-        if (update.getChannelPost() != null){
-            return;
-        }
-
-        final List<SendMessage> sendMessageList = updateMapper.map(update);
+        final List<SendMessage> sendMessageList = providerUpdateMapper.map(update);
         for (BotApiMethod<Message> message: sendMessageList) {
             execute(message);
         }
     }
+
 }

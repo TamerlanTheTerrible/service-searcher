@@ -23,7 +23,9 @@ public class UpdateUtil {
     }
 
     public static String chatId(Update update) {
-        return update.getMessage().getChatId().toString();
+        return Objects.nonNull(update.getMessage())
+            ? update.getMessage().getChatId().toString()
+            : update.getChannelPost().getChatId().toString();
     }
 
     public static Long tgUserId(Update update) {

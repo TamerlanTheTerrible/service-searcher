@@ -1,9 +1,6 @@
-package me.timur.servicesearchtelegrambot.bot.client.enums;
+package me.timur.servicesearchtelegrambot.bot;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Created by Temurbek Ismoilov on 12/01/23.

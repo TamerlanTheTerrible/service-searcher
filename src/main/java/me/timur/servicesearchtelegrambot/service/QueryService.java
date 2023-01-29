@@ -1,6 +1,8 @@
 package me.timur.servicesearchtelegrambot.service;
 
+import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.enitity.Query;
+import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.model.dto.QueryDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,4 +31,6 @@ public interface QueryService {
     List<Query> getAllActiveByClientTgId(Long tgId);
 
     Optional<Query> getLastActiveByClientTgId(Long tgId);
+
+    List<Query> getAllByServicesAndRegion(List<Service> services, Region region);
 }

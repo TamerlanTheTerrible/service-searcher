@@ -1,10 +1,10 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.*;
+import me.timur.servicesearchtelegrambot.bot.Region;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,7 +13,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "provider")
@@ -23,24 +22,59 @@ public class Provider extends BaseEntity{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Column(name = "company_address")
+    private String companyAddress;
+
+    @Column(name = "website")
+    private String website;
+
+    @Column(name = "instagram")
+    private String instagram;
+
+    @Column(name = "telegram")
+    private String telegram;
+
+    @Column(name = "certificate_tg_file_id")
+    private String certificateTgFileId;
+
+    //    @Enumerated(EnumType.STRING)
+    @Column(name = "certificate_mime_type")
+    private String certificateMyType;
+
+    @Column(name = "company_information")
+    private String companyInformation;
+
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    @OneToMany(mappedBy = "provider", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    private List<ProviderService> services;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "region")
+    private Region region;
+
+//    @OneToMany(mappedBy = "provider", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+//    private List<ProviderService> services;
 
     public Provider(User user) {
         this.user = user;
         this.isActive = true;
     }
 
-    public String getName() {
-        if (this.user == null) return "";
-        return Objects.nonNull(this.user.getFirstname()) ? this.user.getFirstname()
-                : Objects.nonNull(this.user.getLastname()) ? this.user.getLastname()
-                : Objects.nonNull(this.user.getUsername()) ? this.user.getUsername()
-                : "друг";
-    }
+//    public String getUserName() {
+//        if (this.user == null) return "";
+//        return Objects.nonNull(this.user.getFirstname()) ? this.user.getFirstname()
+//                : Objects.nonNull(this.user.getLastname()) ? this.user.getLastname()
+//                : Objects.nonNull(this.user.getUsername()) ? this.user.getUsername()
+//                : "друг";
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -53,5 +87,23 @@ public class Provider extends BaseEntity{
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Provider{" +
+                "user=" + user +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", website='" + website + '\'' +
+                ", instagram='" + instagram + '\'' +
+                ", telegram='" + telegram + '\'' +
+                ", certificateTgFileId='" + certificateTgFileId + '\'' +
+                ", companyInformation='" + companyInformation + '\'' +
+                ", isActive=" + isActive +
+//                ", services=" + services +
+                '}';
     }
 }

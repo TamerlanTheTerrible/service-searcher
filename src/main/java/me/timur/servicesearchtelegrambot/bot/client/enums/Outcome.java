@@ -10,7 +10,7 @@ import lombok.Getter;
 public enum Outcome {
     START("/start"),
     MY_SERVICES("Мои услуги"),
-  SERVICE_SEARCH_FOUND(
+    SERVICE_SEARCH_FOUND(
       "Возможно вы имели ввиду... \uD83E\uDD14\n"
           + "Если не нашли, то что искали напишите названия сервиса еще раз или выберите услугу из общего списка⬇️"),
     SERVICE_SEARCH_NOT_FOUND("Не удалось найти сервис. Попробуйте еще раз или выберите из списка"),

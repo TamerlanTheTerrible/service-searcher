@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProviderNotifierImpl implements ProviderNotifier {
 
-    @Value("${channel.service.searcher.id.dev}")
+    @Value("${channel.service.searcher.id}")
     private String serviceSearchChannelId;
 
     private final ProviderManager providerManager;

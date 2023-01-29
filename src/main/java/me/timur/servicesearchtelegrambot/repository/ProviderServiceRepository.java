@@ -6,6 +6,7 @@ import me.timur.servicesearchtelegrambot.enitity.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ import java.util.Optional;
 
 @Repository
 public interface ProviderServiceRepository extends JpaRepository<ProviderService, Long> {
-    List<ProviderService> findAllByService(Service service);
+    List<ProviderService> findAllByProviderUserTelegramId(Long tgUserId);
     Optional<ProviderService> findByProviderAndService(Provider provider, Service service);
+    Optional<ProviderService> findByService(Service service);
+
+    List<ProviderService> findAllByService(Service service);
 }

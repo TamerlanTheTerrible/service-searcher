@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.enitity.User;
@@ -83,5 +84,10 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public Optional<Query> getLastActiveByClientTgId(Long tgId) {
         return queryRepository.findTopByClientTelegramIdAndIsActiveTrueOrderByIdDesc(tgId);
+    }
+
+    @Override
+    public List<Query> getAllByServicesAndRegion(List<me.timur.servicesearchtelegrambot.enitity.Service> services, Region region) {
+        return queryRepository.findAllByServiceInAndClientRegionAndIsActiveTrue(services, region);
     }
 }

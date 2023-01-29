@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateMapper;
-import me.timur.servicesearchtelegrambot.bot.client.enums.ChatLogType;
+import me.timur.servicesearchtelegrambot.bot.ChatLogType;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
@@ -98,7 +98,7 @@ public class DefaultUpdateMapper implements UpdateMapper {
                 replyList.addAll(updateHandler.addQueryCommentAndRequestContact(update));
             }
             // searching a service
-            else if (lastChatCommand.equals(Outcome.NEW_SEARCH.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
+            else if (lastChatCommand.equals(Outcome.NEW_SEARCH.name())  || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchWithOptions(update);
             // unknown command
             else

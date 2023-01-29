@@ -1,7 +1,6 @@
 package me.timur.servicesearchtelegrambot.repository;
 
-import me.timur.servicesearchtelegrambot.bot.client.enums.ChatLogType;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.ChatLogType;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -24,4 +24,7 @@ public class ProviderService extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "service_id")
     private Service service;
+
+    @Column(name = "active")
+    private Boolean active;
 }
