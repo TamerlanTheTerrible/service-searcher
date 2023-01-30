@@ -111,6 +111,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
             //request query comment
             List<String> keyboard = new ArrayList<>();
             keyboard.add(Outcome.SKIP.getText());
+            keyboard.add(Outcome.CANCEL.getText());
             return logAndKeyboard(
                     update,
                     Outcome.QUERY_COMMENT_REQUESTED.getText(),
@@ -246,6 +247,11 @@ public class DefaultUpdateHandler implements UpdateHandler {
     }
 
     @Override
+    public SendMessage cancel(Update update) {
+        return logAndKeyboard(update, "Отменен \uD83D\uDEAB", commandButtons(), 2, Outcome.CANCEL);
+    }
+
+    @Override
     public SendMessage searchWithOptions(Update update) {
         String command = command(update);
         SendMessage sendMessage;
@@ -254,11 +260,13 @@ public class DefaultUpdateHandler implements UpdateHandler {
         if (services.isEmpty()) {
             List<String> keyboardValues = new ArrayList<>();
             keyboardValues.add(Outcome.CATEGORIES.getText());
+            keyboardValues.addAll(commandButtons());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), commandButtons(), 2, Outcome.SERVICE_SEARCH_NOT_FOUND);
             sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
         } else {
             final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
             serviceNames.add(Outcome.CATEGORIES.getText());
+            serviceNames.addAll(commandButtons());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 
@@ -270,12 +278,14 @@ public class DefaultUpdateHandler implements UpdateHandler {
         List<String> servicesNames = serviceManager.getServicesNamesByCategoryName(command(update));
         ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
         modifiableList.add(Outcome.BACK_TO_CATEGORIES.getText());
+        modifiableList.addAll(commandButtons());
         return logAndKeyboard(update, command(update), modifiableList, keyboardRowSize, Outcome.SERVICES);
     }
 
     @Override
     public SendMessage getCategories(Update update) {
         final List<String> categoryNames = serviceManager.getActiveCategoryNames();
+        categoryNames.addAll(commandButtons());
         return logAndKeyboard(update, Outcome.CATEGORIES.getText(), categoryNames, keyboardRowSize, Outcome.CATEGORIES);
     }
 

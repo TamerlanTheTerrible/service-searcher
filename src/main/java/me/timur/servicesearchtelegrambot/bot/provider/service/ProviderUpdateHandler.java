@@ -1,5 +1,6 @@
 package me.timur.servicesearchtelegrambot.bot.provider.service;
 
+import me.timur.servicesearchtelegrambot.bot.Region;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -39,6 +40,10 @@ public interface ProviderUpdateHandler {
     SendMessage denyQuery(Update update);
 
     SendMessage requestPhone(Update update);
+
+    SendMessage editRegion(Update update);
+
+    SendMessage saveRegion(Update update, Region region);
 
     SendMessage requestService(Update update);
 

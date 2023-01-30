@@ -284,7 +284,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
         if (provider.getCompanyInformation() == null)
             keyboardValues.add("➕ " + Outcome.COMPANY_INFO_REQUESTED.getText());
-        else  {
+        else   {
             final int length = provider.getCompanyInformation().length();
             keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation().substring(
                             0, (length <= 20L ? length : length / 5)
@@ -292,7 +292,12 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             );
         }
 
-        return logAndKeyboard(update, Outcome.MY_INFO.getText(), keyboardValues, keyboardRowSize, Outcome.MY_SERVICES);
+        if (provider.getRegion() == null)
+            keyboardValues.add("➕ " + Outcome.REGION_EDIT_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + "Регион" + ": " + provider.getRegion());
+
+        return logAndKeyboard(update, Outcome.MY_INFO.getText(), keyboardValues, keyboardRowSize, Outcome.MY_INFO);
     }
 
     @Override
@@ -311,10 +316,28 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
             provider.setRegion(region);
             providerManager.save(provider);
-
             //request service name
             return requestService(update);
         }
+    }
+
+    @Override
+    public SendMessage editRegion(Update update) {
+        return logAndKeyboard(
+                update,
+                Outcome.REGION_REQUESTED.getText(),
+                Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                2,
+                Outcome.REGION_EDIT_REQUESTED
+        );
+    }
+
+    @Override
+    public SendMessage saveRegion(Update update, Region region) {
+        Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
+        provider.setRegion(region);
+        providerManager.save(provider);
+        return providerInfo(update);
     }
 
     @Override
@@ -486,7 +509,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 .stream()
                 .map(ps -> (ps.getActive() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ") + ps.getService().getName())
                 .collect(Collectors.toList());
-        return logAndKeyboard(update, Outcome.MY_SERVICES.getText(), servicesNames, keyboardRowSize, Outcome.MY_SERVICES);
+        String text = servicesNames.size() != 0 ? Outcome.MY_SERVICES.getText() : "У вас нет активных услуг";
+        return logAndKeyboard(update, text, servicesNames, keyboardRowSize, Outcome.MY_SERVICES);
     }
 
     @Override

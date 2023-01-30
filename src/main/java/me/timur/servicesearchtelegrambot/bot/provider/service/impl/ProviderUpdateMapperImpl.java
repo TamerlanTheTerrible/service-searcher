@@ -115,7 +115,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             else if (newCommand.contains(Outcome.COMPANY_INFO_REQUESTED.getText()))
                 sendMessage = updateHandler.editCompanyInfo(update);
                 //save company info
-            else if (lastChatCommand.equals(Outcome.COMPANY_INFO_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+            else if (lastChatCommand.equals(Outcome.COMPANY_INFO_REQUESTED.name()) && newCommand.contains(Outcome.COMPANY_INFO_REQUESTED.getText()))
                 sendMessage = updateHandler.saveCompanyInfo(update);
                 //request telegram
             else if (newCommand.contains(Outcome.TELEGRAM_REQUESTED.getText()))
@@ -135,6 +135,10 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // request region
             else if (Objects.equals(lastChatCommand, Outcome.REGION_REQUESTED.name()))
                 sendMessage = updateHandler.saveRegionAndRequestService(update);
+            // edit region
+            else if (newCommand.contains(Outcome.REGION_REQUESTED.getText()) || newCommand.contains("✏️ Регион:")) {
+                sendMessage = updateHandler.editRegion(update);
+            }
             // accept query
             else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))
                 replyList.addAll(updateHandler.acceptQuery(update));

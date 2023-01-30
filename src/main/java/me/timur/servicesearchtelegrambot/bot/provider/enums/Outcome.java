@@ -49,7 +49,8 @@ public enum Outcome {
 
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),
 
-    REGION_REQUESTED("Выберите регион вашего проживания")
+    REGION_REQUESTED("Выберите регион вашего проживания"),
+    REGION_EDIT_REQUESTED("Добавьте регион")
     ;
     private final String text;
 

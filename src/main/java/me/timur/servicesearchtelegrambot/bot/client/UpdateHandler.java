@@ -24,6 +24,8 @@ public interface UpdateHandler {
 
     SendMessage searchNewService(Update update);
 
+    SendMessage cancel(Update update);
+
     SendMessage searchWithOptions(Update update);
 
     SendMessage saveRegionAndRequestService(Update update);

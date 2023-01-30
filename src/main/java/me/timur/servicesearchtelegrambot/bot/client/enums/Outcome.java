@@ -28,7 +28,7 @@ public enum Outcome {
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),
 
     NEW_SEARCH("/search"),
-    MY_QUERIES("/queries"),
+    MY_QUERIES("Активные запросы"),
     CHOOSE_QUERY("Выбрать запрос"),
     DEACTIVATE_QUERY("Закрыть запрос"),
     QUERY_DEACTIVATED("Запрос закрыт ❌"),
@@ -41,7 +41,8 @@ public enum Outcome {
     INVALID_PHONE_FORMAT_SENT("Неверный формат телефона, отправьте еще раз"),
 
     QUERY_COMMENT_REQUESTED("Напишите детали вашего запроса (опционально) ✍️\n"),
-    SKIP("➡️Пропустить"),
+    SKIP("➡️ Пропустить"),
+    CANCEL("\uD83D\uDEAB Отменить"),
 
     REGION_REQUESTED("Выберите пожалуйста из списка регион вашего проживания ⬇️"),
 

@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -94,7 +95,7 @@ public class ServiceManagerImpl implements ServiceManager {
         List<Service> allServices = getActiveServices();
         List<Service> similarServices = new ArrayList<>();
         for (Service service: allServices) {
-            double similarity = StringUtil.findSimilarities(service.getNameUz(), name);
+            double similarity = StringUtil.findSimilarities(service.getNameUz().toLowerCase(Locale.ROOT), name.toLowerCase(Locale.ROOT));
             if (similarity > MINIMUM_SIMILARITY_COEFFICIENT){
                 similarServices.add(service);
             }

@@ -58,6 +58,8 @@ public class DefaultUpdateMapper implements UpdateMapper {
                 sendMessage = updateHandler.start(update);
             else if (Objects.equals(newCommand, "/test"))
                 sendMessage = updateHandler.test(update);
+            else if (Objects.equals(newCommand, Outcome.CANCEL.getText()))
+                sendMessage = updateHandler.cancel(update);
             // new search command
             else if (newCommand.equals(Command.NEW_SEARCH.getText()) || newCommand.equals(Command.NEW_SEARCH_BUTTON.getText()))
                 sendMessage = updateHandler.searchNewService(update);
