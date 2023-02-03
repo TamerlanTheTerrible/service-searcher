@@ -3,6 +3,7 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.ChatLogType;
+import me.timur.servicesearchtelegrambot.bot.ConfigName;
 import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
@@ -13,10 +14,7 @@ import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceSubscriptionRepository;
-import me.timur.servicesearchtelegrambot.service.ChatLogService;
-import me.timur.servicesearchtelegrambot.service.ProviderManager;
-import me.timur.servicesearchtelegrambot.service.QueryService;
-import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import me.timur.servicesearchtelegrambot.service.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -39,7 +37,6 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 @Component
 @RequiredArgsConstructor
 public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
-
     private final ProviderManager providerManager;
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
@@ -47,6 +44,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     private final ProviderServiceSubscriptionRepository subscriptionRepository;
     private final QueryService queryService;
     private final NotificationService notificationService;
+    private final ConfigService configService;
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
@@ -201,6 +199,11 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage requestPhone(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
+
         if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
             Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
             provider.setName(newCommand);
@@ -232,6 +235,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage requestRegion(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
         if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
             Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
             provider.setCompanyInformation(newCommand);
@@ -367,6 +374,11 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveCompanyName(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
+
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyName(newCommand);
         providerManager.save(provider);
@@ -388,6 +400,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveCompanyAddress(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyAddress(newCommand);
         providerManager.save(provider);
@@ -409,6 +425,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveWebsite(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setWebsite(newCommand);
         providerManager.save(provider);
@@ -430,6 +450,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveInstagram(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setInstagram(newCommand);
         providerManager.save(provider);
@@ -452,6 +476,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveCompanyInfo(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyInformation(newCommand);
         providerManager.save(provider);
@@ -474,6 +502,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveTelegram(Update update) {
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setTelegram(newCommand);
         providerManager.save(provider);
@@ -498,7 +530,6 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         final Document document = update.getMessage().getDocument();
         provider.setCertificateTgFileId(document.getFileId());
         provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
-        providerManager.save(provider);
         providerManager.save(provider);
         return providerInfo(update);
     }
@@ -609,6 +640,12 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
+    public SendMessage publicOffer(Update update) {
+        Config config = configService.getByName(ConfigName.OFFER);
+        return logAndMessage(update, config.getValue(), Outcome.OFFER);
+    }
+
+    @Override
     public SendMessage getServicesByCategoryName(Update update) {
         List<String> servicesNames = serviceManager.getServicesNamesByCategoryName(command(update));
         ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
@@ -644,6 +681,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage unknownCommand(Update update) {
         return logAndMessage(update, Outcome.UNKNOWN_COMMAND.getText(), Outcome.UNKNOWN_COMMAND);
+    }
+
+    public boolean containsBannedWord(String command) {
+        return configService.containsBannedWord(command);
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {

@@ -72,6 +72,9 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // edit my service
             else if (Objects.equals(lastChatCommand, Command.MY_SERVICES.name()) && serviceNames.stream().anyMatch(s -> newCommand.contains(s)))
                 sendMessage = updateHandler.editProviderService(update);
+                // public offer
+            else if (newCommand.equals(Command.OFFER.getText()) || newCommand.equals(Command.OFFER_BUTTON.getText()))
+                sendMessage = updateHandler.publicOffer(update);
             // unsubscribe my service
             else if (newCommand.contains(Command.UNSUBSCRIBE_FROM_SERVICE.getText()))
                 sendMessage = updateHandler.unsubscribeFromService(update);

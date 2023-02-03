@@ -45,4 +45,6 @@ public interface UpdateHandler {
     SendMessage deactivateQuery(Update update);
 
     SendMessage test(Update update);
+
+    SendMessage publicOffer(Update update);
 }

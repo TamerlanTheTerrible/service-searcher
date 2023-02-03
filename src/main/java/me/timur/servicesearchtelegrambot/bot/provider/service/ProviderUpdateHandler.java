@@ -82,4 +82,6 @@ public interface ProviderUpdateHandler {
     SendMessage subscribeToService(Update update);
 
     SendMessage getQueries(Update update);
+
+    SendMessage publicOffer(Update update);
 }

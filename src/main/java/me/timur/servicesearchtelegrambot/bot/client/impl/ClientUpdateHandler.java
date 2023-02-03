@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.client.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.ChatLogType;
+import me.timur.servicesearchtelegrambot.bot.ConfigName;
 import me.timur.servicesearchtelegrambot.bot.client.ProviderNotifier;
 import me.timur.servicesearchtelegrambot.bot.client.UpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
@@ -9,14 +10,13 @@ import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.bot.util.PhoneUtil;
+import me.timur.servicesearchtelegrambot.enitity.Config;
 import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
-import me.timur.servicesearchtelegrambot.service.ChatLogService;
-import me.timur.servicesearchtelegrambot.service.QueryService;
-import me.timur.servicesearchtelegrambot.service.ServiceManager;
-import me.timur.servicesearchtelegrambot.service.UserService;
+import me.timur.servicesearchtelegrambot.repository.ConfigRepository;
+import me.timur.servicesearchtelegrambot.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,7 +33,7 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 
 @Component
 @RequiredArgsConstructor
-public class DefaultUpdateHandler implements UpdateHandler {
+public class ClientUpdateHandler implements UpdateHandler {
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
@@ -43,6 +43,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
     private final UserService userService;
     private final ChatLogService chatLogService;
     private final ProviderNotifier providerNotifier;
+    private final ConfigService configService;
 
     @Override
     public SendMessage start(Update update) {
@@ -52,9 +53,6 @@ public class DefaultUpdateHandler implements UpdateHandler {
                 : Objects.nonNull(client.getLastname()) ? client.getLastname()
                 : Objects.nonNull(client.getUsername()) ? client.getUsername()
                 : "друг";
-//        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы ищите", name), Outcome.START);
-//        sendMessage.setReplyMarkup(removeKeyboard());
-//        return sendMessage;
 
         return logAndKeyboard(
                 update,
@@ -132,6 +130,10 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         // add comment to the query
         final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return List.of(message(chatId(update), "Запрещенное слово"));
+        }
         if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
             query.setComment(newCommand);
             queryService.save(query);
@@ -227,7 +229,7 @@ public class DefaultUpdateHandler implements UpdateHandler {
 
         // prepare messages for providers
         Optional<Query> queryOpt = queryService.getLastActiveByClientTgId(Long.valueOf(chatId(update)));
-        if (!queryOpt.isPresent())
+        if (queryOpt.isEmpty())
             return messages;
 
         final Query query = queryOpt.get();
@@ -337,6 +339,12 @@ public class DefaultUpdateHandler implements UpdateHandler {
     }
 
     @Override
+    public SendMessage publicOffer(Update update) {
+        Config config = configService.getByName(ConfigName.OFFER);
+        return logAndKeyboard(update, config.getValue(), commandButtons(), 2, Outcome.OFFER);
+    }
+
+    @Override
     public SendMessage unknownCommand(Update update) {
         return logAndKeyboard(update, Outcome.UNKNOWN_COMMAND.getText(), commandButtons(), 2, Outcome.UNKNOWN_COMMAND);
     }
@@ -351,10 +359,15 @@ public class DefaultUpdateHandler implements UpdateHandler {
         return keyboard(chatId(update), message, serviceNames, 2);
     }
 
+    public boolean containsBannedWord(String command) {
+        return configService.containsBannedWord(command);
+    }
+
     private List<String> commandButtons() {
         List<String> list = new ArrayList<>();
         list.add(Command.NEW_SEARCH_BUTTON.getText());
         list.add(Command.MY_QUERIES_BUTTON.getText());
+        list.add(Command.OFFER_BUTTON.getText());
         return list;
     }
 }

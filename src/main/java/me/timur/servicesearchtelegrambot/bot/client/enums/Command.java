@@ -13,6 +13,8 @@ public enum Command {
     NEW_SEARCH_BUTTON("\uD83D\uDD0E Новый поиск"),
     MY_QUERIES("/queries"),
     MY_QUERIES_BUTTON("\uD83D\uDDC2 Мои запросы"),
+    OFFER("/oferta"),
+    OFFER_BUTTON("\uD83D\uDCC4 Публичная оферта"),
   ;
     private final String text;
 

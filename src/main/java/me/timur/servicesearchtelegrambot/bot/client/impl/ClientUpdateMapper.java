@@ -26,7 +26,7 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DefaultUpdateMapper implements UpdateMapper {
+public class ClientUpdateMapper implements UpdateMapper {
 
     private final ChatLogService chatLogService;
     private final UpdateHandler updateHandler;
@@ -63,7 +63,10 @@ public class DefaultUpdateMapper implements UpdateMapper {
             // new search command
             else if (newCommand.equals(Command.NEW_SEARCH.getText()) || newCommand.equals(Command.NEW_SEARCH_BUTTON.getText()))
                 sendMessage = updateHandler.searchNewService(update);
-                // region requested
+            // public offer
+            else if (newCommand.equals(Command.OFFER.getText()) || newCommand.equals(Command.OFFER_BUTTON.getText()))
+                sendMessage = updateHandler.publicOffer(update);
+            // region requested
             else if (lastChatCommand.equals(Outcome.REGION_REQUESTED.name()))
                 sendMessage = updateHandler.saveRegionAndRequestService(update);
             // send notifications if username exists

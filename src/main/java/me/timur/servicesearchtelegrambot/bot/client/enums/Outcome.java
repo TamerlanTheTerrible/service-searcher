@@ -46,7 +46,8 @@ public enum Outcome {
 
     REGION_REQUESTED("Выберите пожалуйста из списка регион вашего проживания ⬇️"),
 
-    ERROR("ERROR")
+    ERROR("ERROR"),
+    OFFER("Публичная оферта")
     ;
 
     private final String text;

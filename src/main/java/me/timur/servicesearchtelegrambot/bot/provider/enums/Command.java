@@ -17,7 +17,9 @@ public enum Command {
     UNSUBSCRIBE_FROM_SERVICE("\uD83D\uDDD1 Отписаться"),
     ACCEPT_QUERY("Принять запрос #"),
     DENY_QUERY("Отказать"),
-    BACK_TO_CATEGORIES("Все категории")
+    BACK_TO_CATEGORIES("Все категории"),
+    OFFER("/oferta"),
+    OFFER_BUTTON("\uD83D\uDCC4 Публичная оферта"),
     ;
 
     private final String text;
