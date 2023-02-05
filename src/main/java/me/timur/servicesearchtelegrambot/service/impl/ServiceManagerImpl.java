@@ -136,6 +136,11 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
+    public ServiceCategory getServiceCategory(String name) {
+        return serviceCategoryRepository.findByNameAndActiveTrue(name).orElse(null);
+    }
+
+    @Override
     public void deactivateServiceCategory(Long categoryId) {
         ServiceCategory category = getServiceCategory(categoryId);
         category.setActive(false);

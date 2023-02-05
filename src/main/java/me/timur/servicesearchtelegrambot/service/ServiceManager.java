@@ -45,6 +45,8 @@ public interface ServiceManager {
 
     ServiceCategory getServiceCategory(Long id);
 
+    ServiceCategory getServiceCategory(String name);
+
     void deactivateServiceCategory(Long categoryId);
 
 }

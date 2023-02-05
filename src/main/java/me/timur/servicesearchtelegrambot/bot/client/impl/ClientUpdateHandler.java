@@ -98,22 +98,26 @@ public class ClientUpdateHandler implements UpdateHandler {
             return searchWithOptions(update);
         } else {
             //save query
-            User client = userService.getOrSave(user(update));
-            Query query = new Query(client, service);
-            queryService.save(query);
-
-            //request query comment
-            List<String> keyboard = commandButtons();
-            keyboard.add(0,Outcome.SKIP.getText());
-            keyboard.add(1,Outcome.CANCEL.getText());
-            return logAndKeyboard(
-                    update,
-                    Outcome.QUERY_COMMENT_REQUESTED.getText(),
-                    keyboard,
-                    1,
-                    Outcome.QUERY_COMMENT_REQUESTED
-            );
+            return saveQueryAndRequestComment(update, service);
         }
+    }
+
+    private SendMessage saveQueryAndRequestComment(Update update, Service service) {
+        User client = userService.getOrSave(user(update));
+        Query query = new Query(client, service);
+        queryService.save(query);
+
+        //request query comment
+        List<String> keyboard = commandButtons();
+        keyboard.add(0,Outcome.SKIP.getText());
+        keyboard.add(1,Outcome.CANCEL.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.QUERY_COMMENT_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.QUERY_COMMENT_REQUESTED
+        );
     }
 
     @Override
@@ -274,10 +278,15 @@ public class ClientUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage getServicesByCategoryName(Update update) {
         List<String> servicesNames = serviceManager.getServicesNamesByCategoryName(command(update));
-        ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
-        modifiableList.add(Outcome.BACK_TO_CATEGORIES.getText());
-        modifiableList.addAll(commandButtons());
-        return logAndKeyboard(update, command(update), modifiableList, keyboardRowSize, Outcome.SERVICES);
+        if (servicesNames.size()==1) {
+            Service service = serviceManager.getServiceByName(command(update));
+            return saveQueryAndRequestComment(update, service);
+        } else {
+            ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
+            modifiableList.add(Outcome.BACK_TO_CATEGORIES.getText());
+            modifiableList.addAll(commandButtons());
+            return logAndKeyboard(update, command(update), modifiableList, keyboardRowSize, Outcome.SERVICES);
+        }
     }
 
     @Override
