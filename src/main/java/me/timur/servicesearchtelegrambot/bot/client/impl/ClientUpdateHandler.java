@@ -10,16 +10,13 @@ import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.bot.util.PhoneUtil;
-import me.timur.servicesearchtelegrambot.enitity.Config;
-import me.timur.servicesearchtelegrambot.enitity.Query;
-import me.timur.servicesearchtelegrambot.enitity.Service;
-import me.timur.servicesearchtelegrambot.enitity.User;
+import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
-import me.timur.servicesearchtelegrambot.repository.ConfigRepository;
 import me.timur.servicesearchtelegrambot.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.*;
@@ -86,13 +83,12 @@ public class ClientUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage searchNewService(Update update) {
-    final SendMessage sendMessage =
-        logAndMessage(
+        return logAndKeyboard(
             update,
             "Напишите названия сервиса, который вы ищите \uD83D\uDD0E\n",
+            commandButtonsWithoutBack(),
+            2,
             Outcome.NEW_SEARCH);
-        sendMessage.setReplyMarkup(removeKeyboard());
-        return sendMessage;
     }
 
     @Override
@@ -107,9 +103,9 @@ public class ClientUpdateHandler implements UpdateHandler {
             queryService.save(query);
 
             //request query comment
-            List<String> keyboard = new ArrayList<>();
-            keyboard.add(Outcome.SKIP.getText());
-            keyboard.add(Outcome.CANCEL.getText());
+            List<String> keyboard = commandButtons();
+            keyboard.add(0,Outcome.SKIP.getText());
+            keyboard.add(1,Outcome.CANCEL.getText());
             return logAndKeyboard(
                     update,
                     Outcome.QUERY_COMMENT_REQUESTED.getText(),
@@ -240,7 +236,7 @@ public class ClientUpdateHandler implements UpdateHandler {
             logAndKeyboard(
                 update,
                 Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId() + "\uD83D\uDE0C",
-                commandButtons(),
+                commandButtonsWithoutBack(),
                 2,
                 Outcome.QUERY_NOTIFIED);
 
@@ -250,7 +246,7 @@ public class ClientUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage cancel(Update update) {
-        return logAndKeyboard(update, "Отменен \uD83D\uDEAB", commandButtons(), 2, Outcome.CANCEL);
+        return logAndKeyboard(update, "Отменен \uD83D\uDEAB", commandButtonsWithoutBack(), 2, Outcome.CANCEL);
     }
 
     @Override
@@ -346,7 +342,42 @@ public class ClientUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage unknownCommand(Update update) {
-        return logAndKeyboard(update, Outcome.UNKNOWN_COMMAND.getText(), commandButtons(), 2, Outcome.UNKNOWN_COMMAND);
+//        return logAndKeyboard(update, Outcome.UNKNOWN_COMMAND.getText(), commandButtons(), 2, Outcome.UNKNOWN_COMMAND);
+        return message(chatId(update), Outcome.UNKNOWN_COMMAND.getText());
+    }
+
+    //TODO
+    @Override
+    public List<SendMessage> back(Update update){
+        String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT);
+        List<SendMessage> messages = new ArrayList<>();
+        if (lastChatCommand == null) {
+            messages.add(message(chatId(update), "нету пути назад"));
+        } else if (Objects.equals(lastChatCommand, Outcome.REGION_REQUESTED.name())) {
+            messages.add(start(update));
+        } else if (Objects.equals(lastChatCommand, Outcome.NEW_SEARCH.name())) {
+            messages.add(start(update));
+        } else if (Objects.equals(lastChatCommand, Outcome.QUERY_COMMENT_REQUESTED.name())) {
+            final ChatLog chatLog = chatLogService.getLastByOutcome(chatId(update), Outcome.SERVICE_SEARCH_FOUND.name(), ChatLogType.CLIENT);
+            if (chatLog == null) {
+                messages.add(searchNewService(update));
+            } else {
+                final Message message = update.getMessage();
+                message.setText(chatLog.getCommand());
+                update.setMessage(message);
+                messages.add(searchWithOptions(update));
+            }
+
+        } else if (Objects.equals(lastChatCommand, Outcome.SERVICE_SEARCH_FOUND.name()) || Objects.equals(lastChatCommand, Outcome.SERVICE_SEARCH_NOT_FOUND.name())) {
+            messages.add(searchNewService(update));
+//        } else if (Objects.equals(lastChatCommand, Outcome.QUERY_COMMENT_REQUESTED.name())) {
+//            messages.add(getServicesByCategoryName(update));
+        }
+        else  {
+            messages.add(message(chatId(update), "нету пути назад"));
+        }
+
+        return messages;
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
@@ -364,6 +395,15 @@ public class ClientUpdateHandler implements UpdateHandler {
     }
 
     private List<String> commandButtons() {
+        List<String> list = new ArrayList<>();
+        list.add(Command.NEW_SEARCH_BUTTON.getText());
+        list.add(Command.MY_QUERIES_BUTTON.getText());
+        list.add(Command.OFFER_BUTTON.getText());
+        list.add(Command.BACK.getText());
+        return list;
+    }
+
+    private List<String> commandButtonsWithoutBack() {
         List<String> list = new ArrayList<>();
         list.add(Command.NEW_SEARCH_BUTTON.getText());
         list.add(Command.MY_QUERIES_BUTTON.getText());

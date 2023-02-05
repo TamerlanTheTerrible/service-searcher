@@ -47,4 +47,6 @@ public interface UpdateHandler {
     SendMessage test(Update update);
 
     SendMessage publicOffer(Update update);
+
+    List<SendMessage> back(Update update);
 }

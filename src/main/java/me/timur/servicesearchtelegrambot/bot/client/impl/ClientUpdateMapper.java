@@ -58,6 +58,8 @@ public class ClientUpdateMapper implements UpdateMapper {
                 sendMessage = updateHandler.start(update);
             else if (Objects.equals(newCommand, "/test"))
                 sendMessage = updateHandler.test(update);
+            else if (Objects.equals(newCommand, Command.BACK.getText()))
+              replyList.addAll(updateHandler.back(update));
             else if (Objects.equals(newCommand, Outcome.CANCEL.getText()))
                 sendMessage = updateHandler.cancel(update);
             // new search command

@@ -9,6 +9,7 @@ import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.List;
 import java.util.Optional;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
@@ -39,5 +40,10 @@ public class ChatLogServiceImpl implements ChatLogService {
     public String getLastChatOutcome(Update update, ChatLogType type) {
         final Optional<ChatLog> chatLogOpt = chatLogRepository.findTopByTgChatIdAndLogTypeOrderByIdDesc(chatId(update), type);
         return chatLogOpt.map(ChatLog::getOutcome).orElse(null);
+    }
+
+    @Override
+    public ChatLog getLastByOutcome(String tgChatId, String outcome, ChatLogType logType) {
+            return chatLogRepository.findTopByTgChatIdAndOutcomeAndLogTypeOrderByIdDesc(tgChatId, outcome, logType).orElse(null);
     }
 }

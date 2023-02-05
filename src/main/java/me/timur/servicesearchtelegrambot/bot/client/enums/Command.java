@@ -15,6 +15,7 @@ public enum Command {
     MY_QUERIES_BUTTON("\uD83D\uDDC2 Мои запросы"),
     OFFER("/oferta"),
     OFFER_BUTTON("\uD83D\uDCC4 Публичная оферта"),
+    BACK("◀️ Назад")
   ;
     private final String text;
 
