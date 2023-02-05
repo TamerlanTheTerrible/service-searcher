@@ -263,7 +263,7 @@ public class ClientUpdateHandler implements UpdateHandler {
             sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
         } else {
             final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
-            serviceNames.add(Outcome.CATEGORIES.getText());
+            serviceNames.add(Outcome. CATEGORIES.getText());
             serviceNames.addAll(commandButtons());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
@@ -357,8 +357,11 @@ public class ClientUpdateHandler implements UpdateHandler {
             messages.add(start(update));
         } else if (Objects.equals(lastChatCommand, Outcome.NEW_SEARCH.name())) {
             messages.add(start(update));
-        } else if (Objects.equals(lastChatCommand, Outcome.QUERY_COMMENT_REQUESTED.name())) {
-            final ChatLog chatLog = chatLogService.getLastByOutcome(chatId(update), Outcome.SERVICE_SEARCH_FOUND.name(), ChatLogType.CLIENT);
+        } else if (Objects.equals(lastChatCommand, Outcome.QUERY_COMMENT_REQUESTED.name()) || Objects.equals(lastChatCommand, Outcome.CATEGORIES.name()) ) {
+            final ChatLog chatLog = chatLogService.getLastByOutcome(
+                    chatId(update),
+                    List.of(Outcome.SERVICE_SEARCH_FOUND.name(), Outcome.SERVICE_SEARCH_NOT_FOUND.name()),
+                    ChatLogType.CLIENT);
             if (chatLog == null) {
                 messages.add(searchNewService(update));
             } else {
@@ -367,14 +370,12 @@ public class ClientUpdateHandler implements UpdateHandler {
                 update.setMessage(message);
                 messages.add(searchWithOptions(update));
             }
-
         } else if (Objects.equals(lastChatCommand, Outcome.SERVICE_SEARCH_FOUND.name()) || Objects.equals(lastChatCommand, Outcome.SERVICE_SEARCH_NOT_FOUND.name())) {
             messages.add(searchNewService(update));
-//        } else if (Objects.equals(lastChatCommand, Outcome.QUERY_COMMENT_REQUESTED.name())) {
-//            messages.add(getServicesByCategoryName(update));
         }
         else  {
-            messages.add(message(chatId(update), "нету пути назад"));
+            SendMessage msg = keyboard(chatId(update), "нету пути назад", commandButtons(), 2);
+            messages.add(msg);
         }
 
         return messages;

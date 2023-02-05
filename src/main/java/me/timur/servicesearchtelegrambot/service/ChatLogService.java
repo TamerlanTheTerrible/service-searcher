@@ -5,6 +5,8 @@ import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.List;
+
 /**
  * Created by Temurbek Ismoilov on 06/08/22.
  */
@@ -20,5 +22,5 @@ public interface ChatLogService {
 
     String getLastChatOutcome(Update update, ChatLogType client);
 
-    ChatLog getLastByOutcome(String tgChatId, String command, ChatLogType logType);
+    ChatLog getLastByOutcome(String tgChatId, List<String> command, ChatLogType logType);
 }

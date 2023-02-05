@@ -1,11 +1,11 @@
 package me.timur.servicesearchtelegrambot.repository;
 
 import me.timur.servicesearchtelegrambot.bot.ChatLogType;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.enitity.ChatLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,5 +15,5 @@ import java.util.Optional;
 @Repository
 public interface ChatLogRepository extends JpaRepository<ChatLog, Long> {
     Optional<ChatLog> findTopByTgChatIdAndLogTypeOrderByIdDesc(String tgChatId, ChatLogType type);
-    Optional<ChatLog> findTopByTgChatIdAndOutcomeAndLogTypeOrderByIdDesc(String tgChatId, String command, ChatLogType type);
+    Optional<ChatLog> findTopByTgChatIdAndOutcomeInAndLogTypeOrderByIdDesc(String tgChatId, List<String> command, ChatLogType type);
 }

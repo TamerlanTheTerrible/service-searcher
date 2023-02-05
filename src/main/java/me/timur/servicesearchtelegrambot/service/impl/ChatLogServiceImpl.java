@@ -43,7 +43,7 @@ public class ChatLogServiceImpl implements ChatLogService {
     }
 
     @Override
-    public ChatLog getLastByOutcome(String tgChatId, String outcome, ChatLogType logType) {
-            return chatLogRepository.findTopByTgChatIdAndOutcomeAndLogTypeOrderByIdDesc(tgChatId, outcome, logType).orElse(null);
+    public ChatLog getLastByOutcome(String tgChatId, List<String> outcomes, ChatLogType logType) {
+            return chatLogRepository.findTopByTgChatIdAndOutcomeInAndLogTypeOrderByIdDesc(tgChatId, outcomes, logType).orElse(null);
     }
 }
