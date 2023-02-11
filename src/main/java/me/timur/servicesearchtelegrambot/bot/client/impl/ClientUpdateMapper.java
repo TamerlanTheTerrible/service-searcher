@@ -10,9 +10,12 @@ import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,9 +36,9 @@ public class ClientUpdateMapper implements UpdateMapper {
     private final ServiceManager serviceManager;
 
     @Override
-    public List<SendMessage> map(Update update) {
+    public List<BotApiMethod<Message>> map(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();
-        final List<SendMessage> replyList = new ArrayList<>();
+        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
 
         SendMessage sendMessage = tryToMap(update, serviceNames, replyList);
 
@@ -45,7 +48,7 @@ public class ClientUpdateMapper implements UpdateMapper {
         return replyList;
     }
 
-    private SendMessage tryToMap(Update update, List<String> serviceNames, List<SendMessage> replyList) {
+    private SendMessage tryToMap(Update update, List<String> serviceNames, List<BotApiMethod<Message>> replyList) {
         SendMessage sendMessage = null;
         try {
             final String newCommand = command(update) != null ? command(update) : "";
@@ -58,8 +61,10 @@ public class ClientUpdateMapper implements UpdateMapper {
                 sendMessage = updateHandler.start(update);
             else if (Objects.equals(newCommand, "/test"))
                 sendMessage = updateHandler.test(update);
+            else if (Objects.equals(newCommand, Command.SETTINGS.getText()))
+                replyList.addAll(updateHandler.settingsMenu(update));
             else if (Objects.equals(newCommand, Command.BACK.getText()))
-              replyList.addAll(updateHandler.back(update));
+                replyList.addAll(updateHandler.back(update));
             else if (Objects.equals(newCommand, Outcome.CANCEL.getText()))
                 sendMessage = updateHandler.cancel(update);
             // new search command
@@ -83,6 +88,8 @@ public class ClientUpdateMapper implements UpdateMapper {
             // get all user queries
             else if (newCommand.equals(Command.MY_QUERIES.getText()) || newCommand.equals(Outcome.BACK_TO_MY_QUERIES.getText()) || newCommand.equals(Command.MY_QUERIES_BUTTON.getText()))
                 sendMessage = updateHandler.getUserQueries(update);
+            else if (newCommand.equals(Command.MY_QUERIES_CLOSE_ALL.getText()))
+                sendMessage = updateHandler.closeActiveQueries(update);
                 // choose active query
             else if (lastChatCommand.equals(Outcome.MY_QUERIES.name()) && newCommand.startsWith("#"))
                 sendMessage = updateHandler.getQueryById(update);
@@ -107,7 +114,14 @@ public class ClientUpdateMapper implements UpdateMapper {
             // searching a service
             else if (lastChatCommand.equals(Outcome.NEW_SEARCH.name())  || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchWithOptions(update);
-            // unknown command
+            // edit region
+            else if (newCommand.contains("➕ Регион") || newCommand.contains("✏️ Регион:")) {
+                sendMessage = updateHandler.editRegion(update);
+            }
+            // save region
+            else if (lastChatCommand.equals(Outcome.REGION_EDIT_REQUESTED.name())) {
+                sendMessage = updateHandler.saveRegion(update);
+            }
             else
                 sendMessage = updateHandler.unknownCommand(update);
         } catch (Exception e) {

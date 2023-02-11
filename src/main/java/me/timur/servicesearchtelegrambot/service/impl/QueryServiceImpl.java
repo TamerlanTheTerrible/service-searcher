@@ -90,4 +90,13 @@ public class QueryServiceImpl implements QueryService {
     public List<Query> getAllByServicesAndRegion(List<me.timur.servicesearchtelegrambot.enitity.Service> services, Region region) {
         return queryRepository.findAllByServiceInAndClientRegionAndIsActiveTrue(services, region);
     }
+
+    @Override
+    public void closeAll(String chatId) {
+        List<Query> queries = queryRepository.findAllByClientTelegramIdAndIsActiveTrue(Long.valueOf(chatId));
+        for(Query query: queries){
+            query.setIsActive(false);
+        }
+        queryRepository.saveAll(queries);
+    }
 }

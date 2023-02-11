@@ -1,8 +1,11 @@
 package me.timur.servicesearchtelegrambot.bot.client;
 
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -21,6 +24,8 @@ public interface UpdateHandler {
     List<SendMessage> savePhone(Update update);
 
     List<SendMessage> sendNewQueryNotifications(Update update);
+
+    SendMessage saveRegion(Update update);
 
     SendMessage searchNewService(Update update);
 
@@ -48,5 +53,11 @@ public interface UpdateHandler {
 
     SendMessage publicOffer(Update update);
 
+    SendMessage editRegion(Update update);
+
     List<SendMessage> back(Update update);
+
+    List<SendMessage> settingsMenu(Update update);
+
+    SendMessage closeActiveQueries(Update update);
 }

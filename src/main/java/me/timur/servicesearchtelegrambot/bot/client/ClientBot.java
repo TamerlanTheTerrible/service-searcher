@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class ClientBot extends TelegramLongPollingBot {
             return;
         }
 
-        final List<SendMessage> sendMessageList = updateMapper.map(update);
+        final List<BotApiMethod<Message>> sendMessageList = updateMapper.map(update);
         for (BotApiMethod<Message> message: sendMessageList) {
             execute(message);
         }

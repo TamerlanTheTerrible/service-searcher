@@ -72,13 +72,23 @@ public class ClientUpdateHandler implements UpdateHandler {
                     Outcome.REGION_REQUESTED
             );
         } else {
-            //set region for a user
-            final User user = userService.getUserByTgId(Long.valueOf(chatId(update)));
-            user.setRegion(region);
-            userService.save(user);
+            savRegion(update, region);
             //search new service
             return searchNewService(update);
         }
+    }
+
+    @Override
+    public SendMessage saveRegion(Update update) {
+        Region region = Region.getByRussian(command(update));
+        savRegion(update, region);
+        return logAndKeyboard(update, Outcome.REGION_EDITED.getText(), settingsButtons(region), 2, Outcome.REGION_EDITED);
+    }
+
+    private void savRegion(Update update, Region region) {
+        final User user = userService.getUserByTgId(Long.valueOf(chatId(update)));
+        user.setRegion(region);
+        userService.save(user);
     }
 
     @Override
@@ -86,7 +96,7 @@ public class ClientUpdateHandler implements UpdateHandler {
         return logAndKeyboard(
             update,
             "Напишите названия сервиса, который вы ищите \uD83D\uDD0E\n",
-            commandButtonsWithoutBack(),
+            backButton(),
             2,
             Outcome.NEW_SEARCH);
     }
@@ -108,7 +118,7 @@ public class ClientUpdateHandler implements UpdateHandler {
         queryService.save(query);
 
         //request query comment
-        List<String> keyboard = commandButtons();
+        List<String> keyboard = new ArrayList<>(backButton());
         keyboard.add(0,Outcome.SKIP.getText());
         keyboard.add(1,Outcome.CANCEL.getText());
         return logAndKeyboard(
@@ -240,7 +250,7 @@ public class ClientUpdateHandler implements UpdateHandler {
             logAndKeyboard(
                 update,
                 Outcome.QUERY_SAVED.getText() + ". Номер заявки " + query.getId() + "\uD83D\uDE0C",
-                commandButtonsWithoutBack(),
+                mainMenuButtons(),
                 2,
                 Outcome.QUERY_NOTIFIED);
 
@@ -250,7 +260,7 @@ public class ClientUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage cancel(Update update) {
-        return logAndKeyboard(update, "Отменен \uD83D\uDEAB", commandButtonsWithoutBack(), 2, Outcome.CANCEL);
+        return logAndKeyboard(update, "Отменен \uD83D\uDEAB", mainMenuButtons(), 2, Outcome.CANCEL);
     }
 
     @Override
@@ -262,13 +272,13 @@ public class ClientUpdateHandler implements UpdateHandler {
         if (services.isEmpty()) {
             List<String> keyboardValues = new ArrayList<>();
             keyboardValues.add(Outcome.CATEGORIES.getText());
-            keyboardValues.addAll(commandButtons());
-            sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), commandButtons(), 2, Outcome.SERVICE_SEARCH_NOT_FOUND);
-            sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
+            keyboardValues.addAll(backButton());
+            sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), keyboardValues, 2, Outcome.SERVICE_SEARCH_NOT_FOUND);
+//            sendMessage.setReplyMarkup(keyboard(keyboardValues,keyboardRowSize));
         } else {
             final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
             serviceNames.add(Outcome. CATEGORIES.getText());
-            serviceNames.addAll(commandButtons());
+            serviceNames.addAll(backButton());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 
@@ -284,7 +294,7 @@ public class ClientUpdateHandler implements UpdateHandler {
         } else {
             ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
             modifiableList.add(Outcome.BACK_TO_CATEGORIES.getText());
-            modifiableList.addAll(commandButtons());
+            modifiableList.addAll(backButton());
             return logAndKeyboard(update, command(update), modifiableList, keyboardRowSize, Outcome.SERVICES);
         }
     }
@@ -292,7 +302,7 @@ public class ClientUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage getCategories(Update update) {
         final List<String> categoryNames = serviceManager.getActiveCategoryNames();
-        categoryNames.addAll(commandButtons());
+        categoryNames.addAll(backButton());
         return logAndKeyboard(update, Outcome.CATEGORIES.getText(), categoryNames, keyboardRowSize, Outcome.CATEGORIES);
     }
 
@@ -302,13 +312,12 @@ public class ClientUpdateHandler implements UpdateHandler {
         final List<Query> queries = queryService.getAllActiveByClientTgId(userDTO.getTelegramId());
 
         if (queries.isEmpty()) {
-            final SendMessage sendMessage = logAndKeyboard(update, "У вас нет активных запросов", commandButtons(), 2, Outcome.MY_QUERIES);
-            sendMessage.setReplyMarkup(removeKeyboard());
-            return sendMessage;
+            return logAndKeyboard(update, "У вас нет активных запросов", backButton(), 2, Outcome.MY_QUERIES);
         } else {
             List<String> queryNames = queries.stream()
                     .map(q -> "#" + q.getId() +" : " + q.getService().getName())
                     .collect(Collectors.toList());
+            queryNames.addAll(List.of(Command.MY_QUERIES_CLOSE_ALL.getText(), Command.BACK.getText()));
             return logAndKeyboard(update, Outcome.MY_QUERIES.getText(), queryNames, 1, Outcome.MY_QUERIES);
         }
     }
@@ -333,7 +342,7 @@ public class ClientUpdateHandler implements UpdateHandler {
 
         queryService.delete(queryId);
 
-        return logAndKeyboard(update, Outcome.QUERY_DEACTIVATED.getText(), commandButtons(), 2, Outcome.QUERY_DEACTIVATED);
+        return logAndKeyboard(update, Outcome.QUERY_DEACTIVATED.getText(), mainMenuButtons(), 2, Outcome.QUERY_DEACTIVATED);
     }
 
     @Override
@@ -346,26 +355,35 @@ public class ClientUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage publicOffer(Update update) {
         Config config = configService.getByName(ConfigName.OFFER);
-        return logAndKeyboard(update, config.getValue(), commandButtons(), 2, Outcome.OFFER);
+        return logAndKeyboard(update, config.getValue(), backButton(), 2, Outcome.OFFER);
     }
 
     @Override
     public SendMessage unknownCommand(Update update) {
-//        return logAndKeyboard(update, Outcome.UNKNOWN_COMMAND.getText(), commandButtons(), 2, Outcome.UNKNOWN_COMMAND);
-        return message(chatId(update), Outcome.UNKNOWN_COMMAND.getText());
+        return keyboard(chatId(update), Outcome.UNKNOWN_COMMAND.getText(), mainMenuButtons(), 2);
     }
 
-    //TODO
+    @Override
+    public SendMessage editRegion(Update update) {
+        return logAndKeyboard(
+                update,
+                Outcome.REGION_REQUESTED.getText(),
+                Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                2,
+                Outcome.REGION_EDIT_REQUESTED
+        );
+    }
+
     @Override
     public List<SendMessage> back(Update update){
         String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.CLIENT);
         List<SendMessage> messages = new ArrayList<>();
         if (lastChatCommand == null) {
             messages.add(message(chatId(update), "нету пути назад"));
-        } else if (Objects.equals(lastChatCommand, Outcome.REGION_REQUESTED.name())) {
-            messages.add(start(update));
-        } else if (Objects.equals(lastChatCommand, Outcome.NEW_SEARCH.name())) {
-            messages.add(start(update));
+        } else if (lastChatCommand.equals(Outcome.SERVICES.name())) {
+            messages.add(getCategories(update));
+        } else if (List.of(Outcome.NEW_SEARCH.name(), Outcome.MY_QUERIES.name(), Outcome.MY_QUERIES.name()).contains(lastChatCommand)) {
+            messages.add(mainMenu(update));
         } else if (Objects.equals(lastChatCommand, Outcome.QUERY_COMMENT_REQUESTED.name()) || Objects.equals(lastChatCommand, Outcome.CATEGORIES.name()) ) {
             final ChatLog chatLog = chatLogService.getLastByOutcome(
                     chatId(update),
@@ -381,13 +399,33 @@ public class ClientUpdateHandler implements UpdateHandler {
             }
         } else if (Objects.equals(lastChatCommand, Outcome.SERVICE_SEARCH_FOUND.name()) || Objects.equals(lastChatCommand, Outcome.SERVICE_SEARCH_NOT_FOUND.name())) {
             messages.add(searchNewService(update));
-        }
-        else  {
-            SendMessage msg = keyboard(chatId(update), "нету пути назад", commandButtons(), 2);
+        } else if (Objects.equals(lastChatCommand, Outcome.OFFER.name()) || Objects.equals(lastChatCommand, Outcome.REGION_EDIT_REQUESTED.name())) {
+            messages.addAll(settingsMenu(update));
+        } else if (Objects.equals(lastChatCommand, Outcome.SETTINGS.name())) {
+            messages.add(mainMenu(update));
+        } else {
+            SendMessage msg = keyboard(chatId(update), "нету пути назад", mainMenuButtons(), 2);
             messages.add(msg);
         }
 
         return messages;
+    }
+
+    @Override
+    public List<SendMessage> settingsMenu(Update update) {
+        User client = userService.getUserByTgId(tgUserId(update));
+        final SendMessage msg = logAndKeyboard(update, Outcome.SETTINGS.getText(), settingsButtons(client.getRegion()), 2, Outcome.SETTINGS);
+        return List.of(msg);
+    }
+
+    @Override
+    public SendMessage closeActiveQueries(Update update) {
+        queryService.closeAll(chatId(update));
+    return logAndKeyboard(update, Outcome.MY_QUERIES_CLOSE_ALL.getText(), mainMenuButtons(), 2, Outcome.MY_QUERIES_CLOSE_ALL);
+    }
+
+    private SendMessage mainMenu(Update update) {
+        return logAndKeyboard(update, Outcome.MAIN_MENU.getText(), mainMenuButtons(), 2, Outcome.MAIN_MENU);
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {
@@ -404,20 +442,25 @@ public class ClientUpdateHandler implements UpdateHandler {
         return configService.containsBannedWord(command);
     }
 
-    private List<String> commandButtons() {
-        List<String> list = new ArrayList<>();
-        list.add(Command.NEW_SEARCH_BUTTON.getText());
-        list.add(Command.MY_QUERIES_BUTTON.getText());
-        list.add(Command.OFFER_BUTTON.getText());
-        list.add(Command.BACK.getText());
-        return list;
+    private List<String> mainMenuButtons() {
+        return List.of(
+                Command.NEW_SEARCH_BUTTON.getText(),
+                Command.MY_QUERIES_BUTTON.getText(),
+                Command.SETTINGS.getText()
+        );
     }
 
-    private List<String> commandButtonsWithoutBack() {
-        List<String> list = new ArrayList<>();
-        list.add(Command.NEW_SEARCH_BUTTON.getText());
-        list.add(Command.MY_QUERIES_BUTTON.getText());
-        list.add(Command.OFFER_BUTTON.getText());
-        return list;
+    private List<String> settingsButtons(Region region) {
+        return List.of(
+                Command.OFFER_BUTTON.getText(),
+                region == null ? "➕ " + Command.REGION_EDIT_BUTTON.getText() : "✏️ " + "Регион" + ": " + region,
+                Command.BACK.getText()
+        );
+    }
+
+    private List<String> backButton() {
+        return List.of(
+                Command.BACK.getText()
+        );
     }
 }

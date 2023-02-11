@@ -33,4 +33,6 @@ public interface QueryService {
     Optional<Query> getLastActiveByClientTgId(Long tgId);
 
     List<Query> getAllByServicesAndRegion(List<Service> services, Region region);
+
+    void closeAll(String chatId);
 }

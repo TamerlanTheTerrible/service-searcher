@@ -32,7 +32,8 @@ public enum Outcome {
     CHOOSE_QUERY("Выбрать запрос"),
     DEACTIVATE_QUERY("Закрыть запрос"),
     QUERY_DEACTIVATED("Запрос закрыт ❌"),
-    BACK_TO_MY_QUERIES("Вернуться к запросам"),
+    MY_QUERIES_CLOSE_ALL("Все запросы закрыты ❌"),
+    BACK_TO_MY_QUERIES("◀️ Вернуться к запросам"),
     QUERY_NOTIFIED("Запрос разослан"),
     PHONE_REQUESTED("Телефон запросан"),
     CONTACT_REQUESTED("Имя пользователя запросан"),
@@ -45,7 +46,11 @@ public enum Outcome {
     CANCEL("\uD83D\uDEAB Отменить"),
 
     REGION_REQUESTED("Выберите пожалуйста из списка регион вашего проживания ⬇️"),
+    REGION_EDIT_REQUESTED("Выберите пожалуйста из списка регион вашего проживания ⬇️"),
+    REGION_EDITED("Регион сохранён"),
 
+    MAIN_MENU("Главное меню"),
+    SETTINGS("Меню настроек"),
     ERROR("ERROR"),
     OFFER("Публичная оферта")
     ;
