@@ -34,7 +34,7 @@ public enum Outcome {
     PROVIDER_SERVICE_SAVED("Сервис сохранён"),
     RECEIVE_QUERY_NOTIFICATION("Запрос"),
 
-    MY_INFO("Моя анкета"),
+    SETTINGS("⚙️ Настройки"),
     NAME_REQUESTED("Имя фамилия"),
     PHONE_REQUESTED("Телефонный номер"),
     COMPANY_NAME("Название фирмы"),
@@ -51,7 +51,9 @@ public enum Outcome {
 
     REGION_REQUESTED("Выберите регион вашего проживания"),
     REGION_EDIT_REQUESTED("Добавьте регион"),
-    OFFER("Публичная оферта")
+    OFFER("Публичная оферта"),
+    MAIN_MENU("Главное меню"),
+    ERROR("ERROR"),
     ;
     private final String text;
 

@@ -74,6 +74,73 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
+    public SendMessage requestPhone(Update update) {
+        final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
+
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setName(newCommand);
+            providerManager.save(provider);
+        }
+        final SendMessage msg = logAndMessage(update, "Поделитесь номером телефона", Outcome.PHONE_REQUESTED);
+        msg.setReplyMarkup(KeyboardUtil.phoneRequest());
+        return msg;
+    }
+
+    @Override
+    public SendMessage requestCompanyInfo(Update update) {
+        final Contact contact = update.getMessage().getContact();
+        if (contact != null) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setPhone(contact.getPhoneNumber());
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.COMPANY_INFO_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.COMPANY_INFO_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestRegion(Update update) {
+        final String newCommand = command(update);
+        // validate the command
+        if (containsBannedWord(newCommand)) {
+            return message(chatId(update), "Запрещенное слово");
+        }
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCompanyInformation(newCommand);
+            providerManager.save(provider);
+        }
+
+        return logAndKeyboard(
+                update,
+                Outcome.REGION_REQUESTED.getText(),
+                Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                2,
+                Outcome.REGION_REQUESTED
+        );
+    }
+
+    @Override
+    public SendMessage requestService(Update update) {
+        return logAndMessage(
+                update,
+                Outcome.REQUEST_SERVICE_NAME.getText(),
+                Outcome.REQUEST_SERVICE_NAME
+        );
+    }
+
+    @Override
     public SendMessage searchService(Update update) {
         String command = command(update);
         SendMessage sendMessage;
@@ -82,11 +149,13 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         if (services.isEmpty()) {
             List<String> keyboardValues = new ArrayList<>();
             keyboardValues.add(Outcome.CATEGORIES.getText());
+            keyboardValues.add(Command.BACK.getText());
             sendMessage = logAndMessage(update, Outcome.SERVICE_SEARCH_NOT_FOUND.getText(), Outcome.SERVICE_SEARCH_NOT_FOUND);
             sendMessage.setReplyMarkup(keyboard(keyboardValues, keyboardRowSize));
         } else {
             final List<String> serviceNames = services.stream().map(Service::getNameUz).collect(Collectors.toList());
             serviceNames.add(Outcome.CATEGORIES.getText());
+            serviceNames.add(Command.BACK.getText());
             sendMessage = logAndKeyboard(update, Outcome.SERVICE_SEARCH_FOUND.getText(),  serviceNames, keyboardRowSize, Outcome.SERVICE_SEARCH_FOUND);
         }
 
@@ -197,65 +266,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
-    public SendMessage requestPhone(Update update) {
-        final String newCommand = command(update);
-        // validate the command
-        if (containsBannedWord(newCommand)) {
-            return message(chatId(update), "Запрещенное слово");
-        }
-
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setName(newCommand);
-            providerManager.save(provider);
-        }
-        final SendMessage msg = logAndMessage(update, "Поделитесь номером телефона", Outcome.PHONE_REQUESTED);
-        msg.setReplyMarkup(KeyboardUtil.phoneRequest());
-        return msg;
-    }
-
-    @Override
-    public SendMessage requestCompanyInfo(Update update) {
-        final Contact contact = update.getMessage().getContact();
-        if (contact != null) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setPhone(contact.getPhoneNumber());
-            providerManager.save(provider);
-        }
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-        return logAndKeyboard(
-                update,
-                Outcome.COMPANY_INFO_REQUESTED.getText(),
-                keyboard,
-                1,
-                Outcome.COMPANY_INFO_REQUESTED);
-    }
-
-    @Override
-    public SendMessage requestRegion(Update update) {
-        final String newCommand = command(update);
-        // validate the command
-        if (containsBannedWord(newCommand)) {
-            return message(chatId(update), "Запрещенное слово");
-        }
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setCompanyInformation(newCommand);
-            providerManager.save(provider);
-        }
-        
-        return logAndKeyboard(
-                update,
-                Outcome.REGION_REQUESTED.getText(),
-                Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
-                2,
-                Outcome.REGION_REQUESTED
-        );
-    }
-    
-    @Override
-    public SendMessage providerInfo(Update update) {
+    public SendMessage settings(Update update) {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         List<String> keyboardValues = new ArrayList<>();
 
@@ -291,7 +302,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
         if (provider.getCompanyInformation() == null)
             keyboardValues.add("➕ " + Outcome.COMPANY_INFO_REQUESTED.getText());
-        else   {
+        else {
             final int length = provider.getCompanyInformation().length();
             keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation().substring(
                             0, (length <= 20L ? length : length / 5)
@@ -304,7 +315,11 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         else
             keyboardValues.add("✏️ " + "Регион" + ": " + provider.getRegion());
 
-        return logAndKeyboard(update, Outcome.MY_INFO.getText(), keyboardValues, keyboardRowSize, Outcome.MY_INFO);
+        keyboardValues.add(Command.OFFER_BUTTON.getText());
+        // add back button
+        keyboardValues.addAll(backButton());
+
+        return logAndKeyboard(update, Outcome.SETTINGS.getText(), keyboardValues, keyboardRowSize, Outcome.SETTINGS);
     }
 
     @Override
@@ -340,24 +355,13 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
-    public SendMessage saveRegion(Update update, Region region) {
+    public SendMessage saveRegion(Update update) {
+        Region region = Region.getByRussian(command(update));
         Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
         provider.setRegion(region);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
-
-    @Override
-    public SendMessage requestService(Update update) {
-        SendMessage sendMessage = logAndMessage(
-                update,
-                Outcome.REQUEST_SERVICE_NAME.getText(),
-                Outcome.REQUEST_SERVICE_NAME
-        );
-        sendMessage.setReplyMarkup(removeKeyboard());
-        return sendMessage;
-    }
-
 
     @Override
     public SendMessage editCompanyName(Update update) {
@@ -382,7 +386,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyName(newCommand);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
     @Override
@@ -407,7 +411,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyAddress(newCommand);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
     @Override
@@ -432,7 +436,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setWebsite(newCommand);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
     @Override
@@ -457,7 +461,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setInstagram(newCommand);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
 
@@ -483,7 +487,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyInformation(newCommand);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
 
@@ -509,7 +513,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setTelegram(newCommand);
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
     @Override
@@ -531,7 +535,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         provider.setCertificateTgFileId(document.getFileId());
         provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
         providerManager.save(provider);
-        return providerInfo(update);
+        return settings(update);
     }
 
     @Override
@@ -540,6 +544,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 .stream()
                 .map(ps -> (ps.getActive() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ") + ps.getService().getName())
                 .collect(Collectors.toList());
+        servicesNames.addAll(backButton());
         String text = servicesNames.size() != 0 ? Outcome.MY_SERVICES.getText() : "У вас нет активных услуг";
         return logAndKeyboard(update, text, servicesNames, keyboardRowSize, Outcome.MY_SERVICES);
     }
@@ -620,15 +625,18 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         List<String> queries = queryService.getAllByServicesAndRegion(services, provider.getRegion()).stream()
                 .map(q ->  q.getService().getName()
                         + (q.getComment() != null ? " / " + q.getComment() : "")
-                        + " / Заказ #" + q.getId()
-                )
+                        + " / Заказ #" + q.getId())
                 .collect(Collectors.toList());
 
         if (queries.isEmpty()) {
-            final SendMessage message = logAndMessage(update, Outcome.QUERY_NOT_FOUND.getText(), Outcome.QUERY_NOT_FOUND);
-            message.setReplyMarkup(removeKeyboard());
-            return message;
+            return logAndKeyboard(
+                    update,
+                    Outcome.QUERY_NOT_FOUND.getText(),
+                    backButton(),
+                    2,
+                    Outcome.QUERY_NOT_FOUND);
         } else {
+            queries.addAll(backButton());
             return logAndKeyboard(
                     update,
                     Outcome.QUERY_FOUND.getText(),
@@ -642,7 +650,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage publicOffer(Update update) {
         Config config = configService.getByName(ConfigName.OFFER);
-        return logAndMessage(update, config.getValue(), Outcome.OFFER);
+        return logAndKeyboard(update, config.getValue(), backButton(),2, Outcome.OFFER);
     }
 
     @Override
@@ -656,6 +664,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage getCategories(Update update) {
         final List<String> categoryNames = serviceManager.getActiveCategoryNames();
+        categoryNames.addAll(backButton());
         return logAndKeyboard(update, Outcome.CATEGORIES.getText(), categoryNames, keyboardRowSize, Outcome.CATEGORIES);
     }
 
@@ -669,13 +678,37 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         Optional<ProviderService> providerServiceOpt = providerServiceRepository.findByProviderAndService(provider, service);
 
         if (providerServiceOpt.isPresent()) {
-            sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_ALREADY_EXISTS.getText(), Outcome.PROVIDER_SERVICE_ALREADY_EXISTS);
+            sendMessage = logAndKeyboard(update, Outcome.PROVIDER_SERVICE_ALREADY_EXISTS.getText(), mainMenu(), 2, Outcome.PROVIDER_SERVICE_ALREADY_EXISTS);
         } else {
             final ProviderService providerService = providerServiceRepository.save(new ProviderService(provider, service, true));
             subscriptionRepository.save(new ProviderServiceSubscription(providerService, LocalDate.now(), LocalDate.now().plusYears(10)));
-            sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_SAVED.getText(), Outcome.PROVIDER_SERVICE_SAVED);
+            sendMessage = logAndKeyboard(update, Outcome.PROVIDER_SERVICE_SAVED.getText(), mainMenu(), 2, Outcome.PROVIDER_SERVICE_SAVED);
         }
         return sendMessage;
+    }
+
+    @Override
+    public SendMessage backButton(Update update) {
+        String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.PROVIDER);
+        if (List.of(Outcome.SERVICE_SEARCH_FOUND.name(), Outcome.SERVICE_SEARCH_NOT_FOUND.name()).contains(lastChatCommand)) {
+            return requestService(update);
+        } else if (Objects.equals(lastChatCommand, Outcome.SETTINGS.name())) {
+            return mainMenu(update);
+        } else if (Objects.equals(lastChatCommand, Outcome.GET_QUERIES.name())) {
+            return mainMenu(update);
+        } else if (Objects.equals(lastChatCommand, Outcome.CATEGORIES.name())) {
+            return requestService(update);
+        } else if (Objects.equals(lastChatCommand, Outcome.MY_SERVICES.name())) {
+            return mainMenu(update);
+        } else if (Objects.equals(lastChatCommand, Outcome.OFFER.name())) {
+            return settings(update);
+        } else {
+            return mainMenu(update);
+        }
+    }
+
+    private SendMessage mainMenu(Update update) {
+        return logAndKeyboard(update, Outcome.BACK.getText(), mainMenu(), 2, Outcome.BACK);
     }
 
     @Override
@@ -685,6 +718,21 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     public boolean containsBannedWord(String command) {
         return configService.containsBannedWord(command);
+    }
+
+    private List<String> mainMenu() {
+        return List.of(
+                Command.NEW_SERVICE_BUTTON.getText(),
+                Command.MY_SERVICES_BUTTON.getText(),
+                Command.SETTINGS_BUTTON.getText(),
+                Command.GET_QUERIES_BUTTON.getText()
+        );
+    }
+
+    private List<String> backButton() {
+        return List.of(
+                Command.BACK.getText()
+        );
     }
 
     private SendMessage logAndMessage(Update update, String message, Outcome outcome) {

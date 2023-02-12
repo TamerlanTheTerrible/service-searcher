@@ -9,10 +9,14 @@ import lombok.Getter;
 @Getter
 public enum Command {
     START("/start"),
-    INFO("/info"),
+    SETTINGS("/info"),
+    SETTINGS_BUTTON("⚙️ Настройки"),
     NEW_SERVICE("/newservice"),
+    NEW_SERVICE_BUTTON("\uD83D\uDD0E Новая услуга"),
     MY_SERVICES("/services"),
+    MY_SERVICES_BUTTON("Мои услуги"),
     GET_QUERIES("/requests"),
+    GET_QUERIES_BUTTON("Актуальные запросы"),
     SUBSCRIBE_TO_SERVICE("➕ Подписаться"),
     UNSUBSCRIBE_FROM_SERVICE("\uD83D\uDDD1 Отписаться"),
     ACCEPT_QUERY("Принять запрос #"),
@@ -20,6 +24,7 @@ public enum Command {
     BACK_TO_CATEGORIES("Все категории"),
     OFFER("/oferta"),
     OFFER_BUTTON("\uD83D\uDCC4 Публичная оферта"),
+    BACK("◀️ Назад"),
     ;
 
     private final String text;

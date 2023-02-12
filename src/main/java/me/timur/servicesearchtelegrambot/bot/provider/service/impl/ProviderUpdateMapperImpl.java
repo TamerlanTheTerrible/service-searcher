@@ -57,17 +57,21 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
+                // back
+            else if (newCommand.equals(Command.BACK.getText())) {
+                sendMessage = updateHandler.backButton(update);
+            }
             // info command called
-            else if (Objects.equals(newCommand, Command.INFO.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && companyInfoCommands.stream().anyMatch(lastChatCommand::contains)))
-                sendMessage = updateHandler.providerInfo(update);
+            else if (Objects.equals(newCommand, Command.SETTINGS.getText()) || Objects.equals(newCommand, Command.SETTINGS_BUTTON.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && companyInfoCommands.stream().anyMatch(lastChatCommand::contains)))
+                sendMessage = updateHandler.settings(update);
             // requests command called
-            else if (Objects.equals(newCommand, Command.GET_QUERIES.getText()))
+            else if (Objects.equals(newCommand, Command.GET_QUERIES.getText()) || Objects.equals(newCommand, Command.GET_QUERIES_BUTTON.getText()))
                 sendMessage = updateHandler.getQueries(update);
             // new service command called
-            else if (Objects.equals(newCommand, Command.NEW_SERVICE.getText()))
+            else if (Objects.equals(newCommand, Command.NEW_SERVICE.getText()) || Objects.equals(newCommand, Command.NEW_SERVICE_BUTTON.getText()))
                 sendMessage = updateHandler.requestService(update);
             // my services command called
-            else if (Objects.equals(newCommand, Command.MY_SERVICES.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && Objects.equals(lastChatCommand, Outcome.SERVICE_EDIT_REQUESTED.name())))
+            else if (Objects.equals(newCommand, Command.MY_SERVICES.getText()) || Objects.equals(newCommand, Command.MY_SERVICES_BUTTON.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && Objects.equals(lastChatCommand, Outcome.SERVICE_EDIT_REQUESTED.name())))
                 sendMessage = updateHandler.getMyServices(update);
             // edit my service
             else if (Objects.equals(lastChatCommand, Command.MY_SERVICES.name()) && serviceNames.stream().anyMatch(s -> newCommand.contains(s)))
@@ -139,8 +143,12 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             else if (Objects.equals(lastChatCommand, Outcome.REGION_REQUESTED.name()))
                 sendMessage = updateHandler.saveRegionAndRequestService(update);
             // edit region
-            else if (newCommand.contains(Outcome.REGION_REQUESTED.getText()) || newCommand.contains("✏️ Регион:")) {
+            else if (newCommand.contains(Outcome.REGION_EDIT_REQUESTED.getText()) || newCommand.contains("✏️ Регион:")) {
                 sendMessage = updateHandler.editRegion(update);
+            }
+            // save region
+            else if (Objects.equals(lastChatCommand, Outcome.REGION_EDIT_REQUESTED.name())) {
+                sendMessage = updateHandler.saveRegion(update);
             }
             // accept query
             else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))

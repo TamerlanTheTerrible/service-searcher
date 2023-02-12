@@ -13,6 +13,8 @@ import java.util.List;
 public interface ProviderUpdateHandler {
     SendMessage start(Update update);
 
+    SendMessage backButton(Update update);
+
     SendMessage unknownCommand(Update update);
 
     SendMessage getCategories(Update update);
@@ -43,7 +45,7 @@ public interface ProviderUpdateHandler {
 
     SendMessage editRegion(Update update);
 
-    SendMessage saveRegion(Update update, Region region);
+    SendMessage saveRegion(Update update);
 
     SendMessage requestService(Update update);
 
@@ -55,7 +57,7 @@ public interface ProviderUpdateHandler {
 
     SendMessage requestRegion(Update update);
 
-    SendMessage providerInfo(Update update);
+    SendMessage settings(Update update);
 
     SendMessage editInstagram(Update update);
 
