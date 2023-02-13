@@ -576,7 +576,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     public SendMessage unsubscribeFromService(Update update) {
         //get service
         String serviceName = command(update).substring(Command.UNSUBSCRIBE_FROM_SERVICE.getText().length()+1);
-        Optional<ProviderService> serviceOpt = providerServiceRepository.findByService(
+        Optional<ProviderService> serviceOpt = providerServiceRepository.findByProviderAndService(
+                providerManager.getByUserTelegramId(tgUserId(update)),
                 serviceManager.getServiceByName(serviceName)
         );
 
@@ -598,7 +599,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     public SendMessage subscribeToService(Update update) {
         //get service
         String serviceName = command(update).substring(Command.SUBSCRIBE_TO_SERVICE.getText().length()+1);
-        Optional<ProviderService> serviceOpt = providerServiceRepository.findByService(
+        Optional<ProviderService> serviceOpt = providerServiceRepository.findByProviderAndService(
+                providerManager.getByUserTelegramId(tgUserId(update)),
                 serviceManager.getServiceByName(serviceName)
         );
 
