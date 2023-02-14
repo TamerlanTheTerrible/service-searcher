@@ -704,13 +704,15 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             return mainMenu(update);
         } else if (Objects.equals(lastChatCommand, Outcome.OFFER.name())) {
             return settings(update);
+        } else if (Objects.equals(lastChatCommand, Outcome.REQUEST_SERVICE_NAME.name())) {
+            return mainMenu(update);
         } else {
             return mainMenu(update);
         }
     }
 
     private SendMessage mainMenu(Update update) {
-        return logAndKeyboard(update, Outcome.BACK.getText(), mainMenu(), 2, Outcome.BACK);
+        return logAndKeyboard(update, Outcome.MAIN_MENU.getText(), mainMenu(), 2, Outcome.BACK);
     }
 
     @Override
