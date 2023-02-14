@@ -9,7 +9,7 @@ import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.Region;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
-import me.timur.servicesearchtelegrambot.bot.util.PhoneUtil;
+import me.timur.servicesearchtelegrambot.bot.util.StringUtil;
 import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import me.timur.servicesearchtelegrambot.service.*;
@@ -216,7 +216,7 @@ public class ClientUpdateHandler implements UpdateHandler {
         //get and validate phone number
         String phone = update.getMessage().getContact().getPhoneNumber();
 
-        if (!PhoneUtil.isValid(phone)) {
+        if (!StringUtil.isValidPhone(phone)) {
             List<SendMessage> messages = new ArrayList<>();
             SendMessage phoneRequest = logAndMessage(update, Outcome.INVALID_PHONE_FORMAT_SENT.getText(), Outcome.INVALID_PHONE_FORMAT_SENT);
             phoneRequest.setReplyMarkup(KeyboardUtil.phoneRequest());
@@ -266,8 +266,17 @@ public class ClientUpdateHandler implements UpdateHandler {
     @Override
     public SendMessage searchWithOptions(Update update) {
         String command = command(update);
-        SendMessage sendMessage;
 
+        if (StringUtil.isLatin(command)) {
+            return keyboard(
+                    chatId(update),
+                    "Текст должен быть на кириллице. Попробуйте ещё раз",
+                    List.of(Outcome.CATEGORIES.getText(), Command.BACK.getText()),
+                    2
+            );
+        }
+
+        SendMessage sendMessage;
         final List<Service> services = serviceManager.getAllServicesByActiveTrueAndNameLike(command);
         if (services.isEmpty()) {
             List<String> keyboardValues = new ArrayList<>();
