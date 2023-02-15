@@ -70,10 +70,15 @@ public class QueryServiceImpl implements QueryService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deactivate(Long id) {
         Query query = getById(id);
         query.setIsActive(false);
         queryRepository.save(query);
+    }
+
+    @Override
+    public void delete(Query query) {
+        queryRepository.delete(query);
     }
 
     @Override

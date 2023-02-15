@@ -26,7 +26,9 @@ public interface QueryService {
 
     void update(Long id, QueryDTO dto);
 
-    void delete(Long id);
+    void deactivate(Long id);
+
+    void delete(Query query);
 
     List<Query> getAllActiveByClientTgId(Long tgId);
 

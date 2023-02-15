@@ -118,9 +118,10 @@ public class ClientUpdateHandler implements UpdateHandler {
         queryService.save(query);
 
         //request query comment
-        List<String> keyboard = new ArrayList<>(backButton());
-        keyboard.add(0,Outcome.SKIP.getText());
-        keyboard.add(1,Outcome.CANCEL.getText());
+        List<String> keyboard = List.of(
+                Outcome.SKIP.getText(),
+                Outcome.CANCEL.getText()
+        );
         return logAndKeyboard(
                 update,
                 Outcome.QUERY_COMMENT_REQUESTED.getText(),
@@ -260,6 +261,10 @@ public class ClientUpdateHandler implements UpdateHandler {
 
     @Override
     public SendMessage cancel(Update update) {
+        //delete last query
+        queryService.getLastActiveByClientTgId(Long.valueOf(chatId(update)))
+                .ifPresent(queryService::delete);
+
         return logAndKeyboard(update, "Отменен \uD83D\uDEAB", mainMenuButtons(), 2, Outcome.CANCEL);
     }
 
@@ -349,7 +354,7 @@ public class ClientUpdateHandler implements UpdateHandler {
                 command.substring(command.indexOf("#") + 1, command.length())
         );
 
-        queryService.delete(queryId);
+        queryService.deactivate(queryId);
 
         return logAndKeyboard(update, Outcome.QUERY_DEACTIVATED.getText(), mainMenuButtons(), 2, Outcome.QUERY_DEACTIVATED);
     }
