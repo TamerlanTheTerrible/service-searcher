@@ -565,11 +565,9 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
   public SendMessage getMyServices(Update update) {
     List<String> servicesNames =
         providerServiceRepository.findAllByProviderUserTelegramId(tgUserId(update)).stream()
-            .map(
-                ps ->
-                    (ps.getActive() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ")
-                        + ps.getService().getName())
-            .collect(Collectors.toList());
+                .sorted((o1, o2) -> Boolean.compare(o2.getActive(), o1.getActive()))
+                .map(ps -> (ps.getActive() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ") + ps.getService().getName())
+                .collect(Collectors.toList());
     servicesNames.addAll(backButton());
     String text =
         servicesNames.size() != 0 ? Outcome.MY_SERVICES.getText() : "У вас нет активных услуг";
@@ -619,11 +617,12 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
       service.setActive(false);
       providerServiceRepository.save(service);
       // send reply
-      SendMessage msg =
-          logAndMessage(
-              update, Outcome.SERVICE_UNSUBSCRIBED.getText(), Outcome.SERVICE_UNSUBSCRIBED);
-      msg.setReplyMarkup(KeyboardUtil.removeKeyBoard());
-      return msg;
+      return logAndKeyboard(
+              update,
+              Outcome.SERVICE_UNSUBSCRIBED.getText(),
+              mainMenu(),
+              2,
+              Outcome.SERVICE_UNSUBSCRIBED);
     }
 
     return null;
