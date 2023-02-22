@@ -279,8 +279,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
   @Override
   public SendMessage denyQuery(Update update) {
-    //        return logAndMessage();
-    return null;
+    return keyboard(chatId(update), "Запрос не принят", mainMenu(), 2);
   }
 
   @Override
