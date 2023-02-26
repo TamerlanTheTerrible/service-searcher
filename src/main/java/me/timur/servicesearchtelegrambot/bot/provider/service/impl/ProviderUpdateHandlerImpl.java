@@ -597,7 +597,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
       return logAndKeyboard(update, text, buttons, 1, Outcome.SERVICE_EDIT_REQUESTED);
     }
 
-    return null;
+    return keyboard(chatId(update), Outcome.MAIN_MENU.getText(), mainMenu(), 2);
   }
 
   @Override
@@ -644,12 +644,11 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
       providerServiceRepository.save(service);
       // send reply
       SendMessage msg =
-          logAndMessage(update, Outcome.SERVICE_SUBSCRIBED.getText(), Outcome.SERVICE_SUBSCRIBED);
-      msg.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+          logAndKeyboard(update, Outcome.SERVICE_SUBSCRIBED.getText(), mainMenu(), 2, Outcome.SERVICE_SUBSCRIBED);
       return msg;
     }
 
-    return null;
+    return keyboard(chatId(update), Outcome.MAIN_MENU.getText(), mainMenu(), 2);
   }
 
   @Override
