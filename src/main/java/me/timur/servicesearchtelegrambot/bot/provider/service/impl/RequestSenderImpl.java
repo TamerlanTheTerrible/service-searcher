@@ -3,17 +3,23 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.support.HttpRequestWrapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by Temurbek Ismoilov on 27/11/22.
@@ -72,7 +78,7 @@ public class RequestSenderImpl implements RestRequester {
                 .path("/" + filePath)
                 .build();
 
-        return new RestTemplate()
+        return restTemplate()
                 .getForEntity(uriComponents.toUriString(), byte[].class)
                 .getBody();
     }
@@ -113,7 +119,7 @@ public class RequestSenderImpl implements RestRequester {
 
     private String get(UriComponents uriComponents) {
         log.info("REQUEST: {}", uriComponents);
-        final ResponseEntity<String> response = new RestTemplate().getForEntity(uriComponents.toUriString(), String.class);
+        final ResponseEntity<String> response = restTemplate().getForEntity(uriComponents.toUriString(), String.class);
         if (!uriComponents.getPath().contains("/file")) {
             log.info("RESPONSE: {}", response);
         }
@@ -122,14 +128,37 @@ public class RequestSenderImpl implements RestRequester {
 
     private String post(UriComponents uriComponents, HttpEntity requestEntity) {
         log.info("REQUEST: {}", uriComponents);
-        final ResponseEntity<String> response = new RestTemplate().postForEntity(uriComponents.toUriString(),requestEntity, String.class);
+        final ResponseEntity<String> response = restTemplate().postForEntity(uriComponents.toUriString(),requestEntity, String.class);
         log.info("RESPONSE: {}", response);
         return response.getBody();
+    }
+
+    private RestTemplate restTemplate() {
+        return new RestTemplateBuilder()
+                .interceptors(new PlusEncoderInterceptor())
+                .build();
     }
 
     private UriComponentsBuilder uriBuilder() {
         return UriComponentsBuilder.newInstance()
                 .scheme("https")
                 .host("api.telegram.org");
+    }
+
+    static class PlusEncoderInterceptor implements ClientHttpRequestInterceptor {
+
+        @Override
+        public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+            return execution.execute(new HttpRequestWrapper(request) {
+                @Override
+                public URI getURI() {
+                    URI u = super.getURI();
+                    String strictlyEscapedQuery = StringUtils.replace(u.getRawQuery(), "+", "%2B");
+                    return UriComponentsBuilder.fromUri(u)
+                            .replaceQuery(strictlyEscapedQuery)
+                            .build(true).toUri();
+                }
+            }, body);
+        }
     }
 }
