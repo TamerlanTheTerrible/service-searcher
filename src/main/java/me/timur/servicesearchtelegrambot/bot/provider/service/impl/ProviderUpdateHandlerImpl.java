@@ -238,7 +238,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
   public List<SendMessage> acceptQuery(Update update) {
     // client clientMsg
     SendMessage clientMsg = message(chatId(update), "Можете связаться с заказчиком: ");
-    clientMsg.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+    clientMsg.setReplyMarkup(keyboard(mainMenu(),2));
     // prepare reply
     List<SendMessage> messages = new ArrayList<>();
     messages.add(clientMsg);
