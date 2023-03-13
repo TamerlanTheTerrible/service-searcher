@@ -624,7 +624,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
               Outcome.SERVICE_UNSUBSCRIBED);
     }
 
-    return null;
+    return mainMenu(update);
   }
 
   @Override
@@ -643,9 +643,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
       service.setActive(true);
       providerServiceRepository.save(service);
       // send reply
-      SendMessage msg =
-          logAndKeyboard(update, Outcome.SERVICE_SUBSCRIBED.getText(), mainMenu(), 2, Outcome.SERVICE_SUBSCRIBED);
-      return msg;
+      return logAndKeyboard(update, Outcome.SERVICE_SUBSCRIBED.getText(), mainMenu(), 2, Outcome.SERVICE_SUBSCRIBED);
     }
 
     return keyboard(chatId(update), Outcome.MAIN_MENU.getText(), mainMenu(), 2);
@@ -727,7 +725,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
           providerServiceRepository.save(new ProviderService(provider, service, true));
       subscriptionRepository.save(
           new ProviderServiceSubscription(
-              providerService, LocalDate.now(), LocalDate.now().plusYears(10)));
+              providerService, LocalDate.now(), LocalDate.now().plusDays(3)));
       sendMessage =
           logAndKeyboard(
               update,

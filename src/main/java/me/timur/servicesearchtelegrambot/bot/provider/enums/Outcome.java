@@ -31,7 +31,7 @@ public enum Outcome {
 //    BACK_TO_CATEGORIES("Все категории"),
 
     PROVIDER_SERVICE_ALREADY_EXISTS("Этот сервис у Вас уже зарегистрирован"),
-    PROVIDER_SERVICE_SAVED("Сервис сохранён"),
+    PROVIDER_SERVICE_SAVED("Сервис сохранён. Вам предоставлена 3 дня бесплатной подписки на этот сервис"),
     RECEIVE_QUERY_NOTIFICATION("Запрос"),
 
     SETTINGS("⚙️ Настройки"),
