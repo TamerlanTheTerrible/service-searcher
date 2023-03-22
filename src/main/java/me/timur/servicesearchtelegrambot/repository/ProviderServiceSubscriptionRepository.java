@@ -12,5 +12,6 @@ import java.util.List;
 @Repository
 public interface ProviderServiceSubscriptionRepository extends JpaRepository<ProviderServiceSubscription, Long> {
     List<ProviderServiceSubscription> findAllByProviderServiceServiceAndProviderServiceProviderRegionAndEndDateAfterOrderByStartDateDesc(Service service, Region region, LocalDate now);
+    List<ProviderServiceSubscription> findAllByEndDateEquals(LocalDate endDate);
 
 }

@@ -8,7 +8,7 @@ import java.io.IOException;
  * Created by Temurbek Ismoilov on 27/11/22.
  */
 
-public interface RestRequester {
+public interface RestHelper {
 
     void sendMessage(String chatId, String text);
 

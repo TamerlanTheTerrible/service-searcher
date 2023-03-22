@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.provider.dto.TelegramResponseDto;
 import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
-import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
+import me.timur.servicesearchtelegrambot.bot.provider.service.RestHelper;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.UrlResource;
@@ -30,7 +30,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    private final RestRequester restRequester;
+    private final RestHelper restHelper;
 
     @Override
     public void sendNotification(String clientTgId, ServiceProviderDTO provider) {
@@ -61,7 +61,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (provider.getDateCreated() != null)
             stringBuilder.append("\nО фирме: " + provider.getDescription());
 
-        restRequester.sendMessage(clientTgId, stringBuilder.toString());
+        restHelper.sendMessage(clientTgId, stringBuilder.toString());
     }
 
     private void sendCertificate(String clientTgId, String certificateTgFileId) {
@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private String getFilePath(String clientTgId, String certificateTgFileId) throws JsonProcessingException {
-        final String response = restRequester.getFilePath(clientTgId, certificateTgFileId);
+        final String response = restHelper.getFilePath(clientTgId, certificateTgFileId);
         Map<String, String> resultMap = (Map<String, String>) new ObjectMapper().readValue(response, TelegramResponseDto.class)
                 .getResult();
 
@@ -88,7 +88,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private Path downloadFile(String filePath, String clientTgId) throws IOException {
-        String responseBody = restRequester.downloadFile(filePath);
+        String responseBody = restHelper.downloadFile(filePath);
         final byte[] bytes = responseBody.getBytes();
         final String fileExtension = FilenameUtils.getExtension(filePath);
         final String separator = File.separator;
@@ -108,9 +108,9 @@ public class NotificationServiceImpl implements NotificationService {
         photoFormats.add("jpeg");
         photoFormats.add("png");
         if (photoFormats.contains(FilenameUtils.getExtension(tgFilePath))) {
-            restRequester.sendPhoto(clientTgId, new UrlResource(path.toUri()));
+            restHelper.sendPhoto(clientTgId, new UrlResource(path.toUri()));
         } else {
-            restRequester.sendDocument(clientTgId, new UrlResource(path.toUri()));
+            restHelper.sendDocument(clientTgId, new UrlResource(path.toUri()));
         }
     }
 

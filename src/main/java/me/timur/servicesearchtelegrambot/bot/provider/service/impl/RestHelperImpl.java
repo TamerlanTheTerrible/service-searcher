@@ -1,7 +1,7 @@
 package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
+import me.timur.servicesearchtelegrambot.bot.provider.service.RestHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.Resource;
@@ -27,7 +27,7 @@ import java.net.URI;
 
 @Slf4j
 @Component
-public class RequestSenderImpl implements RestRequester {
+public class RestHelperImpl implements RestHelper {
     private final static String BASE_URL = "https://api.telegram.org";
     @Value("${bot.client.token}")
     private String CURRENT_BOT_TOKEN_URL;
